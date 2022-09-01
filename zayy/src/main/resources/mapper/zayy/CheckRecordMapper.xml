@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckRecordMapper">
+    
+    <resultMap type="CheckRecord" id="CheckRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="recordTime"    column="record_time"    />
+    </resultMap>
+
+    <sql id="selectCheckRecordVo">
+        select id, user_id, record_time from check_record
+    </sql>
+
+    <select id="selectCheckRecordList" parameterType="CheckRecord" resultMap="CheckRecordResult">
+        <include refid="selectCheckRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="recordTime != null "> and record_time = #{recordTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckRecordById" parameterType="Long" resultMap="CheckRecordResult">
+        <include refid="selectCheckRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckRecord" parameterType="CheckRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into check_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="recordTime != null">record_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="recordTime != null">#{recordTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckRecord" parameterType="CheckRecord">
+        update check_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="recordTime != null">record_time = #{recordTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckRecordById" parameterType="Long">
+        delete from check_record where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckRecordByIds" parameterType="String">
+        delete from check_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

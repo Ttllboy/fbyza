@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckItemMapper">
+    
+    <resultMap type="CheckItem" id="CheckItemResult">
+        <result property="id"    column="id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="tiemCommon"    column="tiem_common"    />
+    </resultMap>
+
+    <sql id="selectCheckItemVo">
+        select id, item_name, tiem_common from check_item
+    </sql>
+
+    <select id="selectCheckItemList" parameterType="CheckItem" resultMap="CheckItemResult">
+        <include refid="selectCheckItemVo"/>
+        <where>  
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="tiemCommon != null "> and tiem_common = #{tiemCommon}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckItemById" parameterType="Long" resultMap="CheckItemResult">
+        <include refid="selectCheckItemVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckItem" parameterType="CheckItem" useGeneratedKeys="true" keyProperty="id">
+        insert into check_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="itemName != null">item_name,</if>
+            <if test="tiemCommon != null">tiem_common,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="itemName != null">#{itemName},</if>
+            <if test="tiemCommon != null">#{tiemCommon},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckItem" parameterType="CheckItem">
+        update check_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="tiemCommon != null">tiem_common = #{tiemCommon},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckItemById" parameterType="Long">
+        delete from check_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckItemByIds" parameterType="String">
+        delete from check_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

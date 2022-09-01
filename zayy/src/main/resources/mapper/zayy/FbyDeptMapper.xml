@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.FbyDeptMapper">
+    
+    <resultMap type="FbyDept" id="FbyDeptResult">
+        <result property="id"    column="id"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectFbyDeptVo">
+        select id, dept_name from fby_dept
+    </sql>
+
+    <select id="selectFbyDeptList" parameterType="FbyDept" resultMap="FbyDeptResult">
+        <include refid="selectFbyDeptVo"/>
+        <where>  
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectFbyDeptById" parameterType="Long" resultMap="FbyDeptResult">
+        <include refid="selectFbyDeptVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFbyDept" parameterType="FbyDept" useGeneratedKeys="true" keyProperty="id">
+        insert into fby_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptName != null">dept_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptName != null">#{deptName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFbyDept" parameterType="FbyDept">
+        update fby_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptName != null">dept_name = #{deptName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFbyDeptById" parameterType="Long">
+        delete from fby_dept where id = #{id}
+    </delete>
+
+    <delete id="deleteFbyDeptByIds" parameterType="String">
+        delete from fby_dept where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

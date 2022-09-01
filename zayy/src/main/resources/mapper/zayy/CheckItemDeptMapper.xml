@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckItemDeptMapper">
+    
+    <resultMap type="CheckItemDept" id="CheckItemDeptResult">
+        <result property="id"    column="id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="itemName"    column="item_name"    />
+    </resultMap>
+
+    <sql id="selectCheckItemDeptVo">
+        select id, dept_name, item_name from check_item_dept
+    </sql>
+
+    <select id="selectCheckItemDeptList" parameterType="CheckItemDept" resultMap="CheckItemDeptResult">
+        <include refid="selectCheckItemDeptVo"/>
+        <where>  
+            <if test="deptName != null "> and dept_name = #{deptName}</if>
+            <if test="itemName != null "> and item_name = #{itemName}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckItemDeptById" parameterType="Long" resultMap="CheckItemDeptResult">
+        <include refid="selectCheckItemDeptVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckItemDept" parameterType="CheckItemDept" useGeneratedKeys="true" keyProperty="id">
+        insert into check_item_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptName != null">dept_name,</if>
+            <if test="itemName != null">item_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptName != null">#{deptName},</if>
+            <if test="itemName != null">#{itemName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckItemDept" parameterType="CheckItemDept">
+        update check_item_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="itemName != null">item_name = #{itemName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckItemDeptById" parameterType="Long">
+        delete from check_item_dept where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckItemDeptByIds" parameterType="String">
+        delete from check_item_dept where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

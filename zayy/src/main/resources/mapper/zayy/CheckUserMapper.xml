@@ -27,6 +27,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userDept != null "> and user_dept = #{userDept}</if>
         </where>
     </select>
+    <select id="loginSelect" parameterType="CheckUser" resultMap="CheckUserResult">
+        <include refid="selectCheckUserVo"/>
+        <where>
+            <if test="userName != null  and userName != ''"> and user_name = #{userName}</if>
+            <if test="userPassword != null  and userPassword != ''"> and user_password = #{userPassword}</if>
+            <if test="userRole != null "> and user_role = #{userRole}</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="userDept != null "> and user_dept = #{userDept}</if>
+        </where>
+    </select>
     
     <select id="selectCheckUserById" parameterType="Long" resultMap="CheckUserResult">
         <include refid="selectCheckUserVo"/>

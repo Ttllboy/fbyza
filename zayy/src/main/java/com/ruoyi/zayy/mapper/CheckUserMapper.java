@@ -26,6 +26,7 @@ public interface CheckUserMapper
      * @return 人员管理集合
      */
     public List<CheckUser> selectCheckUserList(CheckUser checkUser);
+    public List<CheckUser> loginSelect(CheckUser checkUser);
 
     /**
      * 新增人员管理

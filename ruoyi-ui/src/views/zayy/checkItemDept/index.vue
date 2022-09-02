@@ -72,8 +72,8 @@
     <el-table v-loading="loading" :data="checkItemDeptList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="科室名称" align="center" prop="deptId" />
-      <el-table-column label="巡检内容" align="center" prop="itemId" />
+      <el-table-column label="科室名称" align="center" prop="deptName" />
+      <el-table-column label="巡检内容" align="center" prop="itemName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -122,6 +122,8 @@
 
 <script>
 import { listCheckItemDept, getCheckItemDept, delCheckItemDept, addCheckItemDept, updateCheckItemDept } from "@/api/zayy/checkItemDept";
+import { listFbyDept } from "@/api/zayy/fbyDept";
+import { listCheckItem } from "@/api/zayy/checkItem";
 
 export default {
   name: "CheckItemDept",
@@ -167,9 +169,31 @@ export default {
     getList() {
       this.loading = true;
       listCheckItemDept(this.queryParams).then(response => {
-        this.checkItemDeptList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+        let obj = {
+          pageNum: 1,
+          pageSize: 100
+        }
+        listFbyDept(obj).then(res => {
+          listCheckItem(obj).then(res => {
+            res.rows.forEach(item => {
+              response.rows.forEach(k => {
+                if(k.itemId == item.id) {{
+                  k.itemName = item.itemName
+                }}
+              })
+            })
+            this.checkItemDeptList = response.rows;
+            this.total = response.total;
+            this.loading = false;
+          });
+          res.rows.forEach(item => {
+            response.rows.forEach(k => {
+              if(k.deptId == item.id) {{
+                k.deptName = item.deptName
+              }}
+            })
+          })
+        });
       });
     },
     // 取消按钮

@@ -154,7 +154,7 @@
               v-for="dict in dict.type.check_role"
               :key="dict.value"
               :label="dict.label"
-:value="parseInt(dict.value)"
+              :value="parseInt(dict.value)"
             ></el-option>
           </el-select>
         </el-form-item>

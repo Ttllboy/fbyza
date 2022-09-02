@@ -88,13 +88,13 @@
     <el-table v-loading="loading" :data="checkRecordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="巡检员ID" align="center" prop="userId" />
+      <el-table-column label="巡检员ID" align="center" prop="nickName" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="巡检地点" align="center" prop="checkPlace" />
+      <el-table-column label="巡检地点" align="center" prop="placeName" />
       <el-table-column label="巡检记录ID" align="center" prop="recordId" />
       <el-table-column label="详情描述" align="center" prop="checkContent" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -102,8 +102,15 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-search"
+            @click="handleUpdate(scope.row, true)"
+            v-hasPermi="['zayy:checkItemDept:edit']"
+          >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleUpdate(scope.row, false)"
             v-hasPermi="['zayy:checkRecord:edit']"
           >修改</el-button>
           <el-button
@@ -129,10 +136,12 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="巡检员ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入巡检员ID" />
+          <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员ID" />
         </el-form-item>
         <el-form-item label="记录时间" prop="recordTime">
-          <el-date-picker clearable
+          <el-date-picker
+            :disabled="disabled"
+            clearable
             v-model="form.recordTime"
             type="date"
             value-format="yyyy-MM-dd"
@@ -140,17 +149,17 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="巡检地点" prop="checkPlace">
-          <el-input v-model="form.checkPlace" placeholder="请输入巡检地点" />
+          <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入巡检地点" />
         </el-form-item>
         <el-form-item label="巡检记录ID" prop="recordId">
-          <el-input v-model="form.recordId" placeholder="请输入巡检记录ID" />
+          <el-input :disabled="disabled" v-model="form.recordId" placeholder="请输入巡检记录ID" />
         </el-form-item>
         <el-form-item label="详情描述">
-          <editor v-model="form.checkContent" :min-height="192"/>
+          <editor readonly v-model="form.checkContent" :min-height="192"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button v-if="!disabled" type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -159,11 +168,14 @@
 
 <script>
 import { listCheckRecord, getCheckRecord, delCheckRecord, addCheckRecord, updateCheckRecord } from "@/api/zayy/checkRecord";
+import { listCheckUser } from "@/api/zayy/checkUser";
+import { listCheckPlace } from "@/api/zayy/checkPlace";
 
 export default {
   name: "CheckRecord",
   data() {
     return {
+      disabled: false,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -207,9 +219,31 @@ export default {
     getList() {
       this.loading = true;
       listCheckRecord(this.queryParams).then(response => {
-        this.checkRecordList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+        let obj = {
+          pageNum: 1,
+          pageSize: 100
+        }
+        listCheckUser(obj).then(res => {
+          listCheckPlace(obj).then(res => {
+            res.rows.forEach(item => {
+              response.rows.forEach(k => {
+                if(k.checkPlace == item.placeId) {{
+                  k.placeName = item.placeName
+                }}
+              })
+            })
+            this.checkRecordList = response.rows;
+            this.total = response.total;
+            this.loading = false;
+          });
+          res.rows.forEach(item => {
+            response.rows.forEach(k => {
+              if(k.userId == item.id) {{
+                k.nickName = item.nickName
+              }}
+            })
+          })
+        });
       });
     },
     // 取消按钮
@@ -227,6 +261,7 @@ export default {
         recordId: null,
         checkContent: null
       };
+      this.disabled = false;
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -252,8 +287,9 @@ export default {
       this.title = "添加巡检记录";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    handleUpdate(row, type) {
       this.reset();
+      this.disabled = type
       const id = row.id || this.ids
       getCheckRecord(id).then(response => {
         this.form = response.data;

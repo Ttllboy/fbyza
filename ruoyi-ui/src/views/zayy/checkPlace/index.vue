@@ -104,7 +104,11 @@
       <el-table-column label="巡检地点名称" align="center" prop="placeName" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="巡检地点二维码" align="center" prop="placeImg" />
+      <el-table-column label="巡检地点二维码" align="center" prop="placeImg">
+        <template slot-scope="scope">
+          <el-image :src="scope.row.placeImg" :preview-src-list="[scope.row.placeImg]"></el-image>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button

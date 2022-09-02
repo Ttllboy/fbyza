@@ -20,7 +20,7 @@ public class ALoginApi {
     private CheckUserMapper checkUserMapper;
 
     @PostMapping("/login")
-    public void login(@RequestBody JSONObject jsonObject){
+    public JSONObject login(@RequestBody JSONObject jsonObject){
         JSONObject reJson = new JSONObject();
         String userName = jsonObject.getString("userName");
         String password = jsonObject.getString("password");
@@ -28,14 +28,21 @@ public class ALoginApi {
         user.setUserName(userName);
         List<CheckUser> list = checkUserMapper.loginSelect(user);
         if(list.size() > 0){
-            System.out.println("用户名存在，开始判断密码");
             String password2 = list.get(0).getUserPassword();
             if(password.equals(password2)){
-
-
+                reJson.put("code",200);
+                reJson.put("msg","登录成功");
+                reJson.put("userId",list.get(0).getId());
+                return reJson;
+            }else{
+                reJson.put("code",500);
+                reJson.put("msg","用户名或密码输入错误");
+                return reJson;
             }
+        }else {
+            reJson.put("code",500);
+            reJson.put("msg","用户名或密码输入错误");
+            return reJson;
         }
-
-
     }
 }

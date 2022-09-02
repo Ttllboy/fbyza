@@ -7,7 +7,7 @@ import com.ruoyi.zayy.domain.CheckItemDept;
  * 巡检配置Service接口
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 public interface ICheckItemDeptService 
 {

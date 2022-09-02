@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckPlaceMapper">
+    
+    <resultMap type="CheckPlace" id="CheckPlaceResult">
+        <result property="id"    column="id"    />
+        <result property="placeId"    column="place_id"    />
+        <result property="placeName"    column="place_name"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="placeImg"    column="place_img"    />
+    </resultMap>
+
+    <sql id="selectCheckPlaceVo">
+        select id, place_id, place_name, longitude, latitude, place_img from check_place
+    </sql>
+
+    <select id="selectCheckPlaceList" parameterType="CheckPlace" resultMap="CheckPlaceResult">
+        <include refid="selectCheckPlaceVo"/>
+        <where>  
+            <if test="placeId != null  and placeId != ''"> and place_id like concat('%', #{placeId}, '%')</if>
+            <if test="placeName != null  and placeName != ''"> and place_name like concat('%', #{placeName}, '%')</if>
+            <if test="longitude != null  and longitude != ''"> and longitude = #{longitude}</if>
+            <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
+            <if test="placeImg != null  and placeImg != ''"> and place_img = #{placeImg}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckPlaceById" parameterType="Long" resultMap="CheckPlaceResult">
+        <include refid="selectCheckPlaceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckPlace" parameterType="CheckPlace" useGeneratedKeys="true" keyProperty="id">
+        insert into check_place
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="placeId != null">place_id,</if>
+            <if test="placeName != null">place_name,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="placeImg != null">place_img,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="placeId != null">#{placeId},</if>
+            <if test="placeName != null">#{placeName},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="placeImg != null">#{placeImg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckPlace" parameterType="CheckPlace">
+        update check_place
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="placeId != null">place_id = #{placeId},</if>
+            <if test="placeName != null">place_name = #{placeName},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="placeImg != null">place_img = #{placeImg},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckPlaceById" parameterType="Long">
+        delete from check_place where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckPlaceByIds" parameterType="String">
+        delete from check_place where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

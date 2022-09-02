@@ -17,6 +17,22 @@
           placeholder="请选择记录时间">
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="巡检地点" prop="checkPlace">
+        <el-input
+          v-model="queryParams.checkPlace"
+          placeholder="请输入巡检地点"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="巡检记录ID" prop="recordId">
+        <el-input
+          v-model="queryParams.recordId"
+          placeholder="请输入巡检记录ID"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -78,6 +94,9 @@
           <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="巡检地点" align="center" prop="checkPlace" />
+      <el-table-column label="巡检记录ID" align="center" prop="recordId" />
+      <el-table-column label="详情描述" align="center" prop="checkContent" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -120,6 +139,15 @@
             placeholder="请选择记录时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="巡检地点" prop="checkPlace">
+          <el-input v-model="form.checkPlace" placeholder="请输入巡检地点" />
+        </el-form-item>
+        <el-form-item label="巡检记录ID" prop="recordId">
+          <el-input v-model="form.recordId" placeholder="请输入巡检记录ID" />
+        </el-form-item>
+        <el-form-item label="详情描述">
+          <editor v-model="form.checkContent" :min-height="192"/>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -159,7 +187,10 @@ export default {
         pageNum: 1,
         pageSize: 10,
         userId: null,
-        recordTime: null
+        recordTime: null,
+        checkPlace: null,
+        recordId: null,
+        checkContent: null
       },
       // 表单参数
       form: {},
@@ -191,7 +222,10 @@ export default {
       this.form = {
         id: null,
         userId: null,
-        recordTime: null
+        recordTime: null,
+        checkPlace: null,
+        recordId: null,
+        checkContent: null
       };
       this.resetForm("form");
     },

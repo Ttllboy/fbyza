@@ -14,6 +14,10 @@ ruoyi:
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
+  # 巡检图片上传地址
+  checkImg: D:\work\fbyza\assets\
+  # 网页地址
+  webUrl: www.baidu.com
 
 # 开发环境配置
 server:
@@ -97,7 +101,7 @@ token:
     # 令牌密钥
     secret: abcdefghijklmnopqrstuvwxyz
     # 令牌有效期（默认30分钟）
-    expireTime: 30
+    expireTime: 480
   
 # MyBatis配置
 mybatis:

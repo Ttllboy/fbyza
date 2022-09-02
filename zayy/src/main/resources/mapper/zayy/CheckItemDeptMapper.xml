@@ -6,20 +6,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="CheckItemDept" id="CheckItemDeptResult">
         <result property="id"    column="id"    />
-        <result property="deptName"    column="dept_name"    />
-        <result property="itemName"    column="item_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="itemId"    column="item_id"    />
     </resultMap>
 
     <sql id="selectCheckItemDeptVo">
-        select id, dept_name, item_name from check_item_dept
+        select id, dept_id, item_id from check_item_dept
     </sql>
 
     <select id="selectCheckItemDeptList" parameterType="CheckItemDept" resultMap="CheckItemDeptResult">
         <include refid="selectCheckItemDeptVo"/>
         <where>  
-            <if test="deptName != null "> and dept_name = #{deptName}</if>
-            <if test="itemName != null "> and item_name = #{itemName}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="itemId != null "> and item_id = #{itemId}</if>
         </where>
+    </select>
+    <select id="selectCheckItemDeptNameList" parameterType="Long" statementType="STATEMENT" resultType="java.util.HashMap">
+        select * from check_item_dept t1
+                          left join check_item t2
+                                    on t1.item_id = t2.id
+        where t1.dept_id = ${deptId}
     </select>
     
     <select id="selectCheckItemDeptById" parameterType="Long" resultMap="CheckItemDeptResult">
@@ -30,20 +36,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertCheckItemDept" parameterType="CheckItemDept" useGeneratedKeys="true" keyProperty="id">
         insert into check_item_dept
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="deptName != null">dept_name,</if>
-            <if test="itemName != null">item_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="itemId != null">item_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="deptName != null">#{deptName},</if>
-            <if test="itemName != null">#{itemName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="itemId != null">#{itemId},</if>
          </trim>
     </insert>
 
     <update id="updateCheckItemDept" parameterType="CheckItemDept">
         update check_item_dept
         <trim prefix="SET" suffixOverrides=",">
-            <if test="deptName != null">dept_name = #{deptName},</if>
-            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
         </trim>
         where id = #{id}
     </update>

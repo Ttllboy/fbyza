@@ -1,14 +1,18 @@
 package com.ruoyi.zayy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckItemDept;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 /**
  * 巡检配置Mapper接口
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
+@Component
 public interface CheckItemDeptMapper 
 {
     /**
@@ -26,6 +30,7 @@ public interface CheckItemDeptMapper
      * @return 巡检配置集合
      */
     public List<CheckItemDept> selectCheckItemDeptList(CheckItemDept checkItemDept);
+    public List<HashMap> selectCheckItemDeptNameList(@Param("deptId")Long deptId);
 
     /**
      * 新增巡检配置

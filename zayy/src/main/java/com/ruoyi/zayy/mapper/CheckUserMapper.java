@@ -2,6 +2,7 @@ package com.ruoyi.zayy.mapper;
 
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckUser;
+import org.springframework.stereotype.Component;
 
 /**
  * 人员管理Mapper接口
@@ -9,6 +10,7 @@ import com.ruoyi.zayy.domain.CheckUser;
  * @author jgkj
  * @date 2022-09-01
  */
+@Component
 public interface CheckUserMapper 
 {
     /**

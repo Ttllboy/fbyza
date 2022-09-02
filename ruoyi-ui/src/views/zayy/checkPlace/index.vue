@@ -1,14 +1,46 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="科室名称" prop="deptName">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+<!--      <el-form-item label="巡检地点ID" prop="placeId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.placeId"-->
+<!--          placeholder="请输入巡检地点ID"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="巡检地点名称" prop="placeName">
         <el-input
-          v-model="queryParams.deptName"
-          placeholder="请输入科室名称"
+          v-model="queryParams.placeName"
+          placeholder="请输入巡检地点名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+<!--      <el-form-item label="经度" prop="longitude">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.longitude"-->
+<!--          placeholder="请输入经度"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="纬度" prop="latitude">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.latitude"-->
+<!--          placeholder="请输入纬度"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="巡检地点二维码" prop="placeImg">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.placeImg"-->
+<!--          placeholder="请输入巡检地点二维码"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -23,7 +55,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['zayy:fbyDept:add']"
+          v-hasPermi="['zayy:checkPlace:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -34,7 +66,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['zayy:fbyDept:edit']"
+          v-hasPermi="['zayy:checkPlace:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -45,7 +77,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['zayy:fbyDept:remove']"
+          v-hasPermi="['zayy:checkPlace:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -55,20 +87,24 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['zayy:fbyDept:export']"
+          v-hasPermi="['zayy:checkPlace:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="fbyDeptList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="checkPlaceList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" align="center" prop="id" >
         <template slot-scope="scope">
           <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="科室名称" align="center" prop="deptName" />
+      <el-table-column label="巡检地点ID" align="center" prop="placeId" />
+      <el-table-column label="巡检地点名称" align="center" prop="placeName" />
+      <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" />
+      <el-table-column label="巡检地点二维码" align="center" prop="placeImg" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -76,14 +112,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['zayy:fbyDept:edit']"
+            v-hasPermi="['zayy:checkPlace:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['zayy:fbyDept:remove']"
+            v-hasPermi="['zayy:checkPlace:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -97,12 +133,24 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改科室列表对话框 -->
+    <!-- 添加或修改巡检地点对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="科室名称" prop="deptName">
-          <el-input v-model="form.deptName" placeholder="请输入科室名称" />
+<!--        <el-form-item label="巡检地点ID" prop="placeId">-->
+<!--          <el-input v-model="form.placeId" placeholder="请输入巡检地点ID" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="巡检地点名称" prop="placeName">
+          <el-input v-model="form.placeName" placeholder="请输入巡检地点名称" />
         </el-form-item>
+        <el-form-item label="经度" prop="longitude">
+          <el-input v-model="form.longitude" placeholder="请输入经度" />
+        </el-form-item>
+        <el-form-item label="纬度" prop="latitude">
+          <el-input v-model="form.latitude" placeholder="请输入纬度" />
+        </el-form-item>
+<!--        <el-form-item label="巡检地点二维码" prop="placeImg">-->
+<!--          <el-input v-model="form.placeImg" placeholder="请输入巡检地点二维码" />-->
+<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -113,10 +161,10 @@
 </template>
 
 <script>
-import { listFbyDept, getFbyDept, delFbyDept, addFbyDept, updateFbyDept } from "@/api/zayy/fbyDept";
+import { listCheckPlace, getCheckPlace, delCheckPlace, addCheckPlace, updateCheckPlace } from "@/api/zayy/checkPlace";
 
 export default {
-  name: "FbyDept",
+  name: "CheckPlace",
   data() {
     return {
       // 遮罩层
@@ -131,8 +179,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 科室列表表格数据
-      fbyDeptList: [],
+      // 巡检地点表格数据
+      checkPlaceList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -141,7 +189,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        deptName: null
+        placeId: null,
+        placeName: null,
+        longitude: null,
+        latitude: null,
+        placeImg: null
       },
       // 表单参数
       form: {},
@@ -154,11 +206,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询科室列表列表 */
+    /** 查询巡检地点列表 */
     getList() {
       this.loading = true;
-      listFbyDept(this.queryParams).then(response => {
-        this.fbyDeptList = response.rows;
+      listCheckPlace(this.queryParams).then(response => {
+        this.checkPlaceList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -172,7 +224,11 @@ export default {
     reset() {
       this.form = {
         id: null,
-        deptName: null
+        placeId: null,
+        placeName: null,
+        longitude: null,
+        latitude: null,
+        placeImg: null
       };
       this.resetForm("form");
     },
@@ -196,16 +252,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加科室列表";
+      this.title = "添加巡检地点";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getFbyDept(id).then(response => {
+      getCheckPlace(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改科室列表";
+        this.title = "修改巡检地点";
       });
     },
     /** 提交按钮 */
@@ -213,13 +269,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateFbyDept(this.form).then(response => {
+            updateCheckPlace(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addFbyDept(this.form).then(response => {
+            addCheckPlace(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -231,8 +287,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除科室列表编号为"' + ids + '"的数据项？').then(function() {
-        return delFbyDept(ids);
+      this.$modal.confirm('是否确认删除巡检地点编号为"' + ids + '"的数据项？').then(function() {
+        return delCheckPlace(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -240,9 +296,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('zayy/fbyDept/export', {
+      this.download('zayy/checkPlace/export', {
         ...this.queryParams
-      }, `fbyDept_${new Date().getTime()}.xlsx`)
+      }, `checkPlace_${new Date().getTime()}.xlsx`)
     }
   }
 };

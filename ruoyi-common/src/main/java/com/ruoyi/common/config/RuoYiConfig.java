@@ -33,6 +33,28 @@ public class RuoYiConfig
     /** 验证码类型 */
     private static String captchaType;
 
+//    巡检图片上传地址
+    private static String checkImg;
+
+    //网页地址
+    private static String webUrl;
+
+    public static String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        RuoYiConfig.webUrl = webUrl;
+    }
+
+    public static String getCheckImg() {
+        return checkImg;
+    }
+
+    public void setCheckImg(String checkImg) {
+        this.checkImg = checkImg;
+    }
+
     public String getName()
     {
         return name;

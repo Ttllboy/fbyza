@@ -1,42 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.zayy.mapper.CheckRecordMapper">
-    
+
     <resultMap type="CheckRecord" id="CheckRecordResult">
         <result property="id"    column="id"    />
         <result property="userId"    column="user_id"    />
         <result property="recordTime"    column="record_time"    />
+        <result property="checkPlace"    column="check_place"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="checkContent"    column="check_content"    />
     </resultMap>
 
     <sql id="selectCheckRecordVo">
-        select id, user_id, record_time from check_record
+        select id, user_id, record_time, check_place, record_id, check_content from check_record
     </sql>
 
     <select id="selectCheckRecordList" parameterType="CheckRecord" resultMap="CheckRecordResult">
         <include refid="selectCheckRecordVo"/>
-        <where>  
+        <where>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="recordTime != null "> and record_time = #{recordTime}</if>
+            <if test="checkPlace != null  and checkPlace != ''"> and check_place = #{checkPlace}</if>
+            <if test="recordId != null  and recordId != ''"> and record_id = #{recordId}</if>
+            <if test="checkContent != null  and checkContent != ''"> and check_content = #{checkContent}</if>
         </where>
     </select>
-    
+
     <select id="selectCheckRecordById" parameterType="Long" resultMap="CheckRecordResult">
         <include refid="selectCheckRecordVo"/>
         where id = #{id}
     </select>
-        
+
     <insert id="insertCheckRecord" parameterType="CheckRecord" useGeneratedKeys="true" keyProperty="id">
         insert into check_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
             <if test="recordTime != null">record_time,</if>
-         </trim>
+            <if test="checkPlace != null">check_place,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="checkContent != null">check_content,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
             <if test="recordTime != null">#{recordTime},</if>
-         </trim>
+            <if test="checkPlace != null">#{checkPlace},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="checkContent != null">#{checkContent},</if>
+        </trim>
     </insert>
 
     <update id="updateCheckRecord" parameterType="CheckRecord">
@@ -44,6 +56,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null">user_id = #{userId},</if>
             <if test="recordTime != null">record_time = #{recordTime},</if>
+            <if test="checkPlace != null">check_place = #{checkPlace},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="checkContent != null">check_content = #{checkContent},</if>
         </trim>
         where id = #{id}
     </update>
@@ -53,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteCheckRecordByIds" parameterType="String">
-        delete from check_record where id in 
+        delete from check_record where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

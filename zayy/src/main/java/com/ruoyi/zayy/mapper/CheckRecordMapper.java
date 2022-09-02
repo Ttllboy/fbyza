@@ -2,13 +2,15 @@ package com.ruoyi.zayy.mapper;
 
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckRecord;
+import org.springframework.stereotype.Component;
 
 /**
  * 巡检记录Mapper接口
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
+@Component
 public interface CheckRecordMapper 
 {
     /**

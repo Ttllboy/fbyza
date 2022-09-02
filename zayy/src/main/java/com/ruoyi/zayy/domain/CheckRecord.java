@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 巡检记录对象 check_record
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 public class CheckRecord extends BaseEntity
 {
@@ -28,6 +28,18 @@ public class CheckRecord extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "记录时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date recordTime;
+
+    /** 巡检地点 */
+    @Excel(name = "巡检地点")
+    private String checkPlace;
+
+    /** 巡检记录ID */
+    @Excel(name = "巡检记录ID")
+    private String recordId;
+
+    /** 详情描述 */
+    @Excel(name = "详情描述")
+    private String checkContent;
 
     public void setId(Long id) 
     {
@@ -56,6 +68,33 @@ public class CheckRecord extends BaseEntity
     {
         return recordTime;
     }
+    public void setCheckPlace(String checkPlace) 
+    {
+        this.checkPlace = checkPlace;
+    }
+
+    public String getCheckPlace() 
+    {
+        return checkPlace;
+    }
+    public void setRecordId(String recordId) 
+    {
+        this.recordId = recordId;
+    }
+
+    public String getRecordId() 
+    {
+        return recordId;
+    }
+    public void setCheckContent(String checkContent) 
+    {
+        this.checkContent = checkContent;
+    }
+
+    public String getCheckContent() 
+    {
+        return checkContent;
+    }
 
     @Override
     public String toString() {
@@ -63,6 +102,9 @@ public class CheckRecord extends BaseEntity
             .append("id", getId())
             .append("userId", getUserId())
             .append("recordTime", getRecordTime())
+            .append("checkPlace", getCheckPlace())
+            .append("recordId", getRecordId())
+            .append("checkContent", getCheckContent())
             .toString();
     }
 }

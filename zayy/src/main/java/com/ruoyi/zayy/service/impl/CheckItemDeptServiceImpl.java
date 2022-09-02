@@ -11,7 +11,7 @@ import com.ruoyi.zayy.service.ICheckItemDeptService;
  * 巡检配置Service业务层处理
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 @Service
 public class CheckItemDeptServiceImpl implements ICheckItemDeptService 

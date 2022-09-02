@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CommonMapper">
+
+    <select id="selectCheckItem" parameterType="Long" resultType="java.util.HashMap">
+        select * from check_item
+    </select>
+    <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
+        insert into record_img values (null,#{recordId},#{itemImg})
+    </insert>
+    <insert id="insertRecordItem" parameterType="RecordItem" useGeneratedKeys="true" keyProperty="id">
+        insert into record_item values (null,#{recordId},#{itemId},#{itemIf})
+    </insert>
+
+</mapper>

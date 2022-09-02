@@ -73,7 +73,11 @@
 
     <el-table v-loading="loading" :data="checkItemList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="序号" align="center" prop="id" >
+        <template slot-scope="scope">
+          <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="巡检内容" align="center" prop="itemName" />
       <el-table-column label="是否通用" align="center" prop="tiemCommon">
         <template slot-scope="scope">
@@ -99,7 +103,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

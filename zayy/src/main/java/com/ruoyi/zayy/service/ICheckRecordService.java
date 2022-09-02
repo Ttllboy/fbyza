@@ -7,7 +7,7 @@ import com.ruoyi.zayy.domain.CheckRecord;
  * 巡检记录Service接口
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 public interface ICheckRecordService 
 {

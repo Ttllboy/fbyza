@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 巡检记录Controller
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 @RestController
 @RequestMapping("/zayy/checkRecord")

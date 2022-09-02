@@ -11,7 +11,7 @@ import com.ruoyi.zayy.service.ICheckRecordService;
  * 巡检记录Service业务层处理
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 @Service
 public class CheckRecordServiceImpl implements ICheckRecordService 

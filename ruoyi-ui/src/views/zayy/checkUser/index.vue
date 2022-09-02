@@ -97,7 +97,11 @@
 
     <el-table v-loading="loading" :data="checkUserList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="序号" align="center" prop="id" >
+        <template slot-scope="scope">
+          <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="巡检用户名" align="center" prop="userName" />
       <el-table-column label="巡检用户密码" align="center" prop="userPassword" />
       <el-table-column label="巡检用户角色" align="center" prop="userRole">

@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 巡检配置对象 check_item_dept
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-02
  */
 public class CheckItemDept extends BaseEntity
 {
@@ -20,11 +20,11 @@ public class CheckItemDept extends BaseEntity
 
     /** 科室名称 */
     @Excel(name = "科室名称")
-    private Long deptName;
+    private Long deptId;
 
     /** 巡检内容 */
     @Excel(name = "巡检内容")
-    private Long itemName;
+    private Long itemId;
 
     public void setId(Long id) 
     {
@@ -35,31 +35,31 @@ public class CheckItemDept extends BaseEntity
     {
         return id;
     }
-    public void setDeptName(Long deptName) 
+    public void setDeptId(Long deptId) 
     {
-        this.deptName = deptName;
+        this.deptId = deptId;
     }
 
-    public Long getDeptName() 
+    public Long getDeptId() 
     {
-        return deptName;
+        return deptId;
     }
-    public void setItemName(Long itemName) 
+    public void setItemId(Long itemId) 
     {
-        this.itemName = itemName;
+        this.itemId = itemId;
     }
 
-    public Long getItemName() 
+    public Long getItemId() 
     {
-        return itemName;
+        return itemId;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
-            .append("deptName", getDeptName())
-            .append("itemName", getItemName())
+            .append("deptId", getDeptId())
+            .append("itemId", getItemId())
             .toString();
     }
 }

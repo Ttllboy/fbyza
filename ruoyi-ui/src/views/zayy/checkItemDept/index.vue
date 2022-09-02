@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="科室名称" prop="deptName">
+      <el-form-item label="科室名称" prop="deptId">
         <el-input
-          v-model="queryParams.deptName"
+          v-model="queryParams.deptId"
           placeholder="请输入科室名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="巡检内容" prop="itemName">
+      <el-form-item label="巡检内容" prop="itemId">
         <el-input
-          v-model="queryParams.itemName"
+          v-model="queryParams.itemId"
           placeholder="请输入巡检内容"
           clearable
           @keyup.enter.native="handleQuery"
@@ -72,8 +72,8 @@
     <el-table v-loading="loading" :data="checkItemDeptList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="科室名称" align="center" prop="deptName" />
-      <el-table-column label="巡检内容" align="center" prop="itemName" />
+      <el-table-column label="科室名称" align="center" prop="deptId" />
+      <el-table-column label="巡检内容" align="center" prop="itemId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -105,11 +105,11 @@
     <!-- 添加或修改巡检配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="科室名称" prop="deptName">
-          <el-input v-model="form.deptName" placeholder="请输入科室名称" />
+        <el-form-item label="科室名称" prop="deptId">
+          <el-input v-model="form.deptId" placeholder="请输入科室名称" />
         </el-form-item>
-        <el-form-item label="巡检内容" prop="itemName">
-          <el-input v-model="form.itemName" placeholder="请输入巡检内容" />
+        <el-form-item label="巡检内容" prop="itemId">
+          <el-input v-model="form.itemId" placeholder="请输入巡检内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -149,8 +149,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        deptName: null,
-        itemName: null
+        deptId: null,
+        itemId: null
       },
       // 表单参数
       form: {},
@@ -181,8 +181,8 @@ export default {
     reset() {
       this.form = {
         id: null,
-        deptName: null,
-        itemName: null
+        deptId: null,
+        itemId: null
       };
       this.resetForm("form");
     },

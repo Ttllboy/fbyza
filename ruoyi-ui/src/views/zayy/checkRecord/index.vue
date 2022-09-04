@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="巡检员ID" prop="userId">
+      <el-form-item label="巡检员名字" prop="userId">
         <el-input
           v-model="queryParams.userId"
-          placeholder="请输入巡检员ID"
+          placeholder="请输入巡检员名字"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -88,11 +88,8 @@
     <el-table v-loading="loading" :data="checkRecordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="巡检员ID" align="center" prop="nickName" />
+      <el-table-column label="巡检员名字" align="center" prop="nickName" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
-        </template>
       </el-table-column>
       <el-table-column label="巡检地点" align="center" prop="placeName" />
       <el-table-column label="巡检记录ID" align="center" prop="recordId" />
@@ -135,24 +132,31 @@
     <!-- 添加或修改巡检记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="巡检员ID" prop="userId">
-          <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员ID" />
+        <el-form-item label="巡检员名字" prop="userId">
+          <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员名字" />
         </el-form-item>
         <el-form-item label="记录时间" prop="recordTime">
           <el-date-picker
             :disabled="disabled"
             clearable
             v-model="form.recordTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择记录时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="巡检地点" prop="checkPlace">
-          <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入巡检地点" />
+          <!-- <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入巡检地点" /> -->
+          <el-select v-model="form.checkPlace">
+            <el-option
+            v-for="item in listPlace"
+            :key="item.placeId"
+            :label="item.placeName"
+            :value="item.placeId"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="巡检记录ID" prop="recordId">
-          <el-input :disabled="disabled" v-model="form.recordId" placeholder="请输入巡检记录ID" />
+          <el-input :disabled="disabled || updateDisabled" v-model="form.recordId" placeholder="请输入巡检记录ID" />
         </el-form-item>
         <el-form-item label="详情描述">
           <editor readonly v-model="form.checkContent" :min-height="192"/>
@@ -175,6 +179,8 @@ export default {
   name: "CheckRecord",
   data() {
     return {
+      listPlace: [],
+      updateDisabled: false,
       disabled: false,
       // 遮罩层
       loading: true,
@@ -225,6 +231,7 @@ export default {
         }
         listCheckUser(obj).then(res => {
           listCheckPlace(obj).then(res => {
+            this.listPlace = res.rows;
             res.rows.forEach(item => {
               response.rows.forEach(k => {
                 if(k.checkPlace == item.placeId) {{
@@ -283,6 +290,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.updateDisabled = false
       this.open = true;
       this.title = "添加巡检记录";
     },
@@ -290,6 +298,7 @@ export default {
     handleUpdate(row, type) {
       this.reset();
       this.disabled = type
+      this.updateDisabled = true
       const id = row.id || this.ids
       getCheckRecord(id).then(response => {
         this.form = response.data;

@@ -25,12 +25,19 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="巡检地点" prop="checkPlace">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.checkPlace"
           placeholder="请输入巡检地点"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select clearable v-model="queryParams.checkPlace">
+          <el-option
+          v-for="item in listPlace"
+          :key="item.placeId"
+          :label="item.placeName"
+          :value="item.placeId"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="巡检记录ID" prop="recordId">
         <el-input

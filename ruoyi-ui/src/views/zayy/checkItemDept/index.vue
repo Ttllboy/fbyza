@@ -2,20 +2,34 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="科室名称" prop="deptId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.deptId"
           placeholder="请输入科室名称"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.deptId" clearable>
+          <el-option
+          v-for="item in listPlace"
+          :key="item.placeId"
+          :label="item.placeName"
+          :value="item.placeId"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="巡检内容" prop="itemId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.itemId"
           placeholder="请输入巡检内容"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.itemId" clearable>
+          <el-option
+          v-for="item in listItem"
+          :key="item.id"
+          :label="item.itemName"
+          :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -106,10 +120,24 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="科室名称" prop="deptId">
-          <el-input v-model="form.deptId" placeholder="请输入科室名称" />
+          <!-- <el-input v-model="form.deptId" placeholder="请输入科室名称" /> -->
+          <el-select v-model="form.deptId" clearable>
+            <el-option
+            v-for="item in listPlace"
+            :key="item.placeId"
+            :label="item.placeName"
+            :value="item.placeId"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="巡检内容" prop="itemId">
-          <el-input v-model="form.itemId" placeholder="请输入巡检内容" />
+          <!-- <el-input v-model="form.itemId" placeholder="请输入巡检内容" /> -->
+          <el-select v-model="form.itemId" clearable>
+            <el-option
+            v-for="item in listItem"
+            :key="item.id"
+            :label="item.itemName"
+            :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -124,11 +152,14 @@
 import { listCheckItemDept, getCheckItemDept, delCheckItemDept, addCheckItemDept, updateCheckItemDept } from "@/api/zayy/checkItemDept";
 import { listFbyDept } from "@/api/zayy/fbyDept";
 import { listCheckItem } from "@/api/zayy/checkItem";
+import { listCheckPlace } from "@/api/zayy/checkPlace";
 
 export default {
   name: "CheckItemDept",
   data() {
     return {
+      listPlace: [],
+      listItem: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -175,6 +206,7 @@ export default {
         }
         listFbyDept(obj).then(res => {
           listCheckItem(obj).then(res => {
+            this.listItem = res.rows
             res.rows.forEach(item => {
               response.rows.forEach(k => {
                 if(k.itemId == item.id) {{
@@ -193,6 +225,9 @@ export default {
               }}
             })
           })
+        });
+        listCheckPlace(obj).then(res => {
+          this.listPlace = res.rows;
         });
       });
     },

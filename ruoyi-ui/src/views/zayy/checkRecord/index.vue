@@ -2,12 +2,19 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="巡检员名字" prop="userId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.userId"
           placeholder="请输入巡检员名字"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.userId" clearable>
+          <el-option
+          v-for="item in listUser"
+          :key="item.id"
+          :label="item.nickName"
+          :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker clearable
@@ -18,12 +25,19 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="巡检地点" prop="checkPlace">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.checkPlace"
           placeholder="请输入巡检地点"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select clearable v-model="queryParams.checkPlace">
+          <el-option
+          v-for="item in listPlace"
+          :key="item.placeId"
+          :label="item.placeName"
+          :value="item.placeId"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="巡检记录ID" prop="recordId">
         <el-input
@@ -133,7 +147,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="巡检员名字" prop="userId">
-          <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员名字" />
+          <!-- <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员名字" /> -->
+          <el-select :disabled="disabled" v-model="form.userId" clearable>
+            <el-option
+            v-for="item in listUser"
+            :key="item.id"
+            :label="item.nickName"
+            :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="记录时间" prop="recordTime">
           <el-date-picker
@@ -147,7 +168,7 @@
         </el-form-item>
         <el-form-item label="巡检地点" prop="checkPlace">
           <!-- <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入巡检地点" /> -->
-          <el-select v-model="form.checkPlace">
+          <el-select :disabled="disabled" v-model="form.checkPlace">
             <el-option
             v-for="item in listPlace"
             :key="item.placeId"
@@ -179,6 +200,7 @@ export default {
   name: "CheckRecord",
   data() {
     return {
+      listUser: [],
       listPlace: [],
       updateDisabled: false,
       disabled: false,
@@ -230,6 +252,7 @@ export default {
           pageSize: 100
         }
         listCheckUser(obj).then(res => {
+          this.listUser = res.rows
           listCheckPlace(obj).then(res => {
             this.listPlace = res.rows;
             res.rows.forEach(item => {

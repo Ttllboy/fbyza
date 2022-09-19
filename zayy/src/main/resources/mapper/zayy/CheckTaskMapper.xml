@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckTaskMapper">
+    
+    <resultMap type="CheckTask" id="CheckTaskResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="releaseTime"    column="release_time"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="finishTime"    column="finish_time"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="isNot"    column="is_not"    />
+    </resultMap>
+
+    <sql id="selectCheckTaskVo">
+        select id, task_id, user_id, release_time, deadline, finish_time, dept_id, is_not from check_task
+    </sql>
+
+    <select id="selectCheckTaskList" parameterType="CheckTask" resultMap="CheckTaskResult">
+        <include refid="selectCheckTaskVo"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="releaseTime != null "> and release_time = #{releaseTime}</if>
+            <if test="deadline != null "> and deadline = #{deadline}</if>
+            <if test="finishTime != null "> and finish_time = #{finishTime}</if>
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+            <if test="isNot != null "> and is_not = #{isNot}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckTaskById" parameterType="Long" resultMap="CheckTaskResult">
+        <include refid="selectCheckTaskVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckTask" parameterType="CheckTask" useGeneratedKeys="true" keyProperty="id">
+        insert into check_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="releaseTime != null">release_time,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="finishTime != null">finish_time,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="isNot != null">is_not,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="releaseTime != null">#{releaseTime},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="finishTime != null">#{finishTime},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="isNot != null">#{isNot},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckTask" parameterType="CheckTask">
+        update check_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="releaseTime != null">release_time = #{releaseTime},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="isNot != null">is_not = #{isNot},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckTaskById" parameterType="Long">
+        delete from check_task where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckTaskByIds" parameterType="String">
+        delete from check_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

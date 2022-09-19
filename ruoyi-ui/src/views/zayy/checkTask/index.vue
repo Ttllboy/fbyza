@@ -1,14 +1,46 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="科室名称" prop="deptName">
+<!--      <el-form-item label="任务ID" prop="taskId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.taskId"-->
+<!--          placeholder="请输入任务ID"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="用户ID" prop="userId">
         <el-input
-          v-model="queryParams.deptName"
-          placeholder="请输入科室名称"
+          v-model="queryParams.userId"
+          placeholder="请输入用户ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="发布时间" prop="releaseTime">
+        <el-date-picker clearable
+          v-model="queryParams.releaseTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择发布时间">
+        </el-date-picker>
+      </el-form-item>
+<!--      <el-form-item label="截止时间" prop="deadline">-->
+<!--        <el-date-picker clearable-->
+<!--          v-model="queryParams.deadline"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="请选择截止时间">-->
+<!--        </el-date-picker>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="完成时间" prop="finishTime">-->
+<!--        <el-date-picker clearable-->
+<!--          v-model="queryParams.finishTime"-->
+<!--          type="date"-->
+<!--          value-format="yyyy-MM-dd"-->
+<!--          placeholder="请选择完成时间">-->
+<!--        </el-date-picker>-->
+<!--      </el-form-item>-->
       <el-form-item label="科室地点ID" prop="deptId">
         <el-input
           v-model="queryParams.deptId"
@@ -17,18 +49,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="经度" prop="longitude">
+      <el-form-item label="完成情况0未完成1完成" prop="isNot">
         <el-input
-          v-model="queryParams.longitude"
-          placeholder="请输入经度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="纬度" prop="latitude">
-        <el-input
-          v-model="queryParams.latitude"
-          placeholder="请输入纬度"
+          v-model="queryParams.isNot"
+          placeholder="请输入完成情况0未完成1完成"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -47,7 +71,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['zayy:fbyDept:add']"
+          v-hasPermi="['zayy:checkTask:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -58,7 +82,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['zayy:fbyDept:edit']"
+          v-hasPermi="['zayy:checkTask:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -69,7 +93,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['zayy:fbyDept:remove']"
+          v-hasPermi="['zayy:checkTask:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -79,24 +103,38 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['zayy:fbyDept:export']"
+          v-hasPermi="['zayy:checkTask:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="fbyDeptList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="checkTaskList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="序号" align="center" prop="id" >
         <template slot-scope="scope">
           <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="科室名称" align="center" prop="deptName" />
+      <el-table-column label="任务ID" align="center" prop="taskId" />
+      <el-table-column label="用户ID" align="center" prop="userId" />
+      <el-table-column label="发布时间" align="center" prop="releaseTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.releaseTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="截止时间" align="center" prop="deadline" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.deadline, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="完成时间" align="center" prop="finishTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.finishTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="科室地点ID" align="center" prop="deptId" />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="巡检地点二维码" align="center" prop="deptImg" />
+      <el-table-column label="完成情况0未完成1完成" align="center" prop="isNot" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -104,14 +142,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['zayy:fbyDept:edit']"
+            v-hasPermi="['zayy:checkTask:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['zayy:fbyDept:remove']"
+            v-hasPermi="['zayy:checkTask:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -125,23 +163,44 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改科室列表对话框 -->
+    <!-- 添加或修改巡检任务对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="科室名称" prop="deptName">
-          <el-input v-model="form.deptName" placeholder="请输入科室名称" />
+        <el-form-item label="任务ID" prop="taskId">
+          <el-input v-model="form.taskId" placeholder="请输入任务ID" />
+        </el-form-item>
+        <el-form-item label="用户ID" prop="userId">
+          <el-input v-model="form.userId" placeholder="请输入用户ID" />
+        </el-form-item>
+        <el-form-item label="发布时间" prop="releaseTime">
+          <el-date-picker clearable
+            v-model="form.releaseTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择发布时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="截止时间" prop="deadline">
+          <el-date-picker clearable
+            v-model="form.deadline"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择截止时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="完成时间" prop="finishTime">
+          <el-date-picker clearable
+            v-model="form.finishTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择完成时间">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="科室地点ID" prop="deptId">
           <el-input v-model="form.deptId" placeholder="请输入科室地点ID" />
         </el-form-item>
-        <el-form-item label="经度" prop="longitude">
-          <el-input v-model="form.longitude" placeholder="请输入经度" />
-        </el-form-item>
-        <el-form-item label="纬度" prop="latitude">
-          <el-input v-model="form.latitude" placeholder="请输入纬度" />
-        </el-form-item>
-        <el-form-item label="巡检地点二维码" prop="deptImg">
-          <el-input v-model="form.deptImg" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="完成情况0未完成1完成" prop="isNot">
+          <el-input v-model="form.isNot" placeholder="请输入完成情况0未完成1完成" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -153,10 +212,10 @@
 </template>
 
 <script>
-import { listFbyDept, getFbyDept, delFbyDept, addFbyDept, updateFbyDept } from "@/api/zayy/fbyDept";
+import { listCheckTask, getCheckTask, delCheckTask, addCheckTask, updateCheckTask } from "@/api/zayy/checkTask";
 
 export default {
-  name: "FbyDept",
+  name: "CheckTask",
   data() {
     return {
       // 遮罩层
@@ -171,8 +230,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 科室列表表格数据
-      fbyDeptList: [],
+      // 巡检任务表格数据
+      checkTaskList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -181,11 +240,13 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        deptName: null,
+        taskId: null,
+        userId: null,
+        releaseTime: null,
+        deadline: null,
+        finishTime: null,
         deptId: null,
-        longitude: null,
-        latitude: null,
-        deptImg: null
+        isNot: null
       },
       // 表单参数
       form: {},
@@ -198,11 +259,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询科室列表列表 */
+    /** 查询巡检任务列表 */
     getList() {
       this.loading = true;
-      listFbyDept(this.queryParams).then(response => {
-        this.fbyDeptList = response.rows;
+      listCheckTask(this.queryParams).then(response => {
+        this.checkTaskList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -216,11 +277,13 @@ export default {
     reset() {
       this.form = {
         id: null,
-        deptName: null,
+        taskId: null,
+        userId: null,
+        releaseTime: null,
+        deadline: null,
+        finishTime: null,
         deptId: null,
-        longitude: null,
-        latitude: null,
-        deptImg: null
+        isNot: null
       };
       this.resetForm("form");
     },
@@ -244,16 +307,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加科室列表";
+      this.title = "添加巡检任务";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getFbyDept(id).then(response => {
+      getCheckTask(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改科室列表";
+        this.title = "修改巡检任务";
       });
     },
     /** 提交按钮 */
@@ -261,13 +324,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateFbyDept(this.form).then(response => {
+            updateCheckTask(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addFbyDept(this.form).then(response => {
+            addCheckTask(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -279,8 +342,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除科室列表编号为"' + ids + '"的数据项？').then(function() {
-        return delFbyDept(ids);
+      this.$modal.confirm('是否确认删除巡检任务编号为"' + ids + '"的数据项？').then(function() {
+        return delCheckTask(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -288,9 +351,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('zayy/fbyDept/export', {
+      this.download('zayy/checkTask/export', {
         ...this.queryParams
-      }, `fbyDept_${new Date().getTime()}.xlsx`)
+      }, `checkTask_${new Date().getTime()}.xlsx`)
     }
   }
 };

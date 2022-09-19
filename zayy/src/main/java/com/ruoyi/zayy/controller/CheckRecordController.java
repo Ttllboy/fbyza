@@ -1,6 +1,7 @@
 package com.ruoyi.zayy.controller;
 
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,8 @@ public class CheckRecordController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody CheckRecord checkRecord)
     {
+        String recordId = String.valueOf(UUID.randomUUID());
+        checkRecord.setRecordId(recordId);
         return toAjax(checkRecordService.insertCheckRecord(checkRecord));
     }
 

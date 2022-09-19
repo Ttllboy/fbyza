@@ -7,16 +7,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="FbyDept" id="FbyDeptResult">
         <result property="id"    column="id"    />
         <result property="deptName"    column="dept_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="deptImg"    column="dept_img"    />
     </resultMap>
 
     <sql id="selectFbyDeptVo">
-        select id, dept_name from fby_dept
+        select id, dept_name, dept_id, longitude, latitude, dept_img from fby_dept
     </sql>
 
     <select id="selectFbyDeptList" parameterType="FbyDept" resultMap="FbyDeptResult">
         <include refid="selectFbyDeptVo"/>
         <where>  
             <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+            <if test="longitude != null  and longitude != ''"> and longitude = #{longitude}</if>
+            <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
+            <if test="deptImg != null  and deptImg != ''"> and dept_img = #{deptImg}</if>
         </where>
     </select>
     
@@ -29,9 +37,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into fby_dept
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="deptName != null">dept_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="deptImg != null">dept_img,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deptName != null">#{deptName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="deptImg != null">#{deptImg},</if>
          </trim>
     </insert>
 
@@ -39,6 +55,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update fby_dept
         <trim prefix="SET" suffixOverrides=",">
             <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="deptImg != null">dept_img = #{deptImg},</if>
         </trim>
         where id = #{id}
     </update>

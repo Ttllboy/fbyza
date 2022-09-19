@@ -7,7 +7,7 @@ import com.ruoyi.zayy.domain.FbyDept;
  * 科室列表Service接口
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-19
  */
 public interface IFbyDeptService 
 {

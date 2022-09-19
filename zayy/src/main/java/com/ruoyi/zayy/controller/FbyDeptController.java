@@ -25,7 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 科室列表Controller
  * 
  * @author ruoyi
- * @date 2022-09-01
+ * @date 2022-09-19
  */
 @RestController
 @RequestMapping("/zayy/fbyDept")

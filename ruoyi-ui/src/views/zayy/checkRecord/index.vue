@@ -109,7 +109,11 @@
 
     <el-table v-loading="loading" :data="checkRecordList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="序号" align="center" prop="id" >
+        <template slot-scope="scope">
+          <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="巡检员名字" align="center" prop="nickName" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
       </el-table-column>
@@ -146,7 +150,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"

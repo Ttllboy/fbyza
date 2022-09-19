@@ -40,8 +40,26 @@ public class CheckRecord extends BaseEntity
     /** 详情描述 */
     @Excel(name = "详情描述")
     private String checkContent;
+    private Date startDate;
+    private Date endDate;
 
-    public void setId(Long id) 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

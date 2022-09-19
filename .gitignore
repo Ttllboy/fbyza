@@ -1,6 +1,10 @@
 ######################################################################
 # Build Tools
 
+*.jpg
+*.jpeg
+*.png
+
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar

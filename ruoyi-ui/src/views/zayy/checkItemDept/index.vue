@@ -12,7 +12,7 @@
           <el-option
           v-for="item in listPlace"
           :key="item.id"
-          :label="item.deptName"
+          :label="item.placeName"
           :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -125,7 +125,7 @@
             <el-option
             v-for="item in listPlace"
             :key="item.id"
-            :label="item.deptName"
+            :label="item.placeName"
             :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -204,7 +204,7 @@ export default {
           pageNum: 1,
           pageSize: 1000
         }
-        listFbyDept(obj).then(res => {
+        listCheckPlace(obj).then(res => {
           this.listPlace = res.rows;
           listCheckItem(obj).then(res => {
             this.listItem = res.rows
@@ -222,7 +222,7 @@ export default {
           res.rows.forEach(item => {
             response.rows.forEach(k => {
               if(k.deptId == item.id) {{
-                k.deptName = item.deptName
+                k.deptName = item.placeName
               }}
             })
           })

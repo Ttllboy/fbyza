@@ -39,6 +39,28 @@ public class RuoYiConfig
     //网页地址
     private static String webUrl;
 
+    //logo地址
+    private static String logoUrl;
+
+    //服务器图片地址
+    private static String apiImgUrl;
+
+    public static String getApiImgUrl() {
+        return apiImgUrl;
+    }
+
+    public void setApiImgUrl(String apiImgUrl) {
+        RuoYiConfig.apiImgUrl = apiImgUrl;
+    }
+
+    public static String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        RuoYiConfig.logoUrl = logoUrl;
+    }
+
     public static String getWebUrl() {
         return webUrl;
     }

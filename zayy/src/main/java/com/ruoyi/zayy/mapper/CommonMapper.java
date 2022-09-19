@@ -13,6 +13,8 @@ import java.util.List;
 public interface CommonMapper {
 
     public List<HashMap> selectCheckItem(@Param("userId") Long userId);
+    public List<HashMap> selectRecordItems(@Param("recordId") String recordId);
+    public List<HashMap> selectRecordImgs(@Param("recordId") Long recordId);
     public void insertRecordImg(RecordImg recordImg);
     public void insertRecordItem(RecordItem recordItem);
 }

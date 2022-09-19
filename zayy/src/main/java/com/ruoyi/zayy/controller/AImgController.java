@@ -30,12 +30,13 @@ public class AImgController {
         //获取文件后缀名。也可以在这里添加判断语句，规定特定格式的图片才能上传，否则拒绝保存。
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         //为了避免发生图片替换，这里使用了文件名重新生成
-        fileName = UUID.randomUUID()+suffixName;
+//        fileName = UUID.randomUUID()+suffixName;
+        fileName = UUID.randomUUID()+".png";
         try {
             //将图片保存到文件夹里
-            fileUpload.transferTo(new File(RuoYiConfig.getCheckImg()+fileName));
+            fileUpload.transferTo(new File(RuoYiConfig.getCheckImg()+"/"+fileName));
             JSONObject reJson = new JSONObject();
-            reJson.put("msg",RuoYiConfig.getCheckImg()+fileName);
+            reJson.put("msg",fileName);
             reJson.put("code",200);
             return reJson;
         } catch (Exception e) {

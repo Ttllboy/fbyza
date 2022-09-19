@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.*;
+import com.ruoyi.zayy.util.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.parameters.P;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +33,8 @@ public class ACheckApi {
     CheckItemMapper checkItemMapper;
     @Autowired
     CheckRecordMapper checkRecordMapper;
+    @Autowired
+    CheckPlaceMapper checkPlaceMapper;
 
     //获取当前用户的巡检项
     @PostMapping("/getCheckItem")
@@ -71,7 +75,13 @@ public class ACheckApi {
         //判断是否扫码进入网页
         if(!questJson.containsKey("checkPlace")){
             JSONObject reJson = new JSONObject();
-            reJson.put("code",200);
+            reJson.put("code",500);
+            reJson.put("msg","未检测到巡检地点");
+            return reJson;
+        }
+        if(questJson.getString("checkPlace") == ""){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
             reJson.put("msg","未检测到巡检地点");
             return reJson;
         }
@@ -122,7 +132,59 @@ public class ACheckApi {
         }
     }
 
+    //根据用户ID查询巡检记录
+    @PostMapping("/getCheckRecord")
+    public List<?> getCheckRecord(@RequestBody JSONObject questJson){
+        Long userId = questJson.getLong("userId");
+        CheckRecord record = new CheckRecord();
+        record.setUserId(userId);
+        List<HashMap> list = checkRecordMapper.selectCheckRecordNameList(record);
+        for (int i = 0; i < list.size(); i++) {
+            HashMap map = list.get(i);
+            if(!map.containsKey("place_name")){
+                list.remove(i);
+                i--;
+            }
+        }
+        return list;
+    }
 
+    //根据巡检记录ID查询巡检记录详情
+    @PostMapping("/getRecordDetail")
+    public JSONObject getRecordDetail(@RequestBody JSONObject questJson){
+        String recordId = questJson.getString("recordId");
+        CheckRecord record = new CheckRecord();
+        record.setRecordId(recordId);
+        List<HashMap> recordList = checkRecordMapper.selectCheckRecordByRecordId(record);
+        HashMap map = recordList.get(0);
+        List<HashMap> recordItems = commonMapper.selectRecordItems(recordId);
+        List<HashMap> recordImgs = commonMapper.selectRecordImgs((Long) map.get("id"));
+        for (int i = 0; i < recordImgs.size(); i++) {
+            HashMap map2 = recordImgs.get(i);
+            String placeImg = (String) recordImgs.get(i).get("item_img");
+            map2.put("item_img",RuoYiConfig.getApiImgUrl()+placeImg);
+        }
+        JSONObject reJson = new JSONObject();
+        reJson.put("record",recordList.get(0));
+        reJson.put("items",recordItems);
+        reJson.put("imgs",recordImgs);
 
+        return reJson;
+    }
+
+    //测试插入巡检图片
+    @PostMapping("/testInsert")
+    public void testInsert()throws Exception{
+        CheckPlace checkPlace = new CheckPlace();
+        checkPlace.setPlaceName("五病区");
+        String placeId = String.valueOf(UUID.randomUUID());
+        String url = RuoYiConfig.getWebUrl()+"?placeId="+placeId;
+        String logoPath = RuoYiConfig.getLogoUrl();
+        String destPath = RuoYiConfig.getCheckImg();
+        String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);
+        checkPlace.setPlaceId(placeId);
+        checkPlace.setPlaceImg(fileName);
+        checkPlaceMapper.insertCheckPlace(checkPlace);
+    }
 
 }

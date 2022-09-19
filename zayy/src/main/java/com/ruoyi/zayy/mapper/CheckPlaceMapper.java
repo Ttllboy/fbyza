@@ -2,6 +2,7 @@ package com.ruoyi.zayy.mapper;
 
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckPlace;
+import org.springframework.stereotype.Component;
 
 /**
  * 巡检地点Mapper接口
@@ -9,6 +10,7 @@ import com.ruoyi.zayy.domain.CheckPlace;
  * @author ruoyi
  * @date 2022-09-02
  */
+@Component
 public interface CheckPlaceMapper 
 {
     /**

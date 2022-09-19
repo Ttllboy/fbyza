@@ -7,6 +7,16 @@
     <select id="selectCheckItem" parameterType="Long" resultType="java.util.HashMap">
         select * from check_item
     </select>
+    <select id="selectRecordItems" parameterType="String" resultType="java.util.HashMap">
+        select * from record_item t1
+            left join check_item t2
+            on t1.item_id = t2.id
+        where record_id = #{recordId}
+    </select>
+    <select id="selectRecordImgs" parameterType="Long" resultType="java.util.HashMap">
+        select * from record_img
+        where record_id = #{recordId}
+    </select>
     <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
         insert into record_img values (null,#{recordId},#{itemImg})
     </insert>

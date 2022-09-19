@@ -13,6 +13,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.util.QRCodeUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,9 @@ public class CheckPlaceController extends BaseController
     {
         startPage();
         List<CheckPlace> list = checkPlaceService.selectCheckPlaceList(checkPlace);
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setPlaceImg(RuoYiConfig.getApiImgUrl()+list.get(i).getPlaceImg());
+        }
         return getDataTable(list);
     }
 
@@ -86,23 +90,27 @@ public class CheckPlaceController extends BaseController
     @PreAuthorize("@ss.hasPermi('zayy:checkPlace:add')")
     @Log(title = "巡检地点", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody CheckPlace checkPlace)
+    public AjaxResult add(@RequestBody CheckPlace checkPlace)throws Exception
     {
-        String fileName = UUID.randomUUID()+".png";
         String placeId = String.valueOf(UUID.randomUUID());
-        String url = RuoYiConfig.getWebUrl();
+        String url = RuoYiConfig.getWebUrl()+"?placeId="+placeId;
+        String logoPath = RuoYiConfig.getLogoUrl();
+        String destPath = RuoYiConfig.getCheckImg();
+        String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);
 
-        try {
-            generateQRCodeImage(placeId, 500, 500, RuoYiConfig.getCheckImg()+fileName);
-        } catch (WriterException e) {
-            System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
-        }
+//        try {
+//            generateQRCodeImage(placeId, 500, 500, RuoYiConfig.getCheckImg()+fileName);
+//        } catch (WriterException e) {
+//            System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
+//        } catch (IOException e) {
+//            System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
+//        }
         checkPlace.setPlaceId(placeId);
-        checkPlace.setPlaceImg(RuoYiConfig.getCheckImg()+fileName);
+        checkPlace.setPlaceImg(fileName);
         return toAjax(checkPlaceService.insertCheckPlace(checkPlace));
     }
+
+
 
     private static void generateQRCodeImage(String text, int width, int height, String filePath) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();

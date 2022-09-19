@@ -1,5 +1,6 @@
 package com.ruoyi.zayy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckRecord;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,8 @@ public interface CheckRecordMapper
      * @return 巡检记录集合
      */
     public List<CheckRecord> selectCheckRecordList(CheckRecord checkRecord);
+    public List<HashMap> selectCheckRecordNameList(CheckRecord checkRecord);
+    public List<HashMap> selectCheckRecordByRecordId(CheckRecord checkRecord);
 
     /**
      * 新增巡检记录

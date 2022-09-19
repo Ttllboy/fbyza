@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Random;
+import java.util.UUID;
 
 public class QRCodeUtil {
 
@@ -118,13 +119,14 @@ public class QRCodeUtil {
      *            是否压缩LOGO
      * @throws Exception
      */
-    public static void encode(String content, String imgPath, String destPath,
+    public static String encode(String content, String imgPath, String destPath,
                               boolean needCompress) throws Exception {
         BufferedImage image = QRCodeUtil.createImage(content, imgPath,
                 needCompress);
         mkdirs(destPath);
-        String file = new Random().nextInt(99999999)+".jpg";
+        String file = UUID.randomUUID()+".png";
         ImageIO.write(image, FORMAT_NAME, new File(destPath+"/"+file));
+        return file;
     }
 
     /**

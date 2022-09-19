@@ -11,9 +11,9 @@
         <el-select v-model="queryParams.deptId" clearable>
           <el-option
           v-for="item in listPlace"
-          :key="item.placeId"
-          :label="item.placeName"
-          :value="item.placeId"></el-option>
+          :key="item.id"
+          :label="item.deptName"
+          :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="巡检内容" prop="itemId">
@@ -124,9 +124,9 @@
           <el-select v-model="form.deptId" clearable>
             <el-option
             v-for="item in listPlace"
-            :key="item.placeId"
-            :label="item.placeName"
-            :value="item.placeId"></el-option>
+            :key="item.id"
+            :label="item.deptName"
+            :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="巡检内容" prop="itemId">
@@ -202,9 +202,10 @@ export default {
       listCheckItemDept(this.queryParams).then(response => {
         let obj = {
           pageNum: 1,
-          pageSize: 100
+          pageSize: 1000
         }
         listFbyDept(obj).then(res => {
+          this.listPlace = res.rows;
           listCheckItem(obj).then(res => {
             this.listItem = res.rows
             res.rows.forEach(item => {
@@ -225,9 +226,6 @@ export default {
               }}
             })
           })
-        });
-        listCheckPlace(obj).then(res => {
-          this.listPlace = res.rows;
         });
       });
     },

@@ -36,12 +36,19 @@
         />
       </el-form-item>
       <el-form-item label="巡检用户科室" prop="userDept">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.userDept"
           placeholder="请输入巡检用户科室"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.userDept" clearable>
+          <el-option
+          v-for="item in listPlace"
+          :key="item.id"
+          :label="item.deptName"
+          :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -110,7 +117,7 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检用户名称" align="center" prop="nickName" />
-      <el-table-column label="巡检用户科室" align="center" prop="userDept" />
+      <el-table-column label="巡检用户科室" align="center" prop="deptName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -162,7 +169,14 @@
           <el-input v-model="form.nickName" placeholder="请输入巡检用户名称" />
         </el-form-item>
         <el-form-item label="巡检用户科室" prop="userDept">
-          <el-input v-model="form.userDept" placeholder="请输入巡检用户科室" />
+          <!-- <el-input v-model="form.userDept" placeholder="请输入巡检用户科室" /> -->
+          <el-select v-model="form.userDept" clearable>
+            <el-option
+            v-for="item in listPlace"
+            :key="item.id"
+            :label="item.deptName"
+            :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -175,12 +189,14 @@
 
 <script>
 import { listCheckUser, getCheckUser, delCheckUser, addCheckUser, updateCheckUser } from "@/api/zayy/checkUser";
+import { listFbyDept } from "@/api/zayy/fbyDept";
 
 export default {
   name: "CheckUser",
   dicts: ['check_role'],
   data() {
     return {
+      listPlace: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -224,9 +240,23 @@ export default {
     getList() {
       this.loading = true;
       listCheckUser(this.queryParams).then(response => {
-        this.checkUserList = response.rows;
         this.total = response.total;
-        this.loading = false;
+        let obj = {
+          pageNum: 1,
+          pageSize: 1000
+        }
+        listFbyDept(obj).then(res => {
+          this.loading = false;
+          this.listPlace = res.rows
+          res.rows.forEach(item => {
+            response.rows.forEach(k => {
+              if(k.userDept == item.id) {
+                k.deptName = item.deptName
+              }
+            })
+          })
+          this.checkUserList = response.rows;
+        })
       });
     },
     // 取消按钮

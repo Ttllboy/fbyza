@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="巡检员名字" prop="userId">
         <!-- <el-input
           v-model="queryParams.userId"
@@ -16,9 +16,17 @@
           :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="记录时间" prop="recordTime">
+      <el-form-item label="记录开始时间" prop="startDate">
         <el-date-picker clearable
-          v-model="queryParams.recordTime"
+          v-model="queryParams.startDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择记录时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="记录结束时间" prop="endDate">
+        <el-date-picker clearable
+          v-model="queryParams.endDate"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择记录时间">
@@ -39,14 +47,14 @@
           :value="item.placeId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="巡检记录ID" prop="recordId">
+      <!-- <el-form-item label="巡检记录ID" prop="recordId">
         <el-input
           v-model="queryParams.recordId"
           placeholder="请输入巡检记录ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -107,7 +115,11 @@
       </el-table-column>
       <el-table-column label="巡检地点" align="center" prop="placeName" />
       <el-table-column label="巡检记录ID" align="center" prop="recordId" />
-      <el-table-column label="详情描述" align="center" prop="checkContent" />
+      <el-table-column label="详情描述" align="center" prop="checkContent">
+        <template slot-scope="scope">
+          <div v-html="scope.row.checkContent"></div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -145,7 +157,7 @@
 
     <!-- 添加或修改巡检记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="巡检员名字" prop="userId">
           <!-- <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员名字" /> -->
           <el-select :disabled="disabled" v-model="form.userId" clearable>
@@ -176,8 +188,8 @@
             :value="item.placeId"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="巡检记录ID" prop="recordId">
-          <el-input :disabled="disabled || updateDisabled" v-model="form.recordId" placeholder="请输入巡检记录ID" />
+        <el-form-item label="巡检记录ID" prop="recordId" v-if="disabled || updateDisabled">
+          <el-input :disabled="true" v-model="form.recordId" placeholder="请输入巡检记录ID" />
         </el-form-item>
         <el-form-item label="详情描述">
           <editor readonly v-model="form.checkContent" :min-height="192"/>

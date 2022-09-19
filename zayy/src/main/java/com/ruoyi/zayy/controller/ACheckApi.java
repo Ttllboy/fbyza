@@ -39,13 +39,14 @@ public class ACheckApi {
     //获取当前用户的巡检项
     @PostMapping("/getCheckItem")
     public List<HashMap> getCheckItem(@RequestBody JSONObject questJson){
-        JSONArray reArray = new JSONArray();
-        Long userId = questJson.getLong("userId");
-        CheckUser user = checkUserMapper.selectCheckUserById(userId);
-        int deptId = user.getUserDept();
-        CheckItemDept checkItemDept = new CheckItemDept();
-        checkItemDept.setDeptId((long) deptId);
-        return checkItemDeptMapper.selectCheckItemDeptNameList((long) deptId);
+//        JSONArray reArray = new JSONArray();
+//        Long userId = questJson.getLong("userId");
+//        CheckUser user = checkUserMapper.selectCheckUserById(userId);
+//        String deptId = user.getUserDept();
+//        CheckItemDept checkItemDept = new CheckItemDept();
+//        checkItemDept.setDeptId((long) deptId);
+//        return checkItemDeptMapper.selectCheckItemDeptNameList((long) deptId);
+        return null;
     }
 
     //巡检初始换接口

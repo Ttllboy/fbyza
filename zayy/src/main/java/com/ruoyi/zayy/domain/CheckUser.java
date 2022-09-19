@@ -36,7 +36,7 @@ public class CheckUser extends BaseEntity
 
     /** 巡检用户科室 */
     @Excel(name = "巡检用户科室")
-    private Integer userDept;
+    private String userDept;
 
     public void setId(Long id) 
     {
@@ -83,12 +83,12 @@ public class CheckUser extends BaseEntity
     {
         return nickName;
     }
-    public void setUserDept(Integer userDept) 
+    public void setUserDept(String userDept)
     {
         this.userDept = userDept;
     }
 
-    public Integer getUserDept() 
+    public String getUserDept()
     {
         return userDept;
     }

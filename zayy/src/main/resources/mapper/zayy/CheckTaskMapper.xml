@@ -13,10 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="finishTime"    column="finish_time"    />
         <result property="deptId"    column="dept_id"    />
         <result property="isNot"    column="is_not"    />
+        <result property="taskType"    column="task_type"    />
     </resultMap>
 
     <sql id="selectCheckTaskVo">
-        select id, task_id, user_id, release_time, deadline, finish_time, dept_id, is_not from check_task
+        select id, task_id, user_id, release_time, deadline, finish_time, dept_id, is_not, task_type from check_task
     </sql>
 
     <select id="selectCheckTaskList" parameterType="CheckTask" resultMap="CheckTaskResult">
@@ -29,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="finishTime != null "> and finish_time = #{finishTime}</if>
             <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
             <if test="isNot != null "> and is_not = #{isNot}</if>
+            <if test="taskType != null "> and task_type = #{taskType}</if>
         </where>
     </select>
     
@@ -47,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="finishTime != null">finish_time,</if>
             <if test="deptId != null">dept_id,</if>
             <if test="isNot != null">is_not,</if>
+            <if test="taskType != null">task_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="taskId != null">#{taskId},</if>
@@ -56,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="finishTime != null">#{finishTime},</if>
             <if test="deptId != null">#{deptId},</if>
             <if test="isNot != null">#{isNot},</if>
+            <if test="taskType != null">#{taskType},</if>
          </trim>
     </insert>
 
@@ -69,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="finishTime != null">finish_time = #{finishTime},</if>
             <if test="deptId != null">dept_id = #{deptId},</if>
             <if test="isNot != null">is_not = #{isNot},</if>
+            <if test="taskType != null">task_type = #{taskType},</if>
         </trim>
         where id = #{id}
     </update>

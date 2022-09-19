@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-<!--      <el-form-item label="任务ID" prop="taskId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.taskId"-->
-<!--          placeholder="请输入任务ID"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="任务ID" prop="taskId">
+        <el-input
+          v-model="queryParams.taskId"
+          placeholder="请输入任务ID"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="用户ID" prop="userId">
         <el-input
           v-model="queryParams.userId"
@@ -25,22 +25,22 @@
           placeholder="请选择发布时间">
         </el-date-picker>
       </el-form-item>
-<!--      <el-form-item label="截止时间" prop="deadline">-->
-<!--        <el-date-picker clearable-->
-<!--          v-model="queryParams.deadline"-->
-<!--          type="date"-->
-<!--          value-format="yyyy-MM-dd"-->
-<!--          placeholder="请选择截止时间">-->
-<!--        </el-date-picker>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="完成时间" prop="finishTime">-->
-<!--        <el-date-picker clearable-->
-<!--          v-model="queryParams.finishTime"-->
-<!--          type="date"-->
-<!--          value-format="yyyy-MM-dd"-->
-<!--          placeholder="请选择完成时间">-->
-<!--        </el-date-picker>-->
-<!--      </el-form-item>-->
+      <el-form-item label="截止时间" prop="deadline">
+        <el-date-picker clearable
+          v-model="queryParams.deadline"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择截止时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="完成时间" prop="finishTime">
+        <el-date-picker clearable
+          v-model="queryParams.finishTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择完成时间">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item label="科室地点ID" prop="deptId">
         <el-input
           v-model="queryParams.deptId"
@@ -49,10 +49,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="完成情况0未完成1完成" prop="isNot">
+      <el-form-item label="完成情况0未完成1已完成" prop="isNot">
         <el-input
           v-model="queryParams.isNot"
-          placeholder="请输入完成情况0未完成1完成"
+          placeholder="请输入完成情况0未完成1已完成"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="发布状态0未发布1已发布" prop="taskType">
+        <el-input
+          v-model="queryParams.taskType"
+          placeholder="请输入发布状态0未发布1已发布"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -111,11 +119,7 @@
 
     <el-table v-loading="loading" :data="checkTaskList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" align="center" prop="id" >
-        <template slot-scope="scope">
-          <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="任务ID" align="center" prop="taskId" />
       <el-table-column label="用户ID" align="center" prop="userId" />
       <el-table-column label="发布时间" align="center" prop="releaseTime" width="180">
@@ -134,7 +138,8 @@
         </template>
       </el-table-column>
       <el-table-column label="科室地点ID" align="center" prop="deptId" />
-      <el-table-column label="完成情况0未完成1完成" align="center" prop="isNot" />
+      <el-table-column label="完成情况0未完成1已完成" align="center" prop="isNot" />
+      <el-table-column label="发布状态0未发布1已发布" align="center" prop="taskType" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -154,7 +159,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -199,8 +204,11 @@
         <el-form-item label="科室地点ID" prop="deptId">
           <el-input v-model="form.deptId" placeholder="请输入科室地点ID" />
         </el-form-item>
-        <el-form-item label="完成情况0未完成1完成" prop="isNot">
-          <el-input v-model="form.isNot" placeholder="请输入完成情况0未完成1完成" />
+        <el-form-item label="完成情况0未完成1已完成" prop="isNot">
+          <el-input v-model="form.isNot" placeholder="请输入完成情况0未完成1已完成" />
+        </el-form-item>
+        <el-form-item label="发布状态0未发布1已发布" prop="taskType">
+          <el-input v-model="form.taskType" placeholder="请输入发布状态0未发布1已发布" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -246,7 +254,8 @@ export default {
         deadline: null,
         finishTime: null,
         deptId: null,
-        isNot: null
+        isNot: null,
+        taskType: null
       },
       // 表单参数
       form: {},
@@ -283,7 +292,8 @@ export default {
         deadline: null,
         finishTime: null,
         deptId: null,
-        isNot: null
+        isNot: null,
+        taskType: null
       };
       this.resetForm("form");
     },

@@ -47,9 +47,13 @@ public class CheckTask extends BaseEntity
     @Excel(name = "科室地点ID")
     private String deptId;
 
-    /** 完成情况0未完成1完成 */
-    @Excel(name = "完成情况0未完成1完成")
+    /** 完成情况0未完成1已完成 */
+    @Excel(name = "完成情况0未完成1已完成")
     private Integer isNot;
+
+    /** 发布状态0未发布1已发布 */
+    @Excel(name = "发布状态0未发布1已发布")
+    private Integer taskType;
 
     public void setId(Long id) 
     {
@@ -123,6 +127,15 @@ public class CheckTask extends BaseEntity
     {
         return isNot;
     }
+    public void setTaskType(Integer taskType) 
+    {
+        this.taskType = taskType;
+    }
+
+    public Integer getTaskType() 
+    {
+        return taskType;
+    }
 
     @Override
     public String toString() {
@@ -135,6 +148,7 @@ public class CheckTask extends BaseEntity
             .append("finishTime", getFinishTime())
             .append("deptId", getDeptId())
             .append("isNot", getIsNot())
+            .append("taskType", getTaskType())
             .toString();
     }
 }

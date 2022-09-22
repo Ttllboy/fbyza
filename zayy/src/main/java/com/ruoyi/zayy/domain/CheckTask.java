@@ -29,18 +29,18 @@ public class CheckTask extends BaseEntity
     private Long userId;
 
     /** 发布时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "发布时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date releaseTime;
 
     /** 截止时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "截止时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "截止时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date deadline;
 
     /** 完成时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "完成时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "完成时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date finishTime;
 
     /** 科室地点ID */
@@ -55,7 +55,26 @@ public class CheckTask extends BaseEntity
     @Excel(name = "发布状态0未发布1已发布")
     private Integer taskType;
 
-    public void setId(Long id) 
+    private Date startDate;
+    private Date endDate;
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

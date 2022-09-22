@@ -33,6 +33,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taskType != null "> and task_type = #{taskType}</if>
         </where>
     </select>
+
+    <select id="selectCheckTaskStats" parameterType="CheckTask" resultMap="CheckTaskResult">
+        <include refid="selectCheckTaskVo"/>
+        <where>
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="releaseTime != null "> and release_time = #{releaseTime}</if>
+            <if test="deadline != null "> and deadline = #{deadline}</if>
+            <if test="finishTime != null "> and finish_time = #{finishTime}</if>
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+            <if test="isNot != null "> and is_not = #{isNot}</if>
+            <if test="taskType != null "> and task_type = #{taskType}</if>
+            <if test="startDate != null "> and  release_time &gt;= #{startDate}</if>
+            <if test="endDate != null" >and  release_time &lt;= #{endDate}</if>
+        </where>
+    </select>
+
+    <select id="selectTaskListPage" parameterType="CheckTask" resultType="java.util.HashMap">
+        select * from check_task t1
+        left join check_place t2
+        on t1.dept_id = t2.id
+        <where>
+            <if test="taskId != null  and taskId != ''"> and t1.task_id = #{taskId}</if>
+            <if test="userId != null "> and  t1.user_id = #{userId}</if>
+            <if test="releaseTime != null "> and  t1.release_time = #{releaseTime}</if>
+            <if test="deadline != null "> and  t1.deadline = #{deadline}</if>
+            <if test="finishTime != null "> and  t1.finish_time = #{finishTime}</if>
+            <if test="deptId != null  and deptId != ''"> and  t1.dept_id = #{deptId}</if>
+            <if test="isNot != null "> and  t1.is_not = #{isNot}</if>
+            <if test="taskType != null "> and  t1.task_type = #{taskType}</if>
+            <if test="startDate != null "> and  t1.release_time &gt;= #{startDate}</if>
+            <if test="endDate != null" >and  t1.release_time &lt;= #{endDate}</if>
+        </where>
+        order by release_time desc
+    </select>
     
     <select id="selectCheckTaskById" parameterType="Long" resultMap="CheckTaskResult">
         <include refid="selectCheckTaskVo"/>

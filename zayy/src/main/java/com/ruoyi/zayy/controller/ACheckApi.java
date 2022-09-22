@@ -2,22 +2,20 @@ package com.ruoyi.zayy.controller;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.*;
 import com.ruoyi.zayy.util.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/checkApi")
@@ -37,8 +35,8 @@ public class ACheckApi {
     CheckPlaceMapper checkPlaceMapper;
 
     //获取当前用户的巡检项
-    @PostMapping("/getCheckItem")
-    public List<HashMap> getCheckItem(@RequestBody JSONObject questJson){
+//    @PostMapping("/getCheckItem")
+//    public List<HashMap> getCheckItem(@RequestBody JSONObject questJson){
 //        JSONArray reArray = new JSONArray();
 //        Long userId = questJson.getLong("userId");
 //        CheckUser user = checkUserMapper.selectCheckUserById(userId);
@@ -46,8 +44,24 @@ public class ACheckApi {
 //        CheckItemDept checkItemDept = new CheckItemDept();
 //        checkItemDept.setDeptId((long) deptId);
 //        return checkItemDeptMapper.selectCheckItemDeptNameList((long) deptId);
+//        return null;
+//    }
+
+    ////获取当前巡检地点的巡检项2 9.20
+    @PostMapping("/getCheckItem")
+    public List<HashMap> getCheckItem(@RequestBody JSONObject questJson){
+        JSONArray reArray = new JSONArray();
+        String placeId = questJson.getString("placeId");
+        CheckPlace place = new CheckPlace();
+        place.setPlaceId(placeId);
+        List<CheckPlace> list = checkPlaceMapper.selectCheckPlaceList(place);
+        if(list.size() > 0){
+            Long deptId = list.get(0).getId();
+            return checkItemDeptMapper.selectCheckItemDeptNameList(deptId);
+        }
         return null;
     }
+
 
     //巡检初始换接口
     @PostMapping("/init")
@@ -188,4 +202,51 @@ public class ACheckApi {
         checkPlaceMapper.insertCheckPlace(checkPlace);
     }
 
+    //测试分割数组
+    @PostMapping("/ttest")
+    public int getIntArray(@RequestBody JSONObject jsonObject){
+
+        Date date1 = new Date();
+        Date date2 = jsonObject.getDate("date2");
+        Long s = date2.getTime();
+        Long ss = date1.getTime();
+        if (s > ss){
+            System.out.println(1);
+        }
+        return 1;
+    }
+    @Autowired
+    private CheckTaskMapper checkTaskMapper;
+
+    //查看用户巡检任务
+    @PostMapping("/userTask")
+    public JSONObject userTask(@RequestBody JSONObject questJson){
+        JSONObject reJson = new JSONObject();
+
+        Long userId = questJson.getLong("userId");
+        Integer page = questJson.getInteger("page");
+        Integer pageSize = questJson.getInteger("pageSize");
+        Date startDate = questJson.getDate("startDate");
+        Date endDate = questJson.getDate("endDate");
+        //0未完成1已完成
+        Integer isNot = questJson.getInteger("isNot");
+
+        CheckTask task = new CheckTask();
+        task.setUserId(userId);
+        task.setTaskType(1);
+        if(startDate != null){
+            task.setStartDate(startDate);
+        }
+        if(endDate != null){
+            task.setEndDate(endDate);
+        }
+        task.setIsNot(isNot);
+
+        PageHelper.startPage(page,pageSize);
+        List<HashMap> list = checkTaskMapper.selectTaskListPage(task);
+        PageInfo<HashMap> pageInfo = new PageInfo<>(list);
+        reJson.put("data",pageInfo.getList());
+        reJson.put("total",pageInfo.getTotal());
+        return reJson;
+    }
 }

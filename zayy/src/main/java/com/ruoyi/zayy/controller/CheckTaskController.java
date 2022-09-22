@@ -1,9 +1,16 @@
 package com.ruoyi.zayy.controller;
 
-import java.util.List;
+import java.text.DecimalFormat;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.zayy.domain.CheckUser;
+import com.ruoyi.zayy.mapper.CheckTaskMapper;
+import com.ruoyi.zayy.mapper.CheckUserMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +40,9 @@ public class CheckTaskController extends BaseController
 {
     @Autowired
     private ICheckTaskService checkTaskService;
+
+    @Autowired
+    private CheckUserMapper checkUserMapper;
 
     /**
      * 查询巡检任务列表
@@ -101,4 +111,118 @@ public class CheckTaskController extends BaseController
     {
         return toAjax(checkTaskService.deleteCheckTaskByIds(ids));
     }
+
+
+    //发布任务
+    @PostMapping("/releaseTask")
+    public Integer releaseTask(@RequestBody JSONObject questJson){
+        try{
+            String userId = questJson.getString("userId");
+            Date startDate = questJson.getDate("startDate");
+            Date nowDate = new Date();
+            Long startTime = startDate.getTime();
+            Long nowTime = nowDate.getTime();
+            Integer taskType;
+            if(startTime < nowTime){
+                //1已发布，0未发布
+                taskType = 1;
+            }else {
+                taskType = 0;
+            }
+            Date endDate = questJson.getDate("endDate");
+            if(userId.equals("0")){
+                List<CheckUser> userList = checkUserMapper.selectCheckUserList(new CheckUser());
+                for (int i = 0; i < userList.size(); i++) {
+                    CheckUser user = userList.get(i);
+                    String deptId = user.getUserDept();
+                    if(!deptId.equals("")){
+                        List<String> deptIds = Arrays.asList(deptId.split(","));
+                        for (int j = 0; j < deptIds.size(); j++) {
+                            CheckTask checkTask = new CheckTask();
+                            String taskId = String.valueOf(UUID.randomUUID());
+                            checkTask.setTaskId(taskId);
+                            checkTask.setUserId(user.getId());
+                            checkTask.setReleaseTime(startDate);
+                            checkTask.setDeadline(endDate);
+                            checkTask.setDeptId(deptIds.get(j));
+                            checkTask.setIsNot(0);
+                            checkTask.setTaskType(taskType);
+                            checkTaskService.insertCheckTask(checkTask);
+                        }
+                    }
+                }
+            }else
+            {
+                List<String> userIds = Arrays.asList(userId.split(","));
+                for (int i = 0; i < userIds.size(); i++) {
+                    Long userId2 = Long.valueOf(userIds.get(i));
+                    CheckUser user = checkUserMapper.selectCheckUserById(userId2);
+                    String deptId = user.getUserDept();
+                    if(!deptId.equals("")){
+                        List<String> deptIds = Arrays.asList(deptId.split(","));
+                        for (int j = 0; j < deptIds.size(); j++) {
+                            CheckTask checkTask = new CheckTask();
+                            String taskId = String.valueOf(UUID.randomUUID());
+                            checkTask.setTaskId(taskId);
+                            checkTask.setUserId(user.getId());
+                            checkTask.setReleaseTime(startDate);
+                            checkTask.setDeadline(endDate);
+                            checkTask.setDeptId(deptIds.get(j));
+                            checkTask.setIsNot(0);
+                            checkTask.setTaskType(taskType);
+                            checkTaskService.insertCheckTask(checkTask);
+                        }
+                    }
+                }
+            }
+            return 1;
+        }catch (Exception e){
+            return 0;
+        }
+    }
+
+    @Autowired
+    private CheckTaskMapper checkTaskMapper;
+    //按周期统计
+    @PostMapping("/statsTask")
+    public List<?> statsTask(@RequestBody JSONObject questJson){
+        JSONObject reJson = new JSONObject();
+
+        Date startDate = questJson.getDate("startDate");
+        Date endDate = questJson.getDate("endDate");
+
+        CheckTask task = new CheckTask();
+        if(startDate != null){
+            task.setStartDate(startDate);
+        }
+        if(endDate != null){
+            task.setEndDate(endDate);
+        }
+        List<CheckTask> list = checkTaskMapper.selectCheckTaskStats(task);
+        Integer checkTotal = list.size();
+
+        Integer checkComplete = 0;
+        for (int i = 0; i < list.size(); i++) {
+            CheckTask task2 = list.get(i);
+            Integer isNot = task2.getIsNot();
+            if(isNot == 1){
+                checkComplete++;
+            }
+        }
+        String completePre = getChuFa(checkComplete,checkTotal);
+
+        return null;
+    }
+
+    @PostMapping("/test")
+    public List<String> getIntArray(String deptId){
+        List<String> result = Arrays.asList(deptId.split(","));
+        return result;
+    }
+
+    public String getChuFa(int a,int b){
+        DecimalFormat df=new DecimalFormat("0.00");
+        return df.format((float)a/b);
+    }
+
 }

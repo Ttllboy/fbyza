@@ -1,7 +1,9 @@
 package com.ruoyi.zayy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckTask;
+import jdk.internal.org.objectweb.asm.Handle;
 
 /**
  * 巡检任务Mapper接口
@@ -26,6 +28,8 @@ public interface CheckTaskMapper
      * @return 巡检任务集合
      */
     public List<CheckTask> selectCheckTaskList(CheckTask checkTask);
+    public List<HashMap> selectTaskListPage(CheckTask checkTask);
+    public List<CheckTask> selectCheckTaskStats(CheckTask checkTask);
 
     /**
      * 新增巡检任务

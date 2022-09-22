@@ -35,18 +35,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="巡检用户科室" prop="userDept">
+      <el-form-item label="巡检用户科室" prop="userDeptArr">
         <!-- <el-input
           v-model="queryParams.userDept"
           placeholder="请输入巡检用户科室"
           clearable
           @keyup.enter.native="handleQuery"
         /> -->
-        <el-select v-model="queryParams.userDept" clearable>
+        <el-select v-model="queryParams.userDeptArr" multiple clearable>
           <el-option
           v-for="item in listPlace"
           :key="item.id"
-          :label="item.deptName"
+          :label="item.placeName"
           :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -117,7 +117,7 @@
         </template>
       </el-table-column>
       <el-table-column label="巡检用户名称" align="center" prop="nickName" />
-      <el-table-column label="巡检用户科室" align="center" prop="deptName" />
+      <el-table-column label="巡检用户科室" align="center" prop="placeName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -168,14 +168,14 @@
         <el-form-item label="巡检用户名称" prop="nickName">
           <el-input v-model="form.nickName" placeholder="请输入巡检用户名称" />
         </el-form-item>
-        <el-form-item label="巡检用户科室" prop="userDept">
+        <el-form-item label="巡检用户科室" prop="userDeptArr">
           <!-- <el-input v-model="form.userDept" placeholder="请输入巡检用户科室" /> -->
-          <el-select v-model="form.userDept" clearable>
+          <el-select v-model="form.userDeptArr" multiple clearable @change="changeDeptArr" v-if="deptArr">
             <el-option
             v-for="item in listPlace"
             :key="item.id"
-            :label="item.deptName"
-            :value="item.id"></el-option>
+            :label="item.placeName"
+            :value="item.id + ''"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -190,6 +190,7 @@
 <script>
 import { listCheckUser, getCheckUser, delCheckUser, addCheckUser, updateCheckUser } from "@/api/zayy/checkUser";
 import { listFbyDept } from "@/api/zayy/fbyDept";
+import { listCheckPlace } from "@/api/zayy/checkPlace";
 
 export default {
   name: "CheckUser",
@@ -223,38 +224,52 @@ export default {
         userPassword: null,
         userRole: null,
         nickName: null,
-        userDept: null
+        userDeptArr: []
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      deptArr: true
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    changeDeptArr() {
+      this.deptArr = false;
+      this.deptArr = true;
+    },
     /** 查询人员管理列表 */
     getList() {
       this.loading = true;
+      this.queryParams.userDept = this.queryParams.userDeptArr.join(",")
       listCheckUser(this.queryParams).then(response => {
         this.total = response.total;
         let obj = {
           pageNum: 1,
           pageSize: 1000
         }
-        listFbyDept(obj).then(res => {
+        listCheckPlace(obj).then(res => {
+          response.rows.forEach(item => {
+            item.placeName = []
+          })
           this.loading = false;
           this.listPlace = res.rows
           res.rows.forEach(item => {
             response.rows.forEach(k => {
-              if(k.userDept == item.id) {
-                k.deptName = item.deptName
-              }
+              k.userDept.split(",").forEach(arr => {
+                if(arr == item.id) {
+                  k.placeName.push(item.placeName)
+                }
+              })
             })
           })
+          response.rows.forEach(item => {
+            item.placeName = item.placeName.join(",")
+          })          
           this.checkUserList = response.rows;
         })
       });
@@ -272,6 +287,7 @@ export default {
         userPassword: null,
         userRole: null,
         nickName: null,
+        userDeptArr: [],
         userDept: null
       };
       this.resetForm("form");
@@ -304,6 +320,7 @@ export default {
       const id = row.id || this.ids
       getCheckUser(id).then(response => {
         this.form = response.data;
+        this.form.userDeptArr = this.form.userDept.split(",");
         this.open = true;
         this.title = "修改人员管理";
       });
@@ -312,6 +329,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.userDept = this.form.userDeptArr.join(",");
           if (this.form.id != null) {
             updateCheckUser(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");

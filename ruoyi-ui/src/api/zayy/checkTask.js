@@ -42,3 +42,12 @@ export function delCheckTask(id) {
     method: 'delete'
   })
 }
+
+export function releaseTask(data) {
+  return request({
+    url: '/zayy/checkTask/releaseTask',
+    method: 'post',
+    data: data
+  })
+}
+

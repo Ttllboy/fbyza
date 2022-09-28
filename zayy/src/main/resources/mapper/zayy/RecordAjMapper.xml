@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.RecordAjMapper">
+    
+    <resultMap type="RecordAj" id="RecordAjResult">
+        <result property="id"    column="id"    />
+        <result property="securityIp"    column="security_ip"    />
+        <result property="securityNum"    column="security_num"    />
+        <result property="securityImg"    column="security_img"    />
+        <result property="securityTime"    column="security_time"    />
+    </resultMap>
+
+    <sql id="selectRecordAjVo">
+        select id, security_ip, security_num, security_img, security_time from record_aj
+    </sql>
+
+    <select id="selectRecordAjList" parameterType="RecordAj" resultMap="RecordAjResult">
+        <include refid="selectRecordAjVo"/>
+        <where>  
+            <if test="securityNum != null  and securityNum != ''"> and security_num like concat('%', #{securityNum}, '%')</if>
+            <if test="securityTime != null "> and security_time = #{securityTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectRecordAjById" parameterType="Long" resultMap="RecordAjResult">
+        <include refid="selectRecordAjVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRecordAj" parameterType="RecordAj" useGeneratedKeys="true" keyProperty="id">
+        insert into record_aj
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="securityIp != null">security_ip,</if>
+            <if test="securityNum != null">security_num,</if>
+            <if test="securityImg != null">security_img,</if>
+            <if test="securityTime != null">security_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="securityIp != null">#{securityIp},</if>
+            <if test="securityNum != null">#{securityNum},</if>
+            <if test="securityImg != null">#{securityImg},</if>
+            <if test="securityTime != null">#{securityTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRecordAj" parameterType="RecordAj">
+        update record_aj
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="securityIp != null">security_ip = #{securityIp},</if>
+            <if test="securityNum != null">security_num = #{securityNum},</if>
+            <if test="securityImg != null">security_img = #{securityImg},</if>
+            <if test="securityTime != null">security_time = #{securityTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRecordAjById" parameterType="Long">
+        delete from record_aj where id = #{id}
+    </delete>
+
+    <delete id="deleteRecordAjByIds" parameterType="String">
+        delete from record_aj where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

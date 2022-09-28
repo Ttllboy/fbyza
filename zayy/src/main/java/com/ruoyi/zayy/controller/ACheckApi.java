@@ -249,4 +249,23 @@ public class ACheckApi {
         reJson.put("total",pageInfo.getTotal());
         return reJson;
     }
+
+    @PostMapping("/testaa")
+    public void testaa(){
+        Integer tip = 20;
+        for (Integer i = 0; i < tip; i++) {
+            CheckTask task = new CheckTask();
+            task.setTaskId(String.valueOf(UUID.randomUUID()));
+            task.setUserId(1L);
+            task.setReleaseTime(new Date());
+            Long dateTime = new Date().getTime();
+            dateTime = dateTime + 1000000;
+            task.setDeadline(new Date(dateTime));
+            task.setDeptId("6");
+            task.setIsNot(0);
+            task.setTaskType(1);
+            checkTaskMapper.insertCheckTask(task);
+        }
+
+    }
 }

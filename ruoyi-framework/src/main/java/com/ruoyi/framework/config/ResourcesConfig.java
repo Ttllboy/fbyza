@@ -34,6 +34,7 @@ public class ResourcesConfig implements WebMvcConfigurer
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
         registry.addResourceHandler("/img/**").addResourceLocations("file:" + "/opt/zayy/checkImg/");
+        registry.addResourceHandler("/img2/**").addResourceLocations("file:" + "");
     }
     /**
      * 自定义拦截规则

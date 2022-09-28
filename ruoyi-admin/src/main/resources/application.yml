@@ -22,6 +22,8 @@ ruoyi:
   logoUrl: D:/work/fbyza/assets/logo.png
   # 服务器图片地址
   apiImgUrl: http://101.68.222.195:8184/img/
+  #门禁图片地址
+  apiImgUrl2: http://101.68.222.195:8184/img2/
 
 
 # 开发环境配置

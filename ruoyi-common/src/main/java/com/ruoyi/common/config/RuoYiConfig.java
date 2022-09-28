@@ -44,6 +44,8 @@ public class RuoYiConfig
 
     //服务器图片地址
     private static String apiImgUrl;
+    private static String apiImgUrl2;
+
 
     public static String getApiImgUrl() {
         return apiImgUrl;
@@ -51,6 +53,14 @@ public class RuoYiConfig
 
     public void setApiImgUrl(String apiImgUrl) {
         RuoYiConfig.apiImgUrl = apiImgUrl;
+    }
+
+    public static String getApiImgUrl2() {
+        return apiImgUrl2;
+    }
+
+    public void setApiImgUrl2(String apiImgUrl2) {
+        RuoYiConfig.apiImgUrl2 = apiImgUrl2;
     }
 
     public static String getLogoUrl() {

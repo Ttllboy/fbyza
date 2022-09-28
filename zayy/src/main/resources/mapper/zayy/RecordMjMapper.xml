@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.RecordMjMapper">
+    
+    <resultMap type="RecordMj" id="RecordMjResult">
+        <result property="id"    column="id"    />
+        <result property="deviceNo"    column="device_no"    />
+        <result property="accessType"    column="access_type"    />
+        <result property="userFaceImg"    column="user_face_img"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userIdcard"    column="user_idcard"    />
+        <result property="userTemp"    column="user_temp"    />
+        <result property="userHealthcode"    column="user_healthcode"    />
+        <result property="openType"    column="open_type"    />
+        <result property="openResult"    column="open_result"    />
+        <result property="accessTime"    column="access_time"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectRecordMjVo">
+        select id, device_no, access_type, user_face_img, user_name, user_idcard, user_temp, user_healthcode, open_type, open_result, access_time, create_time from record_mj
+    </sql>
+
+    <select id="selectRecordMjList" parameterType="RecordMj" resultMap="RecordMjResult">
+        <include refid="selectRecordMjVo"/>
+        <where>  
+            <if test="deviceNo != null  and deviceNo != ''"> and device_no like concat('%', #{deviceNo}, '%')</if>
+            <if test="accessType != null "> and access_type = #{accessType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userIdcard != null  and userIdcard != ''"> and user_idcard like concat('%', #{userIdcard}, '%')</if>
+            <if test="userHealthcode != null  and userHealthcode != ''"> and user_healthcode like concat('%', #{userHealthcode}, '%')</if>
+            <if test="openType != null "> and open_type = #{openType}</if>
+            <if test="openResult != null "> and open_result = #{openResult}</if>
+            <if test="accessTime != null "> and access_time = #{accessTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectRecordMjById" parameterType="Long" resultMap="RecordMjResult">
+        <include refid="selectRecordMjVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRecordMj" parameterType="RecordMj" useGeneratedKeys="true" keyProperty="id">
+        insert into record_mj
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceNo != null">device_no,</if>
+            <if test="accessType != null">access_type,</if>
+            <if test="userFaceImg != null">user_face_img,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userIdcard != null">user_idcard,</if>
+            <if test="userTemp != null">user_temp,</if>
+            <if test="userHealthcode != null">user_healthcode,</if>
+            <if test="openType != null">open_type,</if>
+            <if test="openResult != null">open_result,</if>
+            <if test="accessTime != null">access_time,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceNo != null">#{deviceNo},</if>
+            <if test="accessType != null">#{accessType},</if>
+            <if test="userFaceImg != null">#{userFaceImg},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userIdcard != null">#{userIdcard},</if>
+            <if test="userTemp != null">#{userTemp},</if>
+            <if test="userHealthcode != null">#{userHealthcode},</if>
+            <if test="openType != null">#{openType},</if>
+            <if test="openResult != null">#{openResult},</if>
+            <if test="accessTime != null">#{accessTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRecordMj" parameterType="RecordMj">
+        update record_mj
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceNo != null">device_no = #{deviceNo},</if>
+            <if test="accessType != null">access_type = #{accessType},</if>
+            <if test="userFaceImg != null">user_face_img = #{userFaceImg},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userIdcard != null">user_idcard = #{userIdcard},</if>
+            <if test="userTemp != null">user_temp = #{userTemp},</if>
+            <if test="userHealthcode != null">user_healthcode = #{userHealthcode},</if>
+            <if test="openType != null">open_type = #{openType},</if>
+            <if test="openResult != null">open_result = #{openResult},</if>
+            <if test="accessTime != null">access_time = #{accessTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRecordMjById" parameterType="Long">
+        delete from record_mj where id = #{id}
+    </delete>
+
+    <delete id="deleteRecordMjByIds" parameterType="String">
+        delete from record_mj where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

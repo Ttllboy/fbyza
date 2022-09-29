@@ -34,12 +34,22 @@
         />
       </el-form-item>
       <el-form-item label="开门结果" prop="openResult">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.openResult"
           placeholder="请输入开门结果"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select
+        v-model="queryParams.openResult"
+        clearable
+        placeholder="请选择开门结果">
+          <el-option
+          v-for="item in openResultList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="通过时间" prop="accessTime">
         <el-date-picker clearable
@@ -112,7 +122,16 @@
       <el-table-column label="体温" align="center" prop="userTemp" />
       <el-table-column label="健康码" align="center" prop="userHealthcode" />
       <el-table-column label="开门方式" align="center" prop="openType" />
-      <el-table-column label="开门结果" align="center" prop="openResult" />
+      <el-table-column label="开门结果" align="center" prop="openResult">
+        <template slot-scope="scope">
+          <span v-if="scope.row.openResult == 1">开门成功</span>
+          <span v-if="scope.row.openResult == 2">人证核验失败</span>
+          <span v-if="scope.row.openResult == 3">温度异常</span>
+          <span v-if="scope.row.openResult == 4">健康码无效</span>
+          <span v-if="scope.row.openResult == 5">不在有限期</span>
+          <span v-if="scope.row.openResult == 9">其他失败</span>
+        </template>
+      </el-table-column>
       <el-table-column label="通过时间" align="center" prop="accessTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.accessTime, '{y}-{m}-{d}') }}</span>
@@ -168,7 +187,17 @@
           <el-input v-model="form.userHealthcode" placeholder="请输入健康码" />
         </el-form-item>
         <el-form-item label="开门结果" prop="openResult">
-          <el-input v-model="form.openResult" placeholder="请输入开门结果" />
+          <!-- <el-input v-model="form.openResult" placeholder="请输入开门结果" /> -->
+          <el-select
+          v-model="form.openResult"
+          clearable
+          placeholder="请选择开门结果">
+            <el-option
+            v-for="item in openResultList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="通过时间" prop="accessTime">
           <el-date-picker clearable
@@ -229,7 +258,15 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      openResultList: [
+        { value: 1, label: "开门成功" },
+        { value: 2, label: "人证核验失败" },
+        { value: 3, label: "温度异常" },
+        { value: 4, label: "健康码无效" },
+        { value: 5, label: "不在有效期" },
+        { value: 9, label: "其他失败" }
+      ]
     };
   },
   created() {

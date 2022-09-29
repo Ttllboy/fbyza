@@ -24,7 +24,12 @@ ruoyi:
   apiImgUrl: http://101.68.222.195:8184/img/
   #门禁图片地址
   apiImgUrl2: http://101.68.222.195:8184/img2/
-
+  #钉钉AgentId
+  agentId: 1918529895
+  #钉钉AppKey
+  appKey: ding7azaat1uqapjxt39
+  #钉钉AppSecret
+  appSecret: GpMah6Yykg5aLycvS_Q5i99MaGsS-BoDAFF_15t652HOMCzNzUyDVJTMVcTqCkNJ
 
 # 开发环境配置
 server:

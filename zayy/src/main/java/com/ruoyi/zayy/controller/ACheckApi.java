@@ -117,6 +117,33 @@ public class ACheckApi {
         checkRecord.setCheckPlace(questJson.getString("checkPlace"));
         checkRecord.setRecordTime(questJson.getDate("recordTime"));
         checkRecord.setCheckContent(questJson.getString("checkContent"));
+        checkRecord.setCheckType(0);
+        insertImg(questJson.getJSONArray("imgArray"),recordId);
+        Integer tip = checkRecordMapper.updateCheckRecord(checkRecord);
+        if(tip == 1){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",200);
+            reJson.put("msg","提交成功");
+            return reJson;
+        }else {
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","提交失败");
+            return reJson;
+        }
+    }
+
+    //巡更提交接口
+    @PostMapping("/submitXgData")
+    public JSONObject submitXgData(@RequestBody JSONObject questJson){
+        String recordId = questJson.getString("recordId");
+        CheckRecord checkRecord = new CheckRecord();
+        checkRecord.setRecordId(recordId);
+        List<CheckRecord> list = checkRecordMapper.selectCheckRecordList(checkRecord);
+        checkRecord = list.get(0);
+        checkRecord.setCheckContent(questJson.getString("checkContent"));
+        checkRecord.setCheckPlace(questJson.getString("checkPlace"));
+        checkRecord.setCheckType(1);
         insertImg(questJson.getJSONArray("imgArray"),recordId);
         Integer tip = checkRecordMapper.updateCheckRecord(checkRecord);
         if(tip == 1){

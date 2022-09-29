@@ -8,69 +8,40 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 巡检记录对象 check_record
+ * 巡更记录对象 check_xg_record
  * 
  * @author ruoyi
- * @date 2022-09-02
+ * @date 2022-09-29
  */
-public class CheckRecord extends BaseEntity
+public class CheckXgRecord extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
     private Long id;
 
-    /** 巡检员ID */
-    @Excel(name = "巡检员ID")
+    /** 巡更员ID */
+    @Excel(name = "巡更员ID")
     private Long userId;
 
-    /** 记录时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "记录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    /** 巡更时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "巡更时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date recordTime;
 
-    /** 巡检地点 */
-    @Excel(name = "巡检地点")
+    /** 巡更地点 */
+    @Excel(name = "巡更地点")
     private String checkPlace;
 
-    /** 巡检记录ID */
-    @Excel(name = "巡检记录ID")
+    /** 巡更记录ID */
+    @Excel(name = "巡更记录ID")
     private String recordId;
 
     /** 详情描述 */
     @Excel(name = "详情描述")
     private String checkContent;
-    //巡检类型
-    private Integer checkType;
 
-    public Integer getCheckType() {
-        return checkType;
-    }
-
-    public void setCheckType(Integer checkType) {
-        this.checkType = checkType;
-    }
-
-    private Date startDate;
-    private Date endDate;
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setId(Long id)
+    public void setId(Long id) 
     {
         this.id = id;
     }

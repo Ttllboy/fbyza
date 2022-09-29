@@ -3,6 +3,8 @@ package com.ruoyi.zayy.controller;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,5 +105,16 @@ public class CheckRecordController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(checkRecordService.deleteCheckRecordByIds(ids));
+    }
+
+    @PostMapping("/getDetail")
+    public JSONObject getDetail(@RequestBody JSONObject questJson){
+        JSONObject reJson = new JSONObject();
+
+
+
+
+
+        return reJson;
     }
 }

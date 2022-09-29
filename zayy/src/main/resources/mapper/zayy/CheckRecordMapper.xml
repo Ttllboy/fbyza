@@ -11,10 +11,11 @@
         <result property="checkPlace"    column="check_place"    />
         <result property="recordId"    column="record_id"    />
         <result property="checkContent"    column="check_content"    />
+        <result property="checkType"    column="check_type"    />
     </resultMap>
 
     <sql id="selectCheckRecordVo">
-        select id, user_id, record_time, check_place, record_id, check_content from check_record
+        select id, user_id, record_time, check_place, record_id, check_content,check_type from check_record
     </sql>
 
     <select id="selectCheckRecordList" parameterType="CheckRecord" resultMap="CheckRecordResult">
@@ -24,6 +25,7 @@
             <if test="recordTime != null "> and record_time = #{recordTime}</if>
             <if test="checkPlace != null  and checkPlace != ''"> and check_place = #{checkPlace}</if>
             <if test="recordId != null  and recordId != ''"> and record_id = #{recordId}</if>
+            <if test="checkType != null  and checkType != ''"> and check_type = #{checkType}</if>
             <if test="checkContent != null  and checkContent != ''"> and check_content = #{checkContent}</if>
             <if test="startDate != null"> and record_time &gt;= #{startDate}</if>
             <if test="endDate != null"> and record_time &lt;= #{endDate}</if>
@@ -57,6 +59,7 @@
             <if test="checkPlace != null">check_place,</if>
             <if test="recordId != null">record_id,</if>
             <if test="checkContent != null">check_content,</if>
+            <if test="checkType != null">check_type,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -64,6 +67,7 @@
             <if test="checkPlace != null">#{checkPlace},</if>
             <if test="recordId != null">#{recordId},</if>
             <if test="checkContent != null">#{checkContent},</if>
+            <if test="checkType != null">#{checkContent},</if>
         </trim>
     </insert>
 
@@ -75,6 +79,7 @@
             <if test="checkPlace != null">check_place = #{checkPlace},</if>
             <if test="recordId != null">record_id = #{recordId},</if>
             <if test="checkContent != null">check_content = #{checkContent},</if>
+            <if test="checkType != null">check_type = #{checkType},</if>
         </trim>
         where id = #{id}
     </update>

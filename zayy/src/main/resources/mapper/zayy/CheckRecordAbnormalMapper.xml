@@ -13,10 +13,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="checkContent"    column="check_content"    />
         <result property="handleMethod"    column="handle_method"    />
         <result property="handleResult"    column="handle_result"    />
+        <result property="abnormalLev"    column="abnormal_lev"    />
+        <result property="eventType"    column="event_type"    />
     </resultMap>
 
     <sql id="selectCheckRecordAbnormalVo">
-        select id, user_id, record_time, check_place, record_id, check_content, handle_method, handle_result from check_record_abnormal
+        select id, user_id, record_time, check_place, record_id, check_content, handle_method, handle_result, abnormal_lev, event_type from check_record_abnormal
     </sql>
 
     <select id="selectCheckRecordAbnormalList" parameterType="CheckRecordAbnormal" resultMap="CheckRecordAbnormalResult">
@@ -29,6 +31,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkContent != null  and checkContent != ''"> and check_content = #{checkContent}</if>
             <if test="handleMethod != null  and handleMethod != ''"> and handle_method = #{handleMethod}</if>
             <if test="handleResult != null  and handleResult != ''"> and handle_result = #{handleResult}</if>
+            <if test="abnormalLev != null "> and abnormal_lev = #{abnormalLev}</if>
+            <if test="eventType != null "> and event_type = #{eventType}</if>
         </where>
     </select>
     
@@ -47,6 +51,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkContent != null">check_content,</if>
             <if test="handleMethod != null">handle_method,</if>
             <if test="handleResult != null">handle_result,</if>
+            <if test="abnormalLev != null">abnormal_lev,</if>
+            <if test="eventType != null">event_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -56,6 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkContent != null">#{checkContent},</if>
             <if test="handleMethod != null">#{handleMethod},</if>
             <if test="handleResult != null">#{handleResult},</if>
+            <if test="abnormalLev != null">#{abnormalLev},</if>
+            <if test="eventType != null">#{eventType},</if>
          </trim>
     </insert>
 
@@ -69,6 +77,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkContent != null">check_content = #{checkContent},</if>
             <if test="handleMethod != null">handle_method = #{handleMethod},</if>
             <if test="handleResult != null">handle_result = #{handleResult},</if>
+            <if test="abnormalLev != null">abnormal_lev = #{abnormalLev},</if>
+            <if test="eventType != null">event_type = #{eventType},</if>
         </trim>
         where id = #{id}
     </update>

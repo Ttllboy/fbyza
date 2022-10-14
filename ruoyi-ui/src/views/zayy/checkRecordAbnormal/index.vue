@@ -33,6 +33,22 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="异常等级" prop="abnormalLev">
+        <el-input
+          v-model="queryParams.abnormalLev"
+          placeholder="请输入异常等级"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="事件状态0处理中1已办结2超时未办" prop="eventType">
+        <el-input
+          v-model="queryParams.eventType"
+          placeholder="请输入事件状态0处理中1已办结2超时未办"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -99,6 +115,8 @@
       <el-table-column label="详情描述" align="center" prop="checkContent" />
       <el-table-column label="处理方法" align="center" prop="handleMethod" />
       <el-table-column label="处理结果" align="center" prop="handleResult" />
+      <el-table-column label="异常等级" align="center" prop="abnormalLev" />
+      <el-table-column label="事件状态0处理中1已办结2超时未办" align="center" prop="eventType" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -156,6 +174,12 @@
         <el-form-item label="处理结果" prop="handleResult">
           <el-input v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
         </el-form-item>
+        <el-form-item label="异常等级" prop="abnormalLev">
+          <el-input v-model="form.abnormalLev" placeholder="请输入异常等级" />
+        </el-form-item>
+        <el-form-item label="事件状态0处理中1已办结2超时未办" prop="eventType">
+          <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -200,7 +224,9 @@ export default {
         recordId: null,
         checkContent: null,
         handleMethod: null,
-        handleResult: null
+        handleResult: null,
+        abnormalLev: null,
+        eventType: null
       },
       // 表单参数
       form: {},
@@ -237,7 +263,9 @@ export default {
         recordId: null,
         checkContent: null,
         handleMethod: null,
-        handleResult: null
+        handleResult: null,
+        abnormalLev: null,
+        eventType: null
       };
       this.resetForm("form");
     },

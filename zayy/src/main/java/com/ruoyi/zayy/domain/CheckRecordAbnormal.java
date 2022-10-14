@@ -49,6 +49,14 @@ public class CheckRecordAbnormal extends BaseEntity
     @Excel(name = "处理结果")
     private String handleResult;
 
+    /** 异常等级 */
+    @Excel(name = "异常等级")
+    private Integer abnormalLev;
+
+    /** 事件状态0处理中1已办结2超时未办 */
+    @Excel(name = "事件状态0处理中1已办结2超时未办")
+    private Integer eventType;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -121,6 +129,24 @@ public class CheckRecordAbnormal extends BaseEntity
     {
         return handleResult;
     }
+    public void setAbnormalLev(Integer abnormalLev) 
+    {
+        this.abnormalLev = abnormalLev;
+    }
+
+    public Integer getAbnormalLev() 
+    {
+        return abnormalLev;
+    }
+    public void setEventType(Integer eventType) 
+    {
+        this.eventType = eventType;
+    }
+
+    public Integer getEventType() 
+    {
+        return eventType;
+    }
 
     @Override
     public String toString() {
@@ -133,6 +159,8 @@ public class CheckRecordAbnormal extends BaseEntity
             .append("checkContent", getCheckContent())
             .append("handleMethod", getHandleMethod())
             .append("handleResult", getHandleResult())
+            .append("abnormalLev", getAbnormalLev())
+            .append("eventType", getEventType())
             .toString();
     }
 }

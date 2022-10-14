@@ -15,13 +15,15 @@ ruoyi:
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
   # 巡检图片上传地址
-  checkImg: D:/work/fbyza/assets
+#  checkImg: D:/work/fbyza/assets
+  checkImg: /opt/zayy/checkImg
   # 网页地址
   webUrl: https://www.baidu.com
   # logo地址
   logoUrl: D:/work/fbyza/assets/logo.png
   # 服务器图片地址
-  apiImgUrl: D:/work/fbyza/assets
+#  apiImgUrl: D:/work/fbyza/assets
+  apiImgUrl: http://101.68.222.195:8184/img
   #门禁图片地址
   apiImgUrl2: D:/work/fbyza/assets
   #钉钉AgentId

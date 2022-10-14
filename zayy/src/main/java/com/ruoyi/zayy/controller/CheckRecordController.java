@@ -1,10 +1,14 @@
 package com.ruoyi.zayy.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.mapper.CheckRecordMapper;
+import com.ruoyi.zayy.mapper.CommonMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +40,12 @@ public class CheckRecordController extends BaseController
 {
     @Autowired
     private ICheckRecordService checkRecordService;
+
+    @Autowired
+    CheckRecordMapper checkRecordMapper;
+
+    @Autowired
+    CommonMapper commonMapper;
 
     /**
      * 查询巡检记录列表
@@ -109,11 +119,22 @@ public class CheckRecordController extends BaseController
 
     @PostMapping("/getDetail")
     public JSONObject getDetail(@RequestBody JSONObject questJson){
+        String recordId = questJson.getString("recordId");
+        CheckRecord record = new CheckRecord();
+        record.setRecordId(recordId);
+        List<HashMap> recordList = checkRecordMapper.selectCheckRecordByRecordId(record);
+        HashMap map = recordList.get(0);
+        List<HashMap> recordItems = commonMapper.selectRecordItems(recordId);
+        List<HashMap> recordImgs = commonMapper.selectRecordImgs((Long) map.get("id"));
+        for (int i = 0; i < recordImgs.size(); i++) {
+            HashMap map2 = recordImgs.get(i);
+            String placeImg = (String) recordImgs.get(i).get("item_img");
+            map2.put("item_img", RuoYiConfig.getApiImgUrl()+"/"+placeImg);
+        }
         JSONObject reJson = new JSONObject();
-
-
-
-
+        reJson.put("record",recordList.get(0));
+        reJson.put("items",recordItems);
+        reJson.put("imgs",recordImgs);
 
         return reJson;
     }

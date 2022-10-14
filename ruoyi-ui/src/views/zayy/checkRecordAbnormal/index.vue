@@ -97,6 +97,8 @@
       <el-table-column label="巡检地点" align="center" prop="checkPlace" />
       <el-table-column label="巡检记录ID" align="center" prop="recordId" />
       <el-table-column label="详情描述" align="center" prop="checkContent" />
+      <el-table-column label="处理方法" align="center" prop="handleMethod" />
+      <el-table-column label="处理结果" align="center" prop="handleResult" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -145,8 +147,14 @@
         <el-form-item label="巡检记录ID" prop="recordId">
           <el-input v-model="form.recordId" placeholder="请输入巡检记录ID" />
         </el-form-item>
-        <el-form-item label="详情描述">
-          <editor v-model="form.checkContent" :min-height="192"/>
+        <el-form-item label="详情描述" prop="checkContent">
+          <el-input v-model="form.checkContent" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="处理方法" prop="handleMethod">
+          <el-input v-model="form.handleMethod" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="处理结果" prop="handleResult">
+          <el-input v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -190,7 +198,9 @@ export default {
         recordTime: null,
         checkPlace: null,
         recordId: null,
-        checkContent: null
+        checkContent: null,
+        handleMethod: null,
+        handleResult: null
       },
       // 表单参数
       form: {},
@@ -225,7 +235,9 @@ export default {
         recordTime: null,
         checkPlace: null,
         recordId: null,
-        checkContent: null
+        checkContent: null,
+        handleMethod: null,
+        handleResult: null
       };
       this.resetForm("form");
     },

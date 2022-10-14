@@ -11,10 +11,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="checkPlace"    column="check_place"    />
         <result property="recordId"    column="record_id"    />
         <result property="checkContent"    column="check_content"    />
+        <result property="handleMethod"    column="handle_method"    />
+        <result property="handleResult"    column="handle_result"    />
     </resultMap>
 
     <sql id="selectCheckRecordAbnormalVo">
-        select id, user_id, record_time, check_place, record_id, check_content from check_record_abnormal
+        select id, user_id, record_time, check_place, record_id, check_content, handle_method, handle_result from check_record_abnormal
     </sql>
 
     <select id="selectCheckRecordAbnormalList" parameterType="CheckRecordAbnormal" resultMap="CheckRecordAbnormalResult">
@@ -25,6 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkPlace != null  and checkPlace != ''"> and check_place = #{checkPlace}</if>
             <if test="recordId != null  and recordId != ''"> and record_id = #{recordId}</if>
             <if test="checkContent != null  and checkContent != ''"> and check_content = #{checkContent}</if>
+            <if test="handleMethod != null  and handleMethod != ''"> and handle_method = #{handleMethod}</if>
+            <if test="handleResult != null  and handleResult != ''"> and handle_result = #{handleResult}</if>
         </where>
     </select>
     
@@ -41,6 +45,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkPlace != null">check_place,</if>
             <if test="recordId != null">record_id,</if>
             <if test="checkContent != null">check_content,</if>
+            <if test="handleMethod != null">handle_method,</if>
+            <if test="handleResult != null">handle_result,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -48,6 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkPlace != null">#{checkPlace},</if>
             <if test="recordId != null">#{recordId},</if>
             <if test="checkContent != null">#{checkContent},</if>
+            <if test="handleMethod != null">#{handleMethod},</if>
+            <if test="handleResult != null">#{handleResult},</if>
          </trim>
     </insert>
 
@@ -59,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="checkPlace != null">check_place = #{checkPlace},</if>
             <if test="recordId != null">record_id = #{recordId},</if>
             <if test="checkContent != null">check_content = #{checkContent},</if>
+            <if test="handleMethod != null">handle_method = #{handleMethod},</if>
+            <if test="handleResult != null">handle_result = #{handleResult},</if>
         </trim>
         where id = #{id}
     </update>

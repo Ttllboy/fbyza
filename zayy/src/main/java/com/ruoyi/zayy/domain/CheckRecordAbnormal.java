@@ -41,6 +41,14 @@ public class CheckRecordAbnormal extends BaseEntity
     @Excel(name = "详情描述")
     private String checkContent;
 
+    /** 处理方法 */
+    @Excel(name = "处理方法")
+    private String handleMethod;
+
+    /** 处理结果 */
+    @Excel(name = "处理结果")
+    private String handleResult;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -95,6 +103,24 @@ public class CheckRecordAbnormal extends BaseEntity
     {
         return checkContent;
     }
+    public void setHandleMethod(String handleMethod) 
+    {
+        this.handleMethod = handleMethod;
+    }
+
+    public String getHandleMethod() 
+    {
+        return handleMethod;
+    }
+    public void setHandleResult(String handleResult) 
+    {
+        this.handleResult = handleResult;
+    }
+
+    public String getHandleResult() 
+    {
+        return handleResult;
+    }
 
     @Override
     public String toString() {
@@ -105,6 +131,8 @@ public class CheckRecordAbnormal extends BaseEntity
             .append("checkPlace", getCheckPlace())
             .append("recordId", getRecordId())
             .append("checkContent", getCheckContent())
+            .append("handleMethod", getHandleMethod())
+            .append("handleResult", getHandleResult())
             .toString();
     }
 }

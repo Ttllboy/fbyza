@@ -8,10 +8,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="itemName"    column="item_name"    />
         <result property="tiemCommon"    column="tiem_common"    />
+        <result property="itemAbnormal"    column="item_abnormal"    />
+        <result property="abnormalLev"    column="abnormal_lev"    />
     </resultMap>
 
     <sql id="selectCheckItemVo">
-        select id, item_name, tiem_common from check_item
+        select id, item_name, tiem_common , item_abnormal , abnormal_lev from check_item
     </sql>
 
     <select id="selectCheckItemList" parameterType="CheckItem" resultMap="CheckItemResult">
@@ -19,6 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
             <if test="tiemCommon != null "> and tiem_common = #{tiemCommon}</if>
+            <if test="itemAbnormal != null "> and item_abnormal = #{itemAbnormal}</if>
+            <if test="abnormalLev != null "> and abnormal_lev = #{abnormalLev}</if>
         </where>
     </select>
     
@@ -32,10 +36,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="itemName != null">item_name,</if>
             <if test="tiemCommon != null">tiem_common,</if>
+            <if test="itemAbnormal != null">item_abnormal,</if>
+            <if test="abnormalLev != null">abnormal_lev,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="itemName != null">#{itemName},</if>
             <if test="tiemCommon != null">#{tiemCommon},</if>
+            <if test="itemAbnormal != null">#{itemAbnormal},</if>
+            <if test="abnormalLev != null">#{abnormalLev},</if>
          </trim>
     </insert>
 
@@ -44,6 +52,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="itemName != null">item_name = #{itemName},</if>
             <if test="tiemCommon != null">tiem_common = #{tiemCommon},</if>
+            <if test="itemAbnormal != null">item_abnormal = #{itemAbnormal},</if>
+            <if test="abnormalLev != null">abnormal_lev = #{abnormalLev},</if>
         </trim>
         where id = #{id}
     </update>

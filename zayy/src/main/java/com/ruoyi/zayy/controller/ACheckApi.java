@@ -101,6 +101,27 @@ public class ACheckApi {
             return reJson;
         }
         JSONArray itemArray = questJson.getJSONArray("itemArray");
+
+        //判断是否有巡检异常
+        JSONArray abnormalArray = new JSONArray();
+        List<CheckItem> checkItemList = new ArrayList<>();
+        JSONObject abnormalJson = new JSONObject();
+        for (int i = 0; i < itemArray.size(); i++) {
+            JSONObject item = itemArray.getJSONObject(i);
+            Long itemId = item.getLong("itemId");
+            Integer itemIf = item.getInteger("itemIf");
+            CheckItem checkItem = checkItemMapper.selectCheckItemById(itemId);
+            Integer itemAbnormal = checkItem.getItemAbnormal();
+            if(itemIf == itemAbnormal){
+                checkItemList.add(checkItem);
+            }
+        }
+        if(checkItemList.size() > 0){
+            abnormalJson.put("code",300);
+            abnormalJson.put("msg",checkItemList);
+            return abnormalJson;
+        }
+
         String recordId = String.valueOf(UUID.randomUUID());
         for (int i = 0; i < itemArray.size(); i++) {
             JSONObject item = itemArray.getJSONObject(i);
@@ -321,6 +342,17 @@ public class ACheckApi {
             task.setTaskType(1);
             checkTaskMapper.insertCheckTask(task);
         }
+    }
 
+    //测试把巡检项的等级和异常都插上
+    @PostMapping("/insertItem")
+    public void insertItem(){
+        List<CheckItem> list = checkItemMapper.selectCheckItemList(new CheckItem());
+        for (int i = 0; i < list.size(); i++) {
+            CheckItem item  =list.get(i);
+            item.setItemAbnormal(0);
+            item.setAbnormalLev(0);
+            checkItemMapper.updateCheckItem(item);
+        }
     }
 }

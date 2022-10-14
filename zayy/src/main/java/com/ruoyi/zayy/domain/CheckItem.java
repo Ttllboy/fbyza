@@ -26,8 +26,28 @@ public class CheckItem extends BaseEntity
     /** 是否通用 */
     @Excel(name = "是否通用")
     private Integer tiemCommon;
+    //巡检项异常
+    private Integer itemAbnormal;
+    //巡检项异常等级
+    private Integer abnormalLev;
 
-    public void setId(Long id) 
+    public Integer getItemAbnormal() {
+        return itemAbnormal;
+    }
+
+    public void setItemAbnormal(Integer itemAbnormal) {
+        this.itemAbnormal = itemAbnormal;
+    }
+
+    public Integer getAbnormalLev() {
+        return abnormalLev;
+    }
+
+    public void setAbnormalLev(Integer abnormalLev) {
+        this.abnormalLev = abnormalLev;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

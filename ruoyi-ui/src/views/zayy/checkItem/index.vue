@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="82px">
       <el-form-item label="巡检内容" prop="itemName">
         <el-input
           v-model="queryParams.itemName"
@@ -17,6 +17,19 @@
             :label="dict.label"
             :value="dict.value"
           />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="巡检项异常" prop="itemAbnormal">
+        <el-select v-model="queryParams.itemAbnormal" placeholder="请选择" clearable>
+          <el-option label="是" value="0"></el-option>
+          <el-option label="否" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="异常等级" prop="abnormalLev">
+        <el-select v-model="queryParams.abnormalLev" placeholder="请选择" clearable>
+          <el-option label="黄色" value="0"></el-option>
+          <el-option label="橙色" value="1"></el-option>
+          <el-option label="红色" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -84,6 +97,18 @@
           <dict-tag :options="dict.type.is_not" :value="scope.row.tiemCommon"/>
         </template>
       </el-table-column>
+      <el-table-column label="巡检项异常" align="center">
+        <template slot-scope="scope">
+          <span>{{ !scope.row.itemAbnormal ? '是' : '否' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="异常等级" align="center">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.abnormalLev == 0" size="mini" type="warning" plain>黄色</el-button>
+          <el-button v-if="scope.row.abnormalLev == 1" size="mini" type="warning">橙色</el-button>
+          <el-button v-if="scope.row.abnormalLev == 2" size="mini" type="danger">红色</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -114,7 +139,7 @@
 
     <!-- 添加或修改巡检项对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="95px">
         <el-form-item label="巡检内容" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入巡检内容" />
         </el-form-item>
@@ -124,8 +149,21 @@
               v-for="dict in dict.type.is_not"
               :key="dict.value"
               :label="dict.label"
-:value="parseInt(dict.value)"
+              :value="parseInt(dict.value)"
             ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="巡检项异常" prop="itemAbnormal">
+          <el-select v-model="form.itemAbnormal" placeholder="请选择" clearable>
+            <el-option label="是" value="0"></el-option>
+            <el-option label="否" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="异常等级" prop="abnormalLev">
+          <el-select v-model="form.abnormalLev" placeholder="请选择" clearable>
+            <el-option label="黄色" value="0"></el-option>
+            <el-option label="橙色" value="1"></el-option>
+            <el-option label="红色" value="2"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -231,6 +269,8 @@ export default {
       this.reset();
       const id = row.id || this.ids
       getCheckItem(id).then(response => {
+        response.data.itemAbnormal += ''
+        response.data.abnormalLev += ''
         this.form = response.data;
         this.open = true;
         this.title = "修改巡检项";

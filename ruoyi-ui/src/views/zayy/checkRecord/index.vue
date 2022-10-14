@@ -195,6 +195,18 @@
         <el-form-item label="巡检记录ID" prop="recordId" v-if="disabled || updateDisabled">
           <el-input :disabled="true" v-model="form.recordId" placeholder="请输入巡检记录ID" />
         </el-form-item>
+        <el-form-item label="巡检项" prop="items" v-if="disabled &&  updateDisabled">
+          <div v-for="(item, index) in form.items" :key="item.id">
+            <span>{{ item.item_name }}</span>
+            :
+            <el-button type="primary" plain size="mini">{{ item.item_if ? '否' : '是' }}</el-button> 
+            <br>       
+          </div>
+          <span v-if="form.items && !form.items.length">无</span>
+        </el-form-item>
+        <el-form-item label="巡检图片" prop="imgs" v-if="disabled && updateDisabled">
+          <el-image class="imgs" v-for="item in form.imgs" :key="item.id" :src="item.item_img" :preview-src-list="[item.item_img]"></el-image>
+        </el-form-item>
         <el-form-item label="详情描述">
           <editor readonly v-model="form.checkContent" :min-height="192"/>
         </el-form-item>
@@ -208,7 +220,7 @@
 </template>
 
 <script>
-import { listCheckRecord, getCheckRecord, delCheckRecord, addCheckRecord, updateCheckRecord } from "@/api/zayy/checkRecord";
+import { listCheckRecord, getCheckRecord, delCheckRecord, addCheckRecord, updateCheckRecord, getDetail } from "@/api/zayy/checkRecord";
 import { listCheckUser } from "@/api/zayy/checkUser";
 import { listCheckPlace } from "@/api/zayy/checkPlace";
 
@@ -339,10 +351,15 @@ export default {
       this.disabled = type
       this.updateDisabled = true
       const id = row.id || this.ids
+      const recordId = row.recordId
       getCheckRecord(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改巡检记录";
+        getDetail({ recordId: recordId }).then(res => {
+          this.form = response.data;
+          this.form.items = res.items
+          this.form.imgs = res.imgs
+          this.open = true;
+          this.title = "修改巡检记录";
+        })
       });
     },
     /** 提交按钮 */
@@ -384,3 +401,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.el-button + .el-button {
+  margin-left: 0;
+}
+.imgs {
+  width: 320px;
+}
+</style>

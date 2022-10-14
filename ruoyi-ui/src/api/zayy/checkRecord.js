@@ -17,6 +17,14 @@ export function getCheckRecord(id) {
   })
 }
 
+export function getDetail(data) {
+  return request({
+    url: '/zayy/checkRecord/getDetail',
+    method: 'post',
+    data: data
+  })
+}
+
 // 新增巡检记录
 export function addCheckRecord(data) {
   return request({

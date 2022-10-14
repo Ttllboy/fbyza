@@ -1,53 +1,87 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="巡检员ID" prop="userId">
-        <el-input
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+      <el-form-item label="巡检员" prop="userId">
+        <!-- <el-input
           v-model="queryParams.userId"
-          placeholder="请输入巡检员ID"
+          placeholder="请输入巡检员"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.userId" clearable>
+          <el-option
+          v-for="item in listUser"
+          :key="item.id"
+          :label="item.nickName"
+          :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="记录时间" prop="recordTime">
+      <!-- <el-form-item label="记录时间" prop="recordTime">
         <el-date-picker clearable
           v-model="queryParams.recordTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择记录时间">
         </el-date-picker>
+      </el-form-item> -->
+      <el-form-item label="记录开始时间" prop="startDate">
+        <el-date-picker clearable
+          v-model="queryParams.startDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择记录时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="记录结束时间" prop="endDate">
+        <el-date-picker clearable
+          v-model="queryParams.endDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择记录时间">
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="巡检地点" prop="checkPlace">
-        <el-input
-          v-model="queryParams.checkPlace"
-          placeholder="请输入巡检地点"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select clearable v-model="queryParams.checkPlace">
+          <el-option
+          v-for="item in listPlace"
+          :key="item.placeId"
+          :label="item.placeName"
+          :value="item.placeId"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="巡检记录ID" prop="recordId">
+      <el-form-item label="巡检记录" prop="recordId">
         <el-input
           v-model="queryParams.recordId"
-          placeholder="请输入巡检记录ID"
+          placeholder="请输入巡检记录"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="异常等级" prop="abnormalLev">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.abnormalLev"
           placeholder="请输入异常等级"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.abnormalLev" placeholder="请选择" clearable>
+          <el-option label="黄色" value="0"></el-option>
+          <el-option label="橙色" value="1"></el-option>
+          <el-option label="红色" value="2"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="事件状态0处理中1已办结2超时未办" prop="eventType">
-        <el-input
+      <el-form-item label="事件状态" prop="eventType">
+        <!-- <el-input
           v-model="queryParams.eventType"
           placeholder="请输入事件状态0处理中1已办结2超时未办"
           clearable
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
+        <el-select v-model="queryParams.eventType" placeholder="请选择" clearable>
+          <el-option label="处理中" value="0"></el-option>
+          <el-option label="已办结" value="1"></el-option>
+          <el-option label="超时未办" value="2"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -104,19 +138,19 @@
     <el-table v-loading="loading" :data="checkRecordAbnormalList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="巡检员ID" align="center" prop="userId" />
+      <el-table-column label="巡检员" align="center" prop="userId" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="巡检地点" align="center" prop="checkPlace" />
-      <el-table-column label="巡检记录ID" align="center" prop="recordId" />
+      <el-table-column label="巡检地点" align="center" prop="checkName" />
+      <el-table-column label="巡检记录" align="center" prop="recordId" />
       <el-table-column label="详情描述" align="center" prop="checkContent" />
       <el-table-column label="处理方法" align="center" prop="handleMethod" />
       <el-table-column label="处理结果" align="center" prop="handleResult" />
       <el-table-column label="异常等级" align="center" prop="abnormalLev" />
-      <el-table-column label="事件状态0处理中1已办结2超时未办" align="center" prop="eventType" />
+      <el-table-column label="事件状态" align="center" prop="eventType" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -147,9 +181,16 @@
 
     <!-- 添加或修改巡检异常对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="巡检员ID" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入巡检员ID" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="95px">
+        <el-form-item label="巡检员" prop="userId">
+          <!-- <el-input v-model="form.userId" placeholder="请输入巡检员" /> -->
+          <el-select v-model="form.userId" clearable>
+            <el-option
+            v-for="item in listUser"
+            :key="item.id"
+            :label="item.nickName"
+            :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="记录时间" prop="recordTime">
           <el-date-picker clearable
@@ -160,10 +201,17 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="巡检地点" prop="checkPlace">
-          <el-input v-model="form.checkPlace" placeholder="请输入巡检地点" />
+          <!-- <el-input v-model="form.checkPlace" placeholder="请输入巡检地点" /> -->
+          <el-select clearable v-model="queryParams.checkPlace">
+            <el-option
+            v-for="item in listPlace"
+            :key="item.placeId"
+            :label="item.placeName"
+            :value="item.placeId"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="巡检记录ID" prop="recordId">
-          <el-input v-model="form.recordId" placeholder="请输入巡检记录ID" />
+        <el-form-item label="巡检记录" prop="recordId">
+          <el-input v-model="form.recordId" placeholder="请输入巡检记录" />
         </el-form-item>
         <el-form-item label="详情描述" prop="checkContent">
           <el-input v-model="form.checkContent" type="textarea" placeholder="请输入内容" />
@@ -175,10 +223,20 @@
           <el-input v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="异常等级" prop="abnormalLev">
-          <el-input v-model="form.abnormalLev" placeholder="请输入异常等级" />
+          <!-- <el-input v-model="form.abnormalLev" placeholder="请输入异常等级" /> -->
+          <el-select v-model="form.abnormalLev" placeholder="请选择" clearable>
+            <el-option label="黄色" value="0"></el-option>
+            <el-option label="橙色" value="1"></el-option>
+            <el-option label="红色" value="2"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="事件状态0处理中1已办结2超时未办" prop="eventType">
-          <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" />
+        <el-form-item label="事件状态" prop="eventType">
+          <!-- <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" /> -->
+          <el-select v-model="form.eventType" placeholder="请选择" clearable>
+            <el-option label="处理中" value="0"></el-option>
+            <el-option label="已办结" value="1"></el-option>
+            <el-option label="超时未办" value="2"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -191,11 +249,15 @@
 
 <script>
 import { listCheckRecordAbnormal, getCheckRecordAbnormal, delCheckRecordAbnormal, addCheckRecordAbnormal, updateCheckRecordAbnormal } from "@/api/zayy/checkRecordAbnormal";
+import { listCheckUser } from "@/api/zayy/checkUser";
+import { listCheckPlace } from "@/api/zayy/checkPlace";
 
 export default {
   name: "CheckRecordAbnormal",
   data() {
     return {
+      listUser: [],
+      listPlace: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -243,9 +305,26 @@ export default {
     getList() {
       this.loading = true;
       listCheckRecordAbnormal(this.queryParams).then(response => {
-        this.checkRecordAbnormalList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+        let obj = {
+          pageNum: 1,
+          pageSize: 1000
+        }
+        listCheckUser(obj).then(res => {
+          this.listUser = res.rows;
+          listCheckPlace(obj).then(res => {
+            this.listPlace = res.rows;
+            res.rows.forEach(item => {
+              response.rows.forEach(k => {
+                if(k.checkPlace == item.placeId) {{
+                  k.placeName = item.placeName
+                }}
+              })
+            })
+            this.checkRecordAbnormalList = response.rows;
+            this.total = response.total;
+            this.loading = false;
+          })
+        })
       });
     },
     // 取消按钮

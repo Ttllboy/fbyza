@@ -277,7 +277,7 @@ export default {
       listCheckRecord(this.queryParams).then(response => {
         let obj = {
           pageNum: 1,
-          pageSize: 100
+          pageSize: 1000
         }
         listCheckUser(obj).then(res => {
           this.listUser = res.rows

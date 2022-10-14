@@ -20,6 +20,10 @@
     <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
         insert into record_img values (null,#{recordId},#{itemImg})
     </insert>
+
+    <insert id="insertRecordImg2" parameterType="RecordImg2" useGeneratedKeys="true" keyProperty="id">
+        insert into record_img2 values (null,#{recordId},#{itemImg})
+    </insert>
     <insert id="insertRecordItem" parameterType="RecordItem" useGeneratedKeys="true" keyProperty="id">
         insert into record_item values (null,#{recordId},#{itemId},#{itemIf})
     </insert>

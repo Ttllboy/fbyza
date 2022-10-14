@@ -24,7 +24,7 @@ public class AImgController {
     CommonMapper commonMapper;
 
     @PostMapping("/profilePhotoUpload")
-    public JSONObject profilePhotoUpload(@RequestParam("file") MultipartFile fileUpload,@RequestParam("recordId") String recordId){
+    public JSONObject profilePhotoUpload(@RequestParam("file") MultipartFile fileUpload){
         //获取文件名
         String fileName = fileUpload.getOriginalFilename();
         //获取文件后缀名。也可以在这里添加判断语句，规定特定格式的图片才能上传，否则拒绝保存。
@@ -46,6 +46,11 @@ public class AImgController {
             reJson.put("code",500);
             return reJson;
         }
+    }
+
+    @PostMapping("/test")
+    public String test(){
+        return RuoYiConfig.getCheckImg();
     }
 
 }

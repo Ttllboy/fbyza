@@ -56,7 +56,7 @@ public class CheckPlaceController extends BaseController
         startPage();
         List<CheckPlace> list = checkPlaceService.selectCheckPlaceList(checkPlace);
         for (int i = 0; i < list.size(); i++) {
-            list.get(i).setPlaceImg(RuoYiConfig.getApiImgUrl()+list.get(i).getPlaceImg());
+            list.get(i).setPlaceImg(RuoYiConfig.getApiImgUrl()+"/"+list.get(i).getPlaceImg());
         }
         return getDataTable(list);
     }
@@ -93,7 +93,7 @@ public class CheckPlaceController extends BaseController
     public AjaxResult add(@RequestBody CheckPlace checkPlace)throws Exception
     {
         String placeId = String.valueOf(UUID.randomUUID());
-        String url = RuoYiConfig.getWebUrl()+"?placeId="+placeId;
+        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId;
         String logoPath = RuoYiConfig.getLogoUrl();
         String destPath = RuoYiConfig.getCheckImg();
         String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);

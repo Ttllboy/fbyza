@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.RecordImg2Mapper">
+    
+    <resultMap type="RecordImg2" id="RecordImg2Result">
+        <result property="id"    column="id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="itemImg"    column="item_img"    />
+    </resultMap>
+
+    <sql id="selectRecordImg2Vo">
+        select id, record_id, item_img from record_img2
+    </sql>
+
+    <select id="selectRecordImg2List" parameterType="RecordImg2" resultMap="RecordImg2Result">
+        <include refid="selectRecordImg2Vo"/>
+        <where>  
+            <if test="recordId != null "> and record_id = #{recordId}</if>
+            <if test="itemImg != null  and itemImg != ''"> and item_img = #{itemImg}</if>
+        </where>
+    </select>
+    
+    <select id="selectRecordImg2ById" parameterType="Long" resultMap="RecordImg2Result">
+        <include refid="selectRecordImg2Vo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRecordImg2" parameterType="RecordImg2" useGeneratedKeys="true" keyProperty="id">
+        insert into record_img2
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">record_id,</if>
+            <if test="itemImg != null">item_img,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">#{recordId},</if>
+            <if test="itemImg != null">#{itemImg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRecordImg2" parameterType="RecordImg2">
+        update record_img2
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="itemImg != null">item_img = #{itemImg},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRecordImg2ById" parameterType="Long">
+        delete from record_img2 where id = #{id}
+    </delete>
+
+    <delete id="deleteRecordImg2ByIds" parameterType="String">
+        delete from record_img2 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

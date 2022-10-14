@@ -3,7 +3,6 @@ package com.ruoyi.zayy.mapper;
 import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckTask;
-import jdk.internal.org.objectweb.asm.Handle;
 
 /**
  * 巡检任务Mapper接口

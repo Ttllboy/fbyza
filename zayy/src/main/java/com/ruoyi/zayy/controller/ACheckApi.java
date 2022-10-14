@@ -101,7 +101,7 @@ public class ACheckApi {
             return reJson;
         }
         JSONArray itemArray = questJson.getJSONArray("itemArray");
-        String recordId = questJson.getString("recordId");
+        String recordId = String.valueOf(UUID.randomUUID());
         for (int i = 0; i < itemArray.size(); i++) {
             JSONObject item = itemArray.getJSONObject(i);
             RecordItem recordItem = new RecordItem();
@@ -112,14 +112,13 @@ public class ACheckApi {
         }
         CheckRecord checkRecord = new CheckRecord();
         checkRecord.setRecordId(recordId);
-        List<CheckRecord> list = checkRecordMapper.selectCheckRecordList(checkRecord);
-        checkRecord = list.get(0);
+        checkRecord.setUserId(questJson.getLong("userId"));
         checkRecord.setCheckPlace(questJson.getString("checkPlace"));
         checkRecord.setRecordTime(questJson.getDate("recordTime"));
         checkRecord.setCheckContent(questJson.getString("checkContent"));
         checkRecord.setCheckType(0);
+        Integer tip = checkRecordMapper.insertCheckRecord(checkRecord);
         insertImg(questJson.getJSONArray("imgArray"),recordId);
-        Integer tip = checkRecordMapper.updateCheckRecord(checkRecord);
         if(tip == 1){
             JSONObject reJson = new JSONObject();
             reJson.put("code",200);
@@ -132,20 +131,34 @@ public class ACheckApi {
             return reJson;
         }
     }
-
+    @Autowired
+    private CheckXgRecordMapper checkXgRecordMapper;
     //巡更提交接口
     @PostMapping("/submitXgData")
     public JSONObject submitXgData(@RequestBody JSONObject questJson){
-        String recordId = questJson.getString("recordId");
-        CheckRecord checkRecord = new CheckRecord();
-        checkRecord.setRecordId(recordId);
-        List<CheckRecord> list = checkRecordMapper.selectCheckRecordList(checkRecord);
-        checkRecord = list.get(0);
-        checkRecord.setCheckContent(questJson.getString("checkContent"));
-        checkRecord.setCheckPlace(questJson.getString("checkPlace"));
-        checkRecord.setCheckType(1);
-        insertImg(questJson.getJSONArray("imgArray"),recordId);
-        Integer tip = checkRecordMapper.updateCheckRecord(checkRecord);
+        //判断是否扫码进入网页
+        if(!questJson.containsKey("checkPlace")){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","未检测到巡检地点");
+            return reJson;
+        }
+        if(questJson.getString("checkPlace") == ""){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","未检测到巡检地点");
+            return reJson;
+        }
+
+        String recordId = String.valueOf(UUID.randomUUID());
+        CheckXgRecord checkXgRecord = new CheckXgRecord();
+        checkXgRecord.setRecordId(recordId);
+        checkXgRecord.setUserId(questJson.getLong("userId"));
+        checkXgRecord.setCheckContent(questJson.getString("checkContent"));
+        checkXgRecord.setRecordTime(questJson.getDate("recordTime"));
+        checkXgRecord.setCheckPlace(questJson.getString("checkPlace"));
+        Integer tip = checkXgRecordMapper.insertCheckXgRecord(checkXgRecord);
+        insertImg2(questJson.getJSONArray("imgArray"),recordId);
         if(tip == 1){
             JSONObject reJson = new JSONObject();
             reJson.put("code",200);
@@ -171,6 +184,21 @@ public class ACheckApi {
             recordImg.setRecordId(cordId);
             recordImg.setItemImg(itemImg);
             commonMapper.insertRecordImg(recordImg);
+        }
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public void insertImg2(JSONArray imgArray,String recordId){
+        CheckXgRecord record = new CheckXgRecord();
+        record.setRecordId(recordId);
+        List<CheckXgRecord> recordList = checkXgRecordMapper.selectCheckXgRecordList(record);
+        Long cordId = recordList.get(0).getId();
+        for (int i = 0; i < imgArray.size(); i++) {
+            String itemImg = imgArray.getString(i);
+            RecordImg2 recordImg = new RecordImg2();
+            recordImg.setRecordId(cordId);
+            recordImg.setItemImg(itemImg);
+            commonMapper.insertRecordImg2(recordImg);
         }
     }
 
@@ -204,7 +232,7 @@ public class ACheckApi {
         for (int i = 0; i < recordImgs.size(); i++) {
             HashMap map2 = recordImgs.get(i);
             String placeImg = (String) recordImgs.get(i).get("item_img");
-            map2.put("item_img",RuoYiConfig.getApiImgUrl()+placeImg);
+            map2.put("item_img",RuoYiConfig.getApiImgUrl()+"/"+placeImg);
         }
         JSONObject reJson = new JSONObject();
         reJson.put("record",recordList.get(0));
@@ -220,7 +248,7 @@ public class ACheckApi {
         CheckPlace checkPlace = new CheckPlace();
         checkPlace.setPlaceName("五病区");
         String placeId = String.valueOf(UUID.randomUUID());
-        String url = RuoYiConfig.getWebUrl()+"?placeId="+placeId;
+        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId;
         String logoPath = RuoYiConfig.getLogoUrl();
         String destPath = RuoYiConfig.getCheckImg();
         String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);

@@ -21,9 +21,9 @@ ruoyi:
   # logo地址
   logoUrl: D:/work/fbyza/assets/logo.png
   # 服务器图片地址
-  apiImgUrl: http://101.68.222.195:8184/img/
+  apiImgUrl: D:/work/fbyza/assets
   #门禁图片地址
-  apiImgUrl2: http://101.68.222.195:8184/img2/
+  apiImgUrl2: D:/work/fbyza/assets
   #钉钉AgentId
   agentId: 1918529895
   #钉钉AppKey
@@ -69,8 +69,9 @@ spring:
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
-  profiles: 
-    active: druid
+  profiles:
+#    active: druid
+    active: test
   # 文件上传
   servlet:
      multipart:

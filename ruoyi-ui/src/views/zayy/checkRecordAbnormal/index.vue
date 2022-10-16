@@ -139,7 +139,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="巡检员" align="center" prop="userId" />
-      <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
+      <el-table-column label="记录时间" align="center" prop="recordTime" width="120">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
         </template>
@@ -149,7 +149,15 @@
       <el-table-column label="详情描述" align="center" prop="checkContent" />
       <el-table-column label="处理方法" align="center" prop="handleMethod" />
       <el-table-column label="处理结果" align="center" prop="handleResult" />
-      <el-table-column label="异常等级" align="center" prop="abnormalLev" />
+      <el-table-column label="异常等级" align="center" prop="abnormalLev">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.abnormalLev == 0" size="mini" type="warning" plain>黄色</el-button>
+          <el-button v-if="scope.row.abnormalLev == 1" size="mini" type="warning">橙色</el-button>
+          <el-button v-if="scope.row.abnormalLev == 2" size="mini" type="danger">红色</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="特殊备注" align="center" prop="remarkSpecial" />
       <el-table-column label="事件状态" align="center" prop="eventType" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

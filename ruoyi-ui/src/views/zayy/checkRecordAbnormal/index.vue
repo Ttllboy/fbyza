@@ -246,6 +246,12 @@
             <el-option label="超时未办" value="2"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="备注" prop="reamrk">
+          <el-input v-model="form.reamrk" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="特殊备注" prop="remarkSpecial">
+          <el-input v-model="form.remarkSpecial" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>

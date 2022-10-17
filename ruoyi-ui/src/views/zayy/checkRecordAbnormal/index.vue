@@ -49,14 +49,14 @@
           :value="item.placeId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="巡检记录" prop="recordId">
+      <!-- <el-form-item label="巡检记录" prop="recordId">
         <el-input
           v-model="queryParams.recordId"
           placeholder="请输入巡检记录"
           clearable
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="异常等级" prop="abnormalLev">
         <!-- <el-input
           v-model="queryParams.abnormalLev"
@@ -92,7 +92,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -101,7 +101,7 @@
           @click="handleAdd"
           v-hasPermi="['zayy:checkRecordAbnormal:add']"
         >新增</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -140,17 +140,15 @@
     <el-table v-loading="loading" :data="checkRecordAbnormalList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="巡检员" align="center" prop="userId" />
+      <el-table-column label="巡检员" align="center" prop="userName" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="170">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d} {h}:{m}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="巡检地点" align="center" prop="checkName" />
+      <el-table-column label="巡检地点" align="center" prop="placeName" />
       <el-table-column label="巡检记录" align="center" prop="recordId" />
       <el-table-column label="详情描述" align="center" prop="checkContent" />
-      <el-table-column label="处理方法" align="center" prop="handleMethod" />
-      <el-table-column label="处理结果" align="center" prop="handleResult" />
       <el-table-column label="异常等级" align="center" prop="abnormalLev">
         <template slot-scope="scope">
           <el-button v-if="scope.row.abnormalLev == 0" size="mini" type="warning" plain>黄色</el-button>
@@ -169,6 +167,8 @@
           <span v-if="scope.row.eventType == 4">驳回</span>
         </template>
       </el-table-column>
+      <el-table-column label="处理方法" align="center" prop="handleMethod" />
+      <el-table-column label="处理结果" align="center" prop="handleResult" />
       <el-table-column label="操作" align="center" width="190">
         <template slot-scope="scope">
           <el-button
@@ -220,8 +220,8 @@
         <el-form-item label="记录时间" prop="recordTime">
           <el-date-picker clearable
             v-model="form.recordTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择记录时间"
             :disabled="updateDisabled">
           </el-date-picker>
@@ -242,11 +242,8 @@
         <el-form-item label="详情描述" prop="checkContent">
           <el-input :disabled="updateDisabled" v-model="form.checkContent" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="处理方法" prop="handleMethod">
-          <el-input :disabled="disabled" v-model="form.handleMethod" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="处理结果" prop="handleResult">
-          <el-input :disabled="disabled" v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
+        <el-form-item v-if="updateDisabled" label="巡检图片" prop="imgs">
+          <el-image class="imgs" v-for="item in abnormalList.imgs" :key="item.id" :src="item.item_img" :preview-src-list="[item.item_img]"></el-image>
         </el-form-item>
         <el-form-item label="异常等级" prop="abnormalLev">
           <!-- <el-input v-model="form.abnormalLev" placeholder="请输入异常等级" /> -->
@@ -254,16 +251,6 @@
             <el-option label="黄色" value="0"></el-option>
             <el-option label="橙色" value="1"></el-option>
             <el-option label="红色" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="事件状态" prop="eventType">
-          <!-- <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" /> -->
-          <el-select :disabled="disabled" v-model="form.eventType" placeholder="请选择" clearable>
-            <el-option label="未处理" value="0"></el-option>
-            <el-option label="处理中" value="1"></el-option>
-            <el-option label="已办结" value="2"></el-option>
-            <el-option label="超时未办" value="3"></el-option>
-            <el-option label="驳回" value="4"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="reamrk">
@@ -285,6 +272,22 @@
         </el-form-item>
         <el-form-item v-if="disabled &&  updateDisabled" label="异常图片" prop="abnormalImgs">
           <el-image class="imgs" v-for="item in abnormalList.abnormalImgs" :key="item.id" :src="item.item_img" :preview-src-list="[item.item_img]"></el-image>
+        </el-form-item>
+        <el-form-item label="处理方法" prop="handleMethod">
+          <el-input :disabled="disabled" v-model="form.handleMethod" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="处理结果" prop="handleResult">
+          <el-input :disabled="disabled" v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item label="事件状态" prop="eventType">
+          <!-- <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" /> -->
+          <el-select :disabled="disabled" v-model="form.eventType" placeholder="请选择" clearable>
+            <el-option label="未处理" value="0"></el-option>
+            <el-option label="处理中" value="1"></el-option>
+            <el-option label="已办结" value="2"></el-option>
+            <el-option label="超时未办" value="3"></el-option>
+            <el-option label="驳回" value="4"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -362,6 +365,13 @@ export default {
         }
         listCheckUser(obj).then(res => {
           this.listUser = res.rows;
+          res.rows.forEach(item => {
+            response.rows.forEach(k => {
+              if(k.userId == item.id) {
+                k.userName = item.nickName
+              }
+            })
+          })
           listCheckPlace(obj).then(res => {
             this.listPlace = res.rows;
             res.rows.forEach(item => {
@@ -430,17 +440,19 @@ export default {
       this.updateDisabled = true
       const id = row.id || this.ids
       getCheckRecordAbnormal(id).then(response => {
+        response.data.abnormalLev += ""
+        response.data.eventType += ""
         if(type) {
           getDetail({ recordId: row.recordId }).then(res => {
             this.abnormalList = res
             this.form = response.data;
             this.open = true;
-            this.title = "修改巡检异常";
+            this.title = "巡检异常详情"
           })
         } else {
           this.form = response.data;
           this.open = true;
-          this.title = "修改巡检异常";          
+          this.title = "巡检处理异常";          
         }
       });
     },
@@ -449,7 +461,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            this.form.userId = JSON.parse(sessionStorage.getItem("USER_INFO")).roles[0].roleId
+            this.form.roleId = JSON.parse(sessionStorage.getItem("USER_INFO")).roles[0].roleId
             updateCheckRecordAbnormal(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;

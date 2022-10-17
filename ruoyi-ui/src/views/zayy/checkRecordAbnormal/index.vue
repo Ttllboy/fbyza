@@ -78,9 +78,11 @@
           @keyup.enter.native="handleQuery"
         /> -->
         <el-select v-model="queryParams.eventType" placeholder="请选择" clearable>
-          <el-option label="处理中" value="0"></el-option>
-          <el-option label="已办结" value="1"></el-option>
-          <el-option label="超时未办" value="2"></el-option>
+          <el-option label="未处理" value="0"></el-option>
+          <el-option label="处理中" value="1"></el-option>
+          <el-option label="已办结" value="2"></el-option>
+          <el-option label="超时未办" value="3"></el-option>
+          <el-option label="驳回" value="4"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -139,9 +141,9 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="巡检员" align="center" prop="userId" />
-      <el-table-column label="记录时间" align="center" prop="recordTime" width="120">
+      <el-table-column label="记录时间" align="center" prop="recordTime" width="170">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.recordTime, '{y}-{m}-{d} {h}:{m}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="巡检地点" align="center" prop="checkName" />
@@ -158,8 +160,16 @@
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="特殊备注" align="center" prop="remarkSpecial" />
-      <el-table-column label="事件状态" align="center" prop="eventType" />
-      <el-table-column label="操作" align="center" width="160">
+      <el-table-column label="事件状态" align="center" prop="eventType">
+        <template slot-scope="scope">
+          <span v-if="scope.row.eventType == 0">未处理</span>
+          <span v-if="scope.row.eventType == 1">处理中</span>
+          <span v-if="scope.row.eventType == 2">已办结</span>
+          <span v-if="scope.row.eventType == 3">超时未办</span>
+          <span v-if="scope.row.eventType == 4">驳回</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="190">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -174,7 +184,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row, false)"
             v-hasPermi="['zayy:checkRecordAbnormal:edit']"
-          >修改</el-button>
+          >处理异常</el-button>
           <el-button
             size="mini"
             type="text"
@@ -249,9 +259,11 @@
         <el-form-item label="事件状态" prop="eventType">
           <!-- <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" /> -->
           <el-select :disabled="disabled" v-model="form.eventType" placeholder="请选择" clearable>
-            <el-option label="处理中" value="0"></el-option>
-            <el-option label="已办结" value="1"></el-option>
-            <el-option label="超时未办" value="2"></el-option>
+            <el-option label="未处理" value="0"></el-option>
+            <el-option label="处理中" value="1"></el-option>
+            <el-option label="已办结" value="2"></el-option>
+            <el-option label="超时未办" value="3"></el-option>
+            <el-option label="驳回" value="4"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="reamrk">
@@ -276,7 +288,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="submitForm" v-if="!disabled">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -437,6 +449,7 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
+            this.form.userId = JSON.parse(sessionStorage.getItem("USER_INFO")).roles[0].roleId
             updateCheckRecordAbnormal(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;

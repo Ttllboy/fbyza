@@ -159,13 +159,20 @@
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="特殊备注" align="center" prop="remarkSpecial" />
       <el-table-column label="事件状态" align="center" prop="eventType" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="160">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-search"
+            @click="handleUpdate(scope.row, true)"
+            v-hasPermi="['zayy:checkItemDept:edit']"
+          >详情</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleUpdate(scope.row, false)"
             v-hasPermi="['zayy:checkRecordAbnormal:edit']"
           >修改</el-button>
           <el-button
@@ -192,7 +199,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="95px">
         <el-form-item label="巡检员" prop="userId">
           <!-- <el-input v-model="form.userId" placeholder="请输入巡检员" /> -->
-          <el-select v-model="form.userId" clearable>
+          <el-select v-model="form.userId" clearable :disabled="updateDisabled">
             <el-option
             v-for="item in listUser"
             :key="item.id"
@@ -205,12 +212,13 @@
             v-model="form.recordTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择记录时间">
+            placeholder="请选择记录时间"
+            :disabled="updateDisabled">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="巡检地点" prop="checkPlace">
           <!-- <el-input v-model="form.checkPlace" placeholder="请输入巡检地点" /> -->
-          <el-select clearable v-model="queryParams.checkPlace">
+          <el-select clearable v-model="queryParams.checkPlace" :disabled="updateDisabled">
             <el-option
             v-for="item in listPlace"
             :key="item.placeId"
@@ -219,20 +227,20 @@
           </el-select>
         </el-form-item>
         <el-form-item label="巡检记录" prop="recordId">
-          <el-input v-model="form.recordId" placeholder="请输入巡检记录" />
+          <el-input :disabled="updateDisabled" v-model="form.recordId" placeholder="请输入巡检记录" />
         </el-form-item>
         <el-form-item label="详情描述" prop="checkContent">
-          <el-input v-model="form.checkContent" type="textarea" placeholder="请输入内容" />
+          <el-input :disabled="updateDisabled" v-model="form.checkContent" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="处理方法" prop="handleMethod">
-          <el-input v-model="form.handleMethod" type="textarea" placeholder="请输入内容" />
+          <el-input :disabled="disabled" v-model="form.handleMethod" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="处理结果" prop="handleResult">
-          <el-input v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
+          <el-input :disabled="disabled" v-model="form.handleResult" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="异常等级" prop="abnormalLev">
           <!-- <el-input v-model="form.abnormalLev" placeholder="请输入异常等级" /> -->
-          <el-select v-model="form.abnormalLev" placeholder="请选择" clearable>
+          <el-select :disabled="updateDisabled" v-model="form.abnormalLev" placeholder="请选择" clearable>
             <el-option label="黄色" value="0"></el-option>
             <el-option label="橙色" value="1"></el-option>
             <el-option label="红色" value="2"></el-option>
@@ -240,17 +248,31 @@
         </el-form-item>
         <el-form-item label="事件状态" prop="eventType">
           <!-- <el-input v-model="form.eventType" placeholder="请输入事件状态0处理中1已办结2超时未办" /> -->
-          <el-select v-model="form.eventType" placeholder="请选择" clearable>
+          <el-select :disabled="disabled" v-model="form.eventType" placeholder="请选择" clearable>
             <el-option label="处理中" value="0"></el-option>
             <el-option label="已办结" value="1"></el-option>
             <el-option label="超时未办" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="reamrk">
-          <el-input v-model="form.reamrk" type="textarea" placeholder="请输入内容" />
+          <el-input :disabled="updateDisabled" v-model="form.reamrk" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="特殊备注" prop="remarkSpecial">
-          <el-input v-model="form.remarkSpecial" type="textarea" placeholder="请输入内容" />
+          <el-input :disabled="updateDisabled" v-model="form.remarkSpecial" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
+        <el-form-item v-if="disabled &&  updateDisabled" label="异常项" prop="abnormalItems">
+          <div v-for="(item, index) in abnormalList.abnormalItems" :key="item.id">
+            {{ index + 1 }}.
+            <span>{{ item.item_name }}</span>
+            <el-button v-if="item.abnormal_lev == 0" size="mini" type="warning" plain>黄色警报</el-button>
+            <el-button v-if="item.abnormal_lev == 1" size="mini" type="warning">橙色警报</el-button>
+            <el-button v-if="item.abnormal_lev == 2" size="mini" type="danger">红色警报</el-button>
+            <br>
+          </div>
+          <span v-if="abnormalList.abnormalItems && !abnormalList.abnormalItems.length">无</span>
+        </el-form-item>
+        <el-form-item v-if="disabled &&  updateDisabled" label="异常图片" prop="abnormalImgs">
+          <el-image class="imgs" v-for="item in abnormalList.abnormalImgs" :key="item.id" :src="item.item_img" :preview-src-list="[item.item_img]"></el-image>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -262,7 +284,7 @@
 </template>
 
 <script>
-import { listCheckRecordAbnormal, getCheckRecordAbnormal, delCheckRecordAbnormal, addCheckRecordAbnormal, updateCheckRecordAbnormal } from "@/api/zayy/checkRecordAbnormal";
+import { listCheckRecordAbnormal, getCheckRecordAbnormal, delCheckRecordAbnormal, addCheckRecordAbnormal, updateCheckRecordAbnormal, getDetail } from "@/api/zayy/checkRecordAbnormal";
 import { listCheckUser } from "@/api/zayy/checkUser";
 import { listCheckPlace } from "@/api/zayy/checkPlace";
 
@@ -270,6 +292,9 @@ export default {
   name: "CheckRecordAbnormal",
   data() {
     return {
+      disabled: false,
+      updateDisabled: false,
+      abnormalList: {},
       listUser: [],
       listPlace: [],
       // 遮罩层
@@ -382,16 +407,29 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.updateDisabled = false
+      this.disabled = false
       this.title = "添加巡检异常";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    handleUpdate(row, type) {
       this.reset();
+      this.disabled = type
+      this.updateDisabled = true
       const id = row.id || this.ids
       getCheckRecordAbnormal(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改巡检异常";
+        if(type) {
+          getDetail({ recordId: row.recordId }).then(res => {
+            this.abnormalList = res
+            this.form = response.data;
+            this.open = true;
+            this.title = "修改巡检异常";
+          })
+        } else {
+          this.form = response.data;
+          this.open = true;
+          this.title = "修改巡检异常";          
+        }
       });
     },
     /** 提交按钮 */

@@ -259,7 +259,7 @@
         <el-form-item label="特殊备注" prop="remarkSpecial">
           <el-input :disabled="updateDisabled" v-model="form.remarkSpecial" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item v-if="disabled &&  updateDisabled" label="异常项" prop="abnormalItems">
+        <el-form-item label="异常项" prop="abnormalItems">
           <div v-for="(item, index) in abnormalList.abnormalItems" :key="item.id">
             {{ index + 1 }}.
             <span>{{ item.item_name }}</span>
@@ -270,7 +270,7 @@
           </div>
           <span v-if="abnormalList.abnormalItems && !abnormalList.abnormalItems.length">无</span>
         </el-form-item>
-        <el-form-item v-if="disabled &&  updateDisabled" label="异常图片" prop="abnormalImgs">
+        <el-form-item label="异常图片" prop="abnormalImgs">
           <el-image class="imgs" v-for="item in abnormalList.abnormalImgs" :key="item.id" :src="item.item_img" :preview-src-list="[item.item_img]"></el-image>
         </el-form-item>
         <el-form-item label="处理方法" prop="handleMethod">
@@ -442,17 +442,15 @@ export default {
       getCheckRecordAbnormal(id).then(response => {
         response.data.abnormalLev += ""
         response.data.eventType += ""
-        if(type) {
-          getDetail({ recordId: row.recordId }).then(res => {
-            this.abnormalList = res
-            this.form = response.data;
-            this.open = true;
-            this.title = "巡检异常详情"
-          })
-        } else {
+        getDetail({ recordId: row.recordId }).then(res => {
+          this.abnormalList = res
           this.form = response.data;
           this.open = true;
-          this.title = "巡检处理异常";          
+        })
+        if(type) {
+          this.title = "巡检异常详情"
+        } else {
+          this.title = "巡检处理异常";
         }
       });
     },

@@ -7,20 +7,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="RecordAj" id="RecordAjResult">
         <result property="id"    column="id"    />
         <result property="securityIp"    column="security_ip"    />
-        <result property="securityNum"    column="security_num"    />
-        <result property="securityImg"    column="security_img"    />
+        <result property="securityType"    column="security_type"    />
+        <result property="imgBase64"    column="img_base64"    />
         <result property="securityTime"    column="security_time"    />
+        <result property="imgPath"    column="img_path"    />
     </resultMap>
 
     <sql id="selectRecordAjVo">
-        select id, security_ip, security_num, security_img, security_time from record_aj
+        select id, security_ip, security_type, img_base64, security_time, img_path from record_aj
     </sql>
 
     <select id="selectRecordAjList" parameterType="RecordAj" resultMap="RecordAjResult">
         <include refid="selectRecordAjVo"/>
         <where>  
-            <if test="securityNum != null  and securityNum != ''"> and security_num like concat('%', #{securityNum}, '%')</if>
+            <if test="securityIp != null  and securityIp != ''"> and security_ip = #{securityIp}</if>
+            <if test="securityType != null "> and security_type = #{securityType}</if>
+            <if test="imgBase64 != null  and imgBase64 != ''"> and img_base64 = #{imgBase64}</if>
             <if test="securityTime != null "> and security_time = #{securityTime}</if>
+            <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
         </where>
     </select>
     
@@ -33,15 +37,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into record_aj
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="securityIp != null">security_ip,</if>
-            <if test="securityNum != null">security_num,</if>
-            <if test="securityImg != null">security_img,</if>
+            <if test="securityType != null">security_type,</if>
+            <if test="imgBase64 != null">img_base64,</if>
             <if test="securityTime != null">security_time,</if>
+            <if test="imgPath != null">img_path,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="securityIp != null">#{securityIp},</if>
-            <if test="securityNum != null">#{securityNum},</if>
-            <if test="securityImg != null">#{securityImg},</if>
+            <if test="securityType != null">#{securityType},</if>
+            <if test="imgBase64 != null">#{imgBase64},</if>
             <if test="securityTime != null">#{securityTime},</if>
+            <if test="imgPath != null">#{imgPath},</if>
          </trim>
     </insert>
 
@@ -49,9 +55,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update record_aj
         <trim prefix="SET" suffixOverrides=",">
             <if test="securityIp != null">security_ip = #{securityIp},</if>
-            <if test="securityNum != null">security_num = #{securityNum},</if>
-            <if test="securityImg != null">security_img = #{securityImg},</if>
+            <if test="securityType != null">security_type = #{securityType},</if>
+            <if test="imgBase64 != null">img_base64 = #{imgBase64},</if>
             <if test="securityTime != null">security_time = #{securityTime},</if>
+            <if test="imgPath != null">img_path = #{imgPath},</if>
         </trim>
         where id = #{id}
     </update>

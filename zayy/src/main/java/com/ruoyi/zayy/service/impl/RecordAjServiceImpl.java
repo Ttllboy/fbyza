@@ -11,7 +11,7 @@ import com.ruoyi.zayy.service.IRecordAjService;
  * 安检记录Service业务层处理
  * 
  * @author ruoyi
- * @date 2022-09-28
+ * @date 2022-10-18
  */
 @Service
 public class RecordAjServiceImpl implements IRecordAjService 

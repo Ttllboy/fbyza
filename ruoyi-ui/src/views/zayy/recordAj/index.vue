@@ -1,10 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="安检机编号" prop="securityNum">
+      <el-form-item label="安检机IP" prop="securityIp">
         <el-input
-          v-model="queryParams.securityNum"
-          placeholder="请输入安检机编号"
+          v-model="queryParams.securityIp"
+          placeholder="请输入安检机IP"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="报警类型" prop="securityType">
+        <el-input
+          v-model="queryParams.securityType"
+          placeholder="请输入报警类型"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -16,6 +24,14 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
+      </el-form-item>
+      <el-form-item label="图片地址" prop="imgPath">
+        <el-input
+          v-model="queryParams.imgPath"
+          placeholder="请输入图片地址"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -73,13 +89,14 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="安检机IP" align="center" prop="securityIp" />
-      <el-table-column label="安检机编号" align="center" prop="securityNum" />
-      <el-table-column label="图片" align="center" prop="securityImg" />
+      <el-table-column label="报警类型" align="center" prop="securityType" />
+      <el-table-column label="图片base64" align="center" prop="imgBase64" />
       <el-table-column label="时间" align="center" prop="securityTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.securityTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="图片地址" align="center" prop="imgPath" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -114,11 +131,11 @@
         <el-form-item label="安检机IP" prop="securityIp">
           <el-input v-model="form.securityIp" placeholder="请输入安检机IP" />
         </el-form-item>
-        <el-form-item label="安检机编号" prop="securityNum">
-          <el-input v-model="form.securityNum" placeholder="请输入安检机编号" />
+        <el-form-item label="报警类型" prop="securityType">
+          <el-input v-model="form.securityType" placeholder="请输入报警类型" />
         </el-form-item>
-        <el-form-item label="图片" prop="securityImg">
-          <el-input v-model="form.securityImg" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="图片base64" prop="imgBase64">
+          <el-input v-model="form.imgBase64" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="时间" prop="securityTime">
           <el-date-picker clearable
@@ -127,6 +144,9 @@
             value-format="yyyy-MM-dd"
             placeholder="请选择时间">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="图片地址" prop="imgPath">
+          <el-input v-model="form.imgPath" placeholder="请输入图片地址" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,8 +186,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        securityNum: null,
-        securityTime: null
+        securityIp: null,
+        securityType: null,
+        imgBase64: null,
+        securityTime: null,
+        imgPath: null
       },
       // 表单参数
       form: {},
@@ -199,9 +222,10 @@ export default {
       this.form = {
         id: null,
         securityIp: null,
-        securityNum: null,
-        securityImg: null,
-        securityTime: null
+        securityType: null,
+        imgBase64: null,
+        securityTime: null,
+        imgPath: null
       };
       this.resetForm("form");
     },

@@ -7,7 +7,7 @@ import com.ruoyi.zayy.domain.RecordAj;
  * 安检记录Service接口
  * 
  * @author ruoyi
- * @date 2022-09-28
+ * @date 2022-10-18
  */
 public interface IRecordAjService 
 {

@@ -11,7 +11,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 安检记录对象 record_aj
  * 
  * @author ruoyi
- * @date 2022-09-28
+ * @date 2022-10-18
  */
 public class RecordAj extends BaseEntity
 {
@@ -24,18 +24,22 @@ public class RecordAj extends BaseEntity
     @Excel(name = "安检机IP")
     private String securityIp;
 
-    /** 安检机编号 */
-    @Excel(name = "安检机编号")
-    private String securityNum;
+    /** 报警类型 */
+    @Excel(name = "报警类型")
+    private Integer securityType;
 
-    /** 图片 */
-    @Excel(name = "图片")
-    private String securityImg;
+    /** 图片base64 */
+    @Excel(name = "图片base64")
+    private String imgBase64;
 
     /** 时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date securityTime;
+
+    /** 图片地址 */
+    @Excel(name = "图片地址")
+    private String imgPath;
 
     public void setId(Long id) 
     {
@@ -55,23 +59,23 @@ public class RecordAj extends BaseEntity
     {
         return securityIp;
     }
-    public void setSecurityNum(String securityNum) 
+    public void setSecurityType(Integer securityType) 
     {
-        this.securityNum = securityNum;
+        this.securityType = securityType;
     }
 
-    public String getSecurityNum() 
+    public Integer getSecurityType() 
     {
-        return securityNum;
+        return securityType;
     }
-    public void setSecurityImg(String securityImg) 
+    public void setImgBase64(String imgBase64) 
     {
-        this.securityImg = securityImg;
+        this.imgBase64 = imgBase64;
     }
 
-    public String getSecurityImg() 
+    public String getImgBase64() 
     {
-        return securityImg;
+        return imgBase64;
     }
     public void setSecurityTime(Date securityTime) 
     {
@@ -82,15 +86,25 @@ public class RecordAj extends BaseEntity
     {
         return securityTime;
     }
+    public void setImgPath(String imgPath) 
+    {
+        this.imgPath = imgPath;
+    }
+
+    public String getImgPath() 
+    {
+        return imgPath;
+    }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("securityIp", getSecurityIp())
-            .append("securityNum", getSecurityNum())
-            .append("securityImg", getSecurityImg())
+            .append("securityType", getSecurityType())
+            .append("imgBase64", getImgBase64())
             .append("securityTime", getSecurityTime())
+            .append("imgPath", getImgPath())
             .toString();
     }
 }

@@ -62,7 +62,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -71,7 +71,7 @@
           @click="handleAdd"
           v-hasPermi="['zayy:checkRecord:add']"
         >新增</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -277,7 +277,7 @@ export default {
       listCheckRecord(this.queryParams).then(response => {
         let obj = {
           pageNum: 1,
-          pageSize: 100
+          pageSize: 1000
         }
         listCheckUser(obj).then(res => {
           this.listUser = res.rows

@@ -42,3 +42,11 @@ export function delCheckRecordAbnormal(id) {
     method: 'delete'
   })
 }
+
+export function getDetail(data) {
+  return request({
+    url: '/zayy/checkRecordAbnormal/getDetail',
+    method: 'post',
+    data: data
+  })
+}

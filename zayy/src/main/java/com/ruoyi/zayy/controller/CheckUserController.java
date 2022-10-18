@@ -37,7 +37,7 @@ public class CheckUserController extends BaseController
     /**
      * 查询人员管理列表
      */
-    @PreAuthorize("@ss.hasPermi('zayy:checkUser:list')")
+//    @PreAuthorize("@ss.hasPermi('zayy:checkUser:list')")
     @GetMapping("/list")
     public TableDataInfo list(CheckUser checkUser)
     {

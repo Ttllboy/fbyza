@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.*;
+import com.ruoyi.zayy.util.ImgToBase64;
 import com.ruoyi.zayy.util.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -66,14 +67,15 @@ public class ACheckApi {
     //巡检初始换接口
     @PostMapping("/init")
     public JSONObject init(@RequestBody JSONObject questJson){
-        CheckRecord record = new CheckRecord();
-        record.setUserId(questJson.getLong("userId"));
-        String recordId = String.valueOf(UUID.randomUUID());
-        record.setRecordId(recordId);
-        checkRecordMapper.insertCheckRecord(record);
-        JSONObject reJson = new JSONObject();
-        reJson.put("recordId",recordId);
-        return reJson;
+//        CheckRecord record = new CheckRecord();
+//        record.setUserId(questJson.getLong("userId"));
+//        String recordId = String.valueOf(UUID.randomUUID());
+//        record.setRecordId(recordId);
+//        checkRecordMapper.insertCheckRecord(record);
+//        JSONObject reJson = new JSONObject();
+//        reJson.put("recordId",recordId);
+//        return reJson;
+        return null;
     }
     @PostMapping("/test")
     public void test(){
@@ -103,7 +105,6 @@ public class ACheckApi {
         JSONArray itemArray = questJson.getJSONArray("itemArray");
 
         //判断是否有巡检异常
-        JSONArray abnormalArray = new JSONArray();
         List<CheckItem> checkItemList = new ArrayList<>();
         JSONObject abnormalJson = new JSONObject();
         for (int i = 0; i < itemArray.size(); i++) {
@@ -152,6 +153,82 @@ public class ACheckApi {
             return reJson;
         }
     }
+
+    @Autowired
+    private CheckRecordAbnormalMapper checkRecordAbnormalMapper;
+    //巡检异常提交接口
+    @PostMapping("/checkAbnormal")
+    public JSONObject checkAbnormal(@RequestBody JSONObject questJson){
+        //判断是否扫码进入网页
+        if(!questJson.containsKey("checkPlace")){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","未检测到巡检地点");
+            return reJson;
+        }
+        if(questJson.getString("checkPlace") == ""){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","未检测到巡检地点");
+            return reJson;
+        }
+        JSONArray itemArray = questJson.getJSONArray("itemArray");
+        JSONArray abnormalItemArray = questJson.getJSONArray("abnormalItemArray");
+
+        String recordId = String.valueOf(UUID.randomUUID());
+        for (int i = 0; i < itemArray.size(); i++) {
+            JSONObject item = itemArray.getJSONObject(i);
+            RecordItem recordItem = new RecordItem();
+            recordItem.setRecordId(recordId);
+            recordItem.setItemId(item.getLong("itemId"));
+            recordItem.setItemIf(item.getInteger("itemIf"));
+            for (int j = 0; j < abnormalItemArray.size(); j++) {
+                JSONObject abnormalItem = abnormalItemArray.getJSONObject(j);
+                if(item.getLong("itemId") == abnormalItem.getLong("itemId")){
+                    recordItem.setItemAbnormal(0);
+                    break;
+                }else {
+                    recordItem.setItemAbnormal(1);
+                }
+            }
+            commonMapper.insertRecordItem(recordItem);
+        }
+        CheckRecord checkRecord = new CheckRecord();
+        checkRecord.setRecordId(recordId);
+        checkRecord.setUserId(questJson.getLong("userId"));
+        checkRecord.setCheckPlace(questJson.getString("checkPlace"));
+        checkRecord.setRecordTime(questJson.getDate("recordTime"));
+        checkRecord.setCheckContent(questJson.getString("checkContent"));
+        checkRecord.setCheckType(0);
+        Integer tip = checkRecordMapper.insertCheckRecord(checkRecord);
+
+        CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+        abnormal.setRecordId(recordId);
+        abnormal.setUserId(questJson.getLong("userId"));
+        abnormal.setCheckPlace(questJson.getString("checkPlace"));
+        abnormal.setRecordTime(questJson.getDate("recordTime"));
+        abnormal.setCheckContent(questJson.getString("checkContent"));
+        abnormal.setRemark(questJson.getString("remark"));
+        abnormal.setRemarkSpecial(questJson.getString("remarkSpecial"));
+        abnormal.setAbnormalLev(questJson.getInteger("abnormalLev"));
+        abnormal.setEventType(0);
+        tip = checkRecordAbnormalMapper.insertCheckRecordAbnormal(abnormal);
+
+        insertImg(questJson.getJSONArray("imgArray"),recordId);
+        insertImgAbnormal(questJson.getJSONArray("imgArrayAbnormal"),recordId);
+        if(tip == 1){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",200);
+            reJson.put("msg","提交成功");
+            return reJson;
+        }else {
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","提交失败");
+            return reJson;
+        }
+    }
+
     @Autowired
     private CheckXgRecordMapper checkXgRecordMapper;
     //巡更提交接口
@@ -179,6 +256,7 @@ public class ACheckApi {
         checkXgRecord.setRecordTime(questJson.getDate("recordTime"));
         checkXgRecord.setCheckPlace(questJson.getString("checkPlace"));
         Integer tip = checkXgRecordMapper.insertCheckXgRecord(checkXgRecord);
+
         insertImg2(questJson.getJSONArray("imgArray"),recordId);
         if(tip == 1){
             JSONObject reJson = new JSONObject();
@@ -193,21 +271,64 @@ public class ACheckApi {
         }
     }
 
+    //插入巡检图片
     @Async("threadPoolTaskExecutor")
     public void insertImg(JSONArray imgArray,String recordId){
         CheckRecord record = new CheckRecord();
         record.setRecordId(recordId);
         List<CheckRecord> recordList = checkRecordMapper.selectCheckRecordList(record);
         Long cordId = recordList.get(0).getId();
+        CheckRecordAbnormal checkRecordAbnormal = new CheckRecordAbnormal();
+        checkRecordAbnormal.setRecordId(recordId);
+        HashMap abnormal = null;
+        Long abnormalId = null;
+        abnormal = checkRecordAbnormalMapper.selectCheckAbnormalByRecordId2(checkRecordAbnormal);
+        if(abnormal != null){
+            abnormalId = (Long) abnormal.get("id");
+        }
         for (int i = 0; i < imgArray.size(); i++) {
             String itemImg = imgArray.getString(i);
             RecordImg recordImg = new RecordImg();
             recordImg.setRecordId(cordId);
             recordImg.setItemImg(itemImg);
+            recordImg.setImgType(0);
+            String imgPath = RuoYiConfig.getApiImgUrl()+"/"+itemImg;
+            String imgBase64 = ImgToBase64.requestUrlToBase64(imgPath);
+            recordImg.setImgBase64(imgBase64);
+            if(abnormal != null){
+                recordImg.setAbnormalId(abnormalId);
+            }
             commonMapper.insertRecordImg(recordImg);
         }
     }
 
+    //插入巡检异常图片
+    @Async("threadPoolTaskExecutor")
+    public void insertImgAbnormal(JSONArray imgArray,String recordId){
+        CheckRecord record = new CheckRecord();
+        record.setRecordId(recordId);
+        List<CheckRecord> recordList = checkRecordMapper.selectCheckRecordList(record);
+        Long cordId = recordList.get(0).getId();
+        CheckRecordAbnormal checkRecordAbnormal = new CheckRecordAbnormal();
+        checkRecordAbnormal.setRecordId(recordId);
+        HashMap abnormal = checkRecordAbnormalMapper.selectCheckAbnormalByRecordId2(checkRecordAbnormal);
+        Long abnormalId = (Long) abnormal.get("id");
+        for (int i = 0; i < imgArray.size(); i++) {
+            String itemImg = imgArray.getString(i);
+            RecordImg recordImg = new RecordImg();
+            recordImg.setRecordId(cordId);
+            recordImg.setAbnormalId(abnormalId);
+            recordImg.setItemImg(itemImg);
+            recordImg.setImgType(1);
+            String imgPath = RuoYiConfig.getApiImgUrl()+"/"+itemImg;
+            String imgBase64 = ImgToBase64.requestUrlToBase64(imgPath);
+            recordImg.setImgBase64(imgBase64);
+            commonMapper.insertRecordImg(recordImg);
+        }
+    }
+
+
+    //插入巡更图片
     @Async("threadPoolTaskExecutor")
     public void insertImg2(JSONArray imgArray,String recordId){
         CheckXgRecord record = new CheckXgRecord();
@@ -238,6 +359,61 @@ public class ACheckApi {
             }
         }
         return list;
+    }
+
+    //根据用户ID查询所有巡检异常
+    @PostMapping("/getCheckAbnormal")
+    public List getCheckAbnormal(@RequestBody JSONObject questJson){
+        Long userId = questJson.getLong("userId");
+        CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+        abnormal.setUserId(userId);
+        List<HashMap> list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+        for (int i = 0; i < list.size(); i++) {
+            HashMap map = list.get(i);
+            if(!map.containsKey("place_name")){
+                list.remove(i);
+                i--;
+            }
+        }
+        return list;
+    }
+
+    //根据巡检异常记录ID查询详情
+    @PostMapping("/getAbnormalDetail")
+    public JSONObject getAbnormalDetail(@RequestBody JSONObject questJson){
+        String recordId = questJson.getString("recordId");
+        CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+        abnormal.setRecordId(recordId);
+        List<HashMap> recordList = checkRecordAbnormalMapper.selectCheckAbnormalByRecordId(abnormal);
+        HashMap map = recordList.get(0);
+
+        CheckRecord record = new CheckRecord();
+        record.setRecordId(recordId);
+        List<HashMap> recordList2 = checkRecordMapper.selectCheckRecordByRecordId(record);
+        HashMap recordMap = recordList2.get(0);
+
+        List<HashMap> recordItems = commonMapper.selectRecordItems(recordId);
+        List<HashMap> recordAbnormalItems = commonMapper.selectAbnormalItems(recordId);
+        List<HashMap> recordImgs = commonMapper.selectRecordImgs((Long) recordMap.get("id"));
+        List<HashMap> abnormalImgs = commonMapper.selectAbnormalImgs((Long) recordMap.get("id"));
+        for (int i = 0; i < recordImgs.size(); i++) {
+            HashMap map2 = recordImgs.get(i);
+            String placeImg = (String) recordImgs.get(i).get("item_img");
+            map2.put("item_img",RuoYiConfig.getApiImgUrl()+"/"+placeImg);
+        }
+        for (int i = 0; i < abnormalImgs.size(); i++) {
+            HashMap map3 = abnormalImgs.get(i);
+            String placeImg = (String) abnormalImgs.get(i).get("item_img");
+            map3.put("item_img",RuoYiConfig.getApiImgUrl()+"/"+placeImg);
+        }
+        JSONObject reJson = new JSONObject();
+        reJson.put("record",recordList.get(0));
+        reJson.put("items",recordItems);
+        reJson.put("abnormalItems",recordAbnormalItems);
+        reJson.put("imgs",recordImgs);
+        reJson.put("abnormalImgs",abnormalImgs);
+
+        return reJson;
     }
 
     //根据巡检记录ID查询巡检记录详情
@@ -354,5 +530,12 @@ public class ACheckApi {
             item.setAbnormalLev(0);
             checkItemMapper.updateCheckItem(item);
         }
+    }
+
+    //测试把图片转成base64
+    @PostMapping("/testBase64")
+    public String testBase64(){
+        String path = "http://101.68.222.195:8184/img/03aa926d-c2a9-4e2f-8f9c-2c986ed7aec1.png";
+        return ImgToBase64.requestUrlToBase64(path);
     }
 }

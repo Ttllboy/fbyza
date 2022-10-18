@@ -49,7 +49,7 @@ public class CheckPlaceController extends BaseController
     /**
      * 查询巡检地点列表
      */
-    @PreAuthorize("@ss.hasPermi('zayy:checkPlace:list')")
+//    @PreAuthorize("@ss.hasPermi('zayy:checkPlace:list')")
     @GetMapping("/list")
     public TableDataInfo list(CheckPlace checkPlace)
     {

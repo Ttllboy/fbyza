@@ -1,5 +1,6 @@
 package com.ruoyi.zayy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckRecordAbnormal;
 
@@ -26,6 +27,9 @@ public interface CheckRecordAbnormalMapper
      * @return 巡检异常集合
      */
     public List<CheckRecordAbnormal> selectCheckRecordAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
+    public List<HashMap> selectCheckAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
+    public List<HashMap> selectCheckAbnormalByRecordId(CheckRecordAbnormal checkRecordAbnormal);
+    public HashMap selectCheckAbnormalByRecordId2(CheckRecordAbnormal checkRecordAbnormal);
 
     /**
      * 新增巡检异常

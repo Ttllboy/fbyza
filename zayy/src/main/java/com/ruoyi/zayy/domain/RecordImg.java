@@ -10,9 +10,36 @@ public class RecordImg {
 
     /** 巡检记录ID */
     private Long recordId;
+    private Long abnormalId;
 
     /** 图片地址 */
     private String  itemImg;
+    private String  imgBase64;
+    private Integer imgType;
+
+    public Long getAbnormalId() {
+        return abnormalId;
+    }
+
+    public void setAbnormalId(Long abnormalId) {
+        this.abnormalId = abnormalId;
+    }
+
+    public String getImgBase64() {
+        return imgBase64;
+    }
+
+    public void setImgBase64(String imgBase64) {
+        this.imgBase64 = imgBase64;
+    }
+
+    public Integer getImgType() {
+        return imgType;
+    }
+
+    public void setImgType(Integer imgType) {
+        this.imgType = imgType;
+    }
 
     public Long getId() {
         return id;

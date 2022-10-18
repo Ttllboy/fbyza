@@ -15,6 +15,15 @@ public class RecordItem {
 
     //是否
     private Integer itemIf;
+    private Integer itemAbnormal;
+
+    public Integer getItemAbnormal() {
+        return itemAbnormal;
+    }
+
+    public void setItemAbnormal(Integer itemAbnormal) {
+        this.itemAbnormal = itemAbnormal;
+    }
 
     public Long getId() {
         return id;

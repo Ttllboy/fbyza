@@ -25,8 +25,8 @@ public class CheckRecordAbnormal extends BaseEntity
     private Long userId;
 
     /** 记录时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "记录时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "记录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date recordTime;
 
     /** 巡检地点 */
@@ -48,6 +48,10 @@ public class CheckRecordAbnormal extends BaseEntity
     /** 处理结果 */
     @Excel(name = "处理结果")
     private String handleResult;
+    @Excel(name = "异常备注")
+    private String remark;
+    @Excel(name = "异常特殊备注")
+    private String remarkSpecial;
 
     /** 异常等级 */
     @Excel(name = "异常等级")
@@ -56,6 +60,35 @@ public class CheckRecordAbnormal extends BaseEntity
     /** 事件状态0处理中1已办结2超时未办 */
     @Excel(name = "事件状态0处理中1已办结2超时未办")
     private Integer eventType;
+
+    private Date startDate;
+    private Date endDate;
+
+    private Integer roleId;
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     public void setId(Long id) 
     {
@@ -146,6 +179,24 @@ public class CheckRecordAbnormal extends BaseEntity
     public Integer getEventType() 
     {
         return eventType;
+    }
+
+    @Override
+    public String getRemark() {
+        return remark;
+    }
+
+    @Override
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getRemarkSpecial() {
+        return remarkSpecial;
+    }
+
+    public void setRemarkSpecial(String remarkSpecial) {
+        this.remarkSpecial = remarkSpecial;
     }
 
     @Override

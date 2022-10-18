@@ -11,21 +11,32 @@
         select * from record_item t1
             left join check_item t2
             on t1.item_id = t2.id
-        where record_id = #{recordId}
+        where t1.record_id = #{recordId}
+    </select>
+    <select id="selectAbnormalItems" parameterType="String" resultType="java.util.HashMap">
+        select * from record_item t1
+            left join check_item t2
+            on t1.item_id = t2.id
+        where t1.record_id = #{recordId}
+        and t1.item_abnormal = 0
     </select>
     <select id="selectRecordImgs" parameterType="Long" resultType="java.util.HashMap">
         select * from record_img
-        where record_id = #{recordId}
+        where record_id = #{recordId} and img_type = 0
+    </select>
+    <select id="selectAbnormalImgs" parameterType="Long" resultType="java.util.HashMap">
+        select * from record_img
+        where record_id = #{recordId} and img_type = 1
     </select>
     <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
-        insert into record_img values (null,#{recordId},#{itemImg})
+        insert into record_img values (null,#{recordId},#{itemImg},#{imgBase64},#{imgType},#{abnormalId})
     </insert>
 
     <insert id="insertRecordImg2" parameterType="RecordImg2" useGeneratedKeys="true" keyProperty="id">
         insert into record_img2 values (null,#{recordId},#{itemImg})
     </insert>
     <insert id="insertRecordItem" parameterType="RecordItem" useGeneratedKeys="true" keyProperty="id">
-        insert into record_item values (null,#{recordId},#{itemId},#{itemIf})
+        insert into record_item values (null,#{recordId},#{itemId},#{itemIf},#{itemAbnormal})
     </insert>
 
 </mapper>

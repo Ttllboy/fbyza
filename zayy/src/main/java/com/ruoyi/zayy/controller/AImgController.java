@@ -7,6 +7,7 @@ import com.ruoyi.zayy.domain.RecordImg;
 import com.ruoyi.zayy.mapper.CheckRecordMapper;
 import com.ruoyi.zayy.mapper.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,8 @@ public class AImgController {
     @Autowired
     CommonMapper commonMapper;
 
-    @PostMapping("/profilePhotoUpload")
+//    @PostMapping(path = "/profilePhotoUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+    @PostMapping(path = "/profilePhotoUpload")
     public JSONObject profilePhotoUpload(@RequestParam("file") MultipartFile fileUpload){
         //获取文件名
         String fileName = fileUpload.getOriginalFilename();

@@ -15,6 +15,17 @@ public class CheckUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public CheckUser(String userName, String userPassword, Integer userRole, String nickName, String userDept) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userRole = userRole;
+        this.nickName = nickName;
+        this.userDept = userDept;
+    }
+
+    public CheckUser() {
+    }
+
     /** ID */
     private Long id;
 
@@ -37,8 +48,26 @@ public class CheckUser extends BaseEntity
     /** 巡检用户科室 */
     @Excel(name = "巡检用户科室")
     private String userDept;
+    private String dingUserId;
+    private Long officeId;
 
-    public void setId(Long id) 
+    public Long getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Long officeId) {
+        this.officeId = officeId;
+    }
+
+    public String getDingUserId() {
+        return dingUserId;
+    }
+
+    public void setDingUserId(String dingUserId) {
+        this.dingUserId = dingUserId;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

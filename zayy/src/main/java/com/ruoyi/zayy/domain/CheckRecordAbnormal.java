@@ -52,6 +52,9 @@ public class CheckRecordAbnormal extends BaseEntity
     private String remark;
     @Excel(name = "异常特殊备注")
     private String remarkSpecial;
+    private String handleFlow;
+    private String functionOffice;
+    private String handleCurrent;
 
     /** 异常等级 */
     @Excel(name = "异常等级")
@@ -65,6 +68,30 @@ public class CheckRecordAbnormal extends BaseEntity
     private Date endDate;
 
     private Integer roleId;
+
+    public String getHandleFlow() {
+        return handleFlow;
+    }
+
+    public void setHandleFlow(String handleFlow) {
+        this.handleFlow = handleFlow;
+    }
+
+    public String getFunctionOffice() {
+        return functionOffice;
+    }
+
+    public void setFunctionOffice(String functionOffice) {
+        this.functionOffice = functionOffice;
+    }
+
+    public String getHandleCurrent() {
+        return handleCurrent;
+    }
+
+    public void setHandleCurrent(String handleCurrent) {
+        this.handleCurrent = handleCurrent;
+    }
 
     public Integer getRoleId() {
         return roleId;

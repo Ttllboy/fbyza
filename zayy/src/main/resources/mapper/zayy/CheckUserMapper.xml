@@ -11,10 +11,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userRole"    column="user_role"    />
         <result property="nickName"    column="nick_name"    />
         <result property="userDept"    column="user_dept"    />
+        <result property="dingUserId"    column="ding_user_id"    />
+        <result property="officeId"    column="office_id"    />
     </resultMap>
 
     <sql id="selectCheckUserVo">
-        select id, user_name, user_password, user_role, nick_name, user_dept from check_user
+        select id, user_name, user_password, user_role, nick_name, user_dept,ding_user_id,office_id from check_user
     </sql>
 
     <select id="selectCheckUserList" parameterType="CheckUser" resultMap="CheckUserResult">
@@ -25,6 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userRole != null "> and user_role = #{userRole}</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="userDept != null  and userDept != ''"> and user_dept = #{userDept}</if>
+            <if test="dingUserId != null  and dingUserId != ''"> and ding_user_id = #{dingUserId}</if>
+            <if test="officeId != null  and officeId != ''"> and office_id = #{officeId}</if>
         </where>
     </select>
     <select id="loginSelect" parameterType="CheckUser" resultMap="CheckUserResult">
@@ -35,6 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userRole != null "> and user_role = #{userRole}</if>
             <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
             <if test="userDept != null  and userDept != ''"> and user_dept = #{userDept}</if>
+            <if test="dingUserId != null  and dingUserId != ''"> and ding_user_id = #{dingUserId}</if>
+            <if test="officeId != null  and officeId != ''"> and office_id = #{officeId}</if>
         </where>
     </select>
     
@@ -51,6 +57,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userRole != null">user_role,</if>
             <if test="nickName != null">nick_name,</if>
             <if test="userDept != null">user_dept,</if>
+            <if test="dingUserId != null">ding_user_id,</if>
+            <if test="officeId != null">office_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userName != null">#{userName},</if>
@@ -58,7 +66,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userRole != null">#{userRole},</if>
             <if test="nickName != null">#{nickName},</if>
             <if test="userDept != null">#{userDept},</if>
+            <if test="dingUserId != null">#{dingUserId},</if>
+            <if test="officeId != null">#{officeId},</if>
          </trim>
+    </insert>
+
+    <insert id="insertDingUser" parameterType="CheckUser" useGeneratedKeys="true" keyProperty="id">
+        insert into check_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="userPassword != null">user_password,</if>
+            <if test="userRole != null">user_role,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="userDept != null">user_dept,</if>
+            <if test="dingUserId != null">ding_user_id,</if>
+            <if test="officeId != null">office_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="userPassword != null">#{userPassword},</if>
+            <if test="userRole != null">#{userRole},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="userDept != null">#{userDept},</if>
+            <if test="dingUserId != null">#{dingUserId},</if>
+            <if test="officeId != null">#{officeId},</if>
+         </trim>
+        <selectKey keyProperty="id" order="AFTER" resultType="Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
     <update id="updateCheckUser" parameterType="CheckUser">
@@ -69,6 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userRole != null">user_role = #{userRole},</if>
             <if test="nickName != null">nick_name = #{nickName},</if>
             <if test="userDept != null">user_dept = #{userDept},</if>
+            <if test="dingUserId != null">ding_user_id = #{dingUserId},</if>
+            <if test="officeId != null">office_id = #{officeId},</if>
         </trim>
         where id = #{id}
     </update>

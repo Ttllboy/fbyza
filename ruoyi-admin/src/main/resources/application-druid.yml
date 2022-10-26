@@ -7,6 +7,7 @@ ruoyi:
     logoUrl: /opt/zayy/logo.png
     apiImgUrl: http://101.68.222.195:8184/img
     apiImgUrl2: http://101.68.222.195:8184/img2
+    apiServer: http://101.68.222.195:8184/ding/auth
 
 spring:
     datasource:
@@ -67,3 +68,6 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+logging:
+    file:
+        name: ./ruoyi.log

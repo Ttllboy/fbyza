@@ -28,6 +28,10 @@
         select * from record_img
         where record_id = #{recordId} and img_type = 1
     </select>
+    <select id="selectDingUserId" parameterType="String" resultType="java.util.HashMap">
+        select * from check_user
+        where ding_user_id = #{dingUserId}
+    </select>
     <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
         insert into record_img values (null,#{recordId},#{itemImg},#{imgBase64},#{imgType},#{abnormalId})
     </insert>
@@ -38,5 +42,11 @@
     <insert id="insertRecordItem" parameterType="RecordItem" useGeneratedKeys="true" keyProperty="id">
         insert into record_item values (null,#{recordId},#{itemId},#{itemIf},#{itemAbnormal})
     </insert>
+    <select id="selectPlaceId" parameterType="String" resultType="java.util.HashMap">
+        select * from check_place where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

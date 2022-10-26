@@ -93,7 +93,8 @@ public class CheckPlaceController extends BaseController
     public AjaxResult add(@RequestBody CheckPlace checkPlace)throws Exception
     {
         String placeId = String.valueOf(UUID.randomUUID());
-        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId;
+//        String redirect_uri = java.net.URLEncoder.encode(RuoYiConfig.getApiServer(),"utf-8");
+        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId+"&corpId=ding1d34adf2092c528cee0f45d8e4f7c288";
         String logoPath = RuoYiConfig.getLogoUrl();
         String destPath = RuoYiConfig.getCheckImg();
         String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);
@@ -143,5 +144,20 @@ public class CheckPlaceController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(checkPlaceService.deleteCheckPlaceByIds(ids));
+
     }
+
+    public void test()throws Exception{
+        String redirect_uri = java.net.URLEncoder.encode("http://zayy.fgimax.vipnps.vip/ding/auth","utf-8");
+        String url = "http://inspection.fby.jiaguangkeji.com"+"/"+"?placeId="+"sasa"+"&redirect_uri="+redirect_uri
+                +"&response_type=code&client_id=" + "ding7azaat1uqapjxt39"
+                +"&scope=openid&state=dddd&prompt=consent";
+        System.out.println(url);
+    }
+
+    public static void main(String[] args) throws Exception {
+        CheckPlaceController checkPlaceController = new CheckPlaceController();
+        checkPlaceController.test();
+    }
+
 }

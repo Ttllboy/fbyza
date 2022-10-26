@@ -1,5 +1,6 @@
 package com.ruoyi.zayy.controller;
 
+import ch.qos.logback.core.pattern.ConverterUtil;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -365,9 +367,170 @@ public class ACheckApi {
     @PostMapping("/getCheckAbnormal")
     public List getCheckAbnormal(@RequestBody JSONObject questJson){
         Long userId = questJson.getLong("userId");
-        CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
-        abnormal.setUserId(userId);
-        List<HashMap> list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+        CheckUser checkUser = checkUserMapper.selectCheckUserById(userId);
+        Integer userRole = checkUser.getUserRole();
+        String userDept = checkUser.getUserDept();
+        List<HashMap> list = null;
+        if(userRole == 0){
+            //巡检员可以看到他自己的巡检记录
+            Integer type = questJson.getInteger("type");
+            CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+            abnormal.setUserId(userId);
+            if(type == 0){
+                abnormal.setEventType(0);
+            }if(type == 1){
+                abnormal.setEventType(1);
+            }if(type == 2){
+                abnormal.setEventType(2);
+            }if(type == 3){
+                abnormal.setEventType(3);
+            }if(type == 4){
+                abnormal.setEventType(4);
+            }
+            list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+        }else if(userRole == 2){
+            //科室主任可以看到他科室的巡检记录
+            Integer type = questJson.getInteger("type");
+            if(userDept.contains(",")){
+                String[] placeIdsStr = userDept.split(",");
+                Long[] placeIds = new Long[placeIdsStr.length];
+                for (int i = 0; i < placeIdsStr.length; i++) {
+                    placeIds[i] = Long.valueOf(placeIdsStr[i]);
+                }
+                List<HashMap> maps =  commonMapper.selectPlaceId(placeIds);
+                String[] place = new String[maps.size()];
+                for (int i = 0; i < maps.size(); i++) {
+                    place[i] = (String) maps.get(i).get("place_id");
+                }
+                list = checkRecordAbnormalMapper.selectByPlaceId(place);
+                if(type == 0){
+                    for (int i = 0; i < list.size(); i++) {
+                        HashMap map = list.get(i);
+                        Integer eventType = (Integer) map.get("event_type");
+                        if(eventType != 0){
+                            list.remove(i);
+                            i--;
+                        }
+                    }
+                }else if(type == 1){
+                    for (int i = 0; i < list.size(); i++) {
+                        HashMap map = list.get(i);
+                        Integer eventType = (Integer) map.get("event_type");
+                        if(eventType != 1){
+                            list.remove(i);
+                            i--;
+                        }
+                    }
+                }else if(type == 2){
+                    for (int i = 0; i < list.size(); i++) {
+                        HashMap map = list.get(i);
+                        Integer eventType = (Integer) map.get("event_type");
+                        if(eventType != 2){
+                            list.remove(i);
+                            i--;
+                        }
+                    }
+                }else if(type == 3){
+                    for (int i = 0; i < list.size(); i++) {
+                        HashMap map = list.get(i);
+                        Integer eventType = (Integer) map.get("event_type");
+                        if(eventType != 3){
+                            list.remove(i);
+                            i--;
+                        }
+                    }
+                }else if(type == 4){
+                    for (int i = 0; i < list.size(); i++) {
+                        HashMap map = list.get(i);
+                        Integer eventType = (Integer) map.get("event_type");
+                        if(eventType != 4){
+                            list.remove(i);
+                            i--;
+                        }
+                    }
+                }
+            }else {
+                CheckPlace checkPlace = checkPlaceMapper.selectCheckPlaceById(Long.valueOf(userDept));
+                CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+                abnormal.setCheckPlace(checkPlace.getPlaceId());
+                if(type == 0){
+                    abnormal.setEventType(0);
+                }else if(type == 1){
+                    abnormal.setEventType(1);
+                }else if(type == 2){
+                    abnormal.setEventType(2);
+                }else if(type == 3){
+                    abnormal.setEventType(3);
+                }else if(type == 4){
+                    abnormal.setEventType(4);
+                }
+                list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+            }
+        }
+        else if(userRole == 4){
+            CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+            Integer type = questJson.getInteger("type");
+            if(type == 0){
+                abnormal.setEventType(0);
+            }else if(type == 1){
+                abnormal.setEventType(1);
+            }else if(type == 2){
+                abnormal.setEventType(2);
+            }else if(type == 3){
+                abnormal.setEventType(3);
+            }else if(type == 4){
+                abnormal.setEventType(4);
+            }
+            list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+        }else if(userRole == 5){
+            list = checkRecordAbnormalMapper.selectCheckAbnormalList(new CheckRecordAbnormal());
+            for (int i = 0; i < list.size(); i++) {
+                HashMap map = list.get(i);
+                String functionOffice = (String) map.get("function_office");
+
+                if(functionOffice != null){
+                    if(!functionOffice.contains("0")){
+                        list.remove(i);
+                        i--;
+                    }
+                }else {
+                    list.remove(i);
+                    i--;
+                }
+
+            }
+        }else if(userRole == 6){
+            list = checkRecordAbnormalMapper.selectCheckAbnormalList(new CheckRecordAbnormal());
+            for (int i = 0; i < list.size(); i++) {
+                HashMap map = list.get(i);
+                String functionOffice = (String) map.get("function_office");
+                if(functionOffice != null){
+                    if(!functionOffice.contains("1")){
+                        list.remove(i);
+                        i--;
+                    }else {
+                        list.remove(i);
+                        i--;
+                    }
+                }
+
+            }
+        }else if(userRole == 7){
+            list = checkRecordAbnormalMapper.selectCheckAbnormalList(new CheckRecordAbnormal());
+            for (int i = 0; i < list.size(); i++) {
+                HashMap map = list.get(i);
+                String functionOffice = (String) map.get("function_office");
+                if(functionOffice != null){
+                    if(!functionOffice.contains("2")){
+                        list.remove(i);
+                        i--;
+                    }else {
+                        list.remove(i);
+                        i--;
+                    }
+                }
+            }
+        }
         for (int i = 0; i < list.size(); i++) {
             HashMap map = list.get(i);
             if(!map.containsKey("place_name")){
@@ -376,6 +539,11 @@ public class ACheckApi {
             }
         }
         return list;
+    }
+
+    @PostMapping("/testaa")
+    public List<HashMap> testaa(@RequestBody Long[] placeIds){
+        return commonMapper.selectPlaceId(placeIds);
     }
 
     //根据巡检异常记录ID查询详情
@@ -439,6 +607,62 @@ public class ACheckApi {
         return reJson;
     }
 
+    //根据巡检异常记录ID更新巡检异常记录
+    @PostMapping("/updateAbnormalHandle")
+    public JSONObject updateAbnormalHandle(@RequestBody JSONObject questJson){
+        String recordId = questJson.getString("recordId");
+        Integer eventType = questJson.getInteger("eventType");
+        Integer abnormalLev = questJson.getInteger("abnormalLev");
+        String handleFlow = questJson.getString("handleFlow");
+//        CheckUser checkUser = checkUserMapper.selectCheckUserById(userId);
+
+        CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+        abnormal.setRecordId(recordId);
+        abnormal.setHandleMethod(questJson.getString("handleMethod"));
+        abnormal.setHandleResult(questJson.getString("handleResult"));
+        abnormal.setEventType(eventType);
+        abnormal.setHandleFlow(getHandleFlow(abnormalLev,eventType,handleFlow));
+        Integer tip = checkRecordAbnormalMapper.updateCheckRecordAbnormalByRecordId(abnormal);
+        if(tip == 1){
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",200);
+            reJson.put("msg","提交成功");
+            return reJson;
+        }else {
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",500);
+            reJson.put("msg","提交失败");
+            return reJson;
+        }
+    }
+
+    //根据userId、handleFlow、eventType返回应该更新的handleFlow
+    public String getHandleFlow(Integer abnormalLev, Integer eventType, String handleFlow){
+        if(abnormalLev == 0 && eventType == 2){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date nowDate = new Date();
+            String strDate = sdf.format(nowDate);
+            handleFlow = "1,"+strDate;
+            return handleFlow;
+        }else if(abnormalLev == 1 && eventType == 2) {
+            String[] strAry = handleFlow.split(",");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date nowDate = new Date();
+            String strDate = sdf.format(nowDate);
+            handleFlow = strAry[0] + "," + strAry[1] + ",1," + strDate;
+            return handleFlow;
+        }else if(abnormalLev == 2 && eventType == 2) {
+            String[] strAry = handleFlow.split(",");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date nowDate = new Date();
+            String strDate = sdf.format(nowDate);
+            handleFlow = strAry[0] + "," + strAry[1] + ",1," + strDate;
+            return handleFlow;
+        }
+        return null;
+    }
+
+
     //测试插入巡检图片
     @PostMapping("/testInsert")
     public void testInsert()throws Exception{
@@ -454,19 +678,6 @@ public class ACheckApi {
         checkPlaceMapper.insertCheckPlace(checkPlace);
     }
 
-    //测试分割数组
-    @PostMapping("/ttest")
-    public int getIntArray(@RequestBody JSONObject jsonObject){
-
-        Date date1 = new Date();
-        Date date2 = jsonObject.getDate("date2");
-        Long s = date2.getTime();
-        Long ss = date1.getTime();
-        if (s > ss){
-            System.out.println(1);
-        }
-        return 1;
-    }
     @Autowired
     private CheckTaskMapper checkTaskMapper;
 
@@ -502,24 +713,6 @@ public class ACheckApi {
         return reJson;
     }
 
-    @PostMapping("/testaa")
-    public void testaa(){
-        Integer tip = 20;
-        for (Integer i = 0; i < tip; i++) {
-            CheckTask task = new CheckTask();
-            task.setTaskId(String.valueOf(UUID.randomUUID()));
-            task.setUserId(1L);
-            task.setReleaseTime(new Date());
-            Long dateTime = new Date().getTime();
-            dateTime = dateTime + 1000000;
-            task.setDeadline(new Date(dateTime));
-            task.setDeptId("6");
-            task.setIsNot(0);
-            task.setTaskType(1);
-            checkTaskMapper.insertCheckTask(task);
-        }
-    }
-
     //测试把巡检项的等级和异常都插上
     @PostMapping("/insertItem")
     public void insertItem(){
@@ -530,12 +723,5 @@ public class ACheckApi {
             item.setAbnormalLev(0);
             checkItemMapper.updateCheckItem(item);
         }
-    }
-
-    //测试把图片转成base64
-    @PostMapping("/testBase64")
-    public String testBase64(){
-        String path = "http://101.68.222.195:8184/img/03aa926d-c2a9-4e2f-8f9c-2c986ed7aec1.png";
-        return ImgToBase64.requestUrlToBase64(path);
     }
 }

@@ -17,10 +17,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="eventType"    column="event_type"    />
         <result property="remark"    column="remark"    />
         <result property="remarkSpecial"    column="remark_special"    />
+        <result property="handleFlow"    column="handle_flow"    />
+        <result property="functionOffice"    column="function_office"    />
+        <result property="handleCurrent"    column="handle_current"    />
     </resultMap>
 
     <sql id="selectCheckRecordAbnormalVo">
-        select id, user_id, record_time, check_place, record_id, check_content, handle_method, handle_result, abnormal_lev, event_type,remark,remark_special from check_record_abnormal
+        select id, user_id, record_time, check_place, record_id, check_content, handle_method, handle_result, abnormal_lev, event_type,remark,remark_special,handle_flow,function_office,handle_current from check_record_abnormal
     </sql>
 
     <select id="selectCheckRecordAbnormalList" parameterType="CheckRecordAbnormal" resultMap="CheckRecordAbnormalResult">
@@ -37,16 +40,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="eventType != null "> and event_type = #{eventType}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="remarkSpecial != null  and remarkSpecial != ''"> and remark_special = #{remarkSpecial}</if>
+            <if test="handleFlow != null  and handleFlow != ''"> and handle_flow = #{handleFlow}</if>
+            <if test="functionOffice != null  and functionOffice != ''"> and function_office = #{functionOffice}</if>
+            <if test="handleCurrent != null  and handleCurrent != ''"> and handle_current = #{handleCurrent}</if>
             <if test="startDate != null"> and record_time &gt;= #{startDate}</if>
             <if test="endDate != null"> and record_time &lt;= #{endDate}</if>
         </where>
+        order by record_time desc
     </select>
     <select id="selectCheckAbnormalList" parameterType="CheckRecordAbnormal" resultType="java.util.HashMap">
         select *
         from check_record_abnormal t1
         left join check_place t2
         on t1.check_place = t2.place_id
-        where t1.user_id = #{userId}
+        <where>
+            <if test="userId != null "> and t1.user_id = #{userId}</if>
+            <if test="eventType != null "> and t1.event_type = #{eventType}</if>
+            <if test="checkPlace != null  and checkPlace != ''"> and t1.check_place = #{checkPlace}</if>
+        </where>
         order by t1.record_time desc
     </select>
     <select id="selectCheckAbnormalByRecordId" parameterType="CheckRecordAbnormal" resultType="java.util.HashMap">
@@ -83,6 +94,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="eventType != null">event_type,</if>
             <if test="remark != null">remark,</if>
             <if test="remarkSpecial != null">remark_special,</if>
+            <if test="handleFlow != null">handle_flow,</if>
+            <if test="functionOffice != null">function_office,</if>
+            <if test="handleCurrent != null">handle_current,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
@@ -96,6 +110,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="eventType != null">#{eventType},</if>
             <if test="remark != null">#{remark},</if>
             <if test="remarkSpecial != null">#{remarkSpecial},</if>
+            <if test="handleFlow != null">#{handleFlow},</if>
+            <if test="functionOffice != null">#{functionOffice},</if>
+            <if test="handleCurrent != null">#{handleCurrent},</if>
          </trim>
     </insert>
 
@@ -113,8 +130,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="eventType != null">event_type = #{eventType},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="remarkSpecial != null">remark_special = #{remarkSpecial},</if>
+            <if test="handleFlow != null">handle_flow = #{handleFlow},</if>
+            <if test="functionOffice != null">function_office = #{functionOffice},</if>
+            <if test="handleCurrent != null">handle_current = #{handleCurrent},</if>
         </trim>
         where id = #{id}
+    </update>
+    <update id="updateCheckRecordAbnormalByRecordId" parameterType="CheckRecordAbnormal">
+        update check_record_abnormal
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="recordTime != null">record_time = #{recordTime},</if>
+            <if test="checkPlace != null">check_place = #{checkPlace},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="checkContent != null">check_content = #{checkContent},</if>
+            <if test="handleMethod != null">handle_method = #{handleMethod},</if>
+            <if test="handleResult != null">handle_result = #{handleResult},</if>
+            <if test="abnormalLev != null">abnormal_lev = #{abnormalLev},</if>
+            <if test="eventType != null">event_type = #{eventType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="remarkSpecial != null">remark_special = #{remarkSpecial},</if>
+            <if test="handleFlow != null">handle_flow = #{handleFlow},</if>
+            <if test="functionOffice != null">function_office = #{functionOffice},</if>
+            <if test="handleCurrent != null">handle_current = #{handleCurrent},</if>
+        </trim>
+        where record_id = #{recordId}
     </update>
 
     <delete id="deleteCheckRecordAbnormalById" parameterType="Long">
@@ -127,4 +167,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <select id="selectByPlaceId" parameterType="String" resultType="java.util.HashMap">
+        select * from check_record_abnormal where record_id in
+        <foreach item="record_id" collection="array" open="(" separator="," close=")">
+            #{record_id}
+        </foreach>
+    </select>
 </mapper>

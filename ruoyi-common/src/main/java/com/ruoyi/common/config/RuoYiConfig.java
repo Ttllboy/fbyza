@@ -41,11 +41,73 @@ public class RuoYiConfig
 
     //logo地址
     private static String logoUrl;
+    private static String accessToken;
+    private static String getUserInfo;
+    private static String getAvatar;
 
     //服务器图片地址
     private static String apiImgUrl;
     private static String apiImgUrl2;
+    private static String appKey;
+    private static String agentId;
+    private static String appSecret;
+    private static String apiServer;
 
+    public static String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        RuoYiConfig.accessToken = accessToken;
+    }
+
+    public static String getGetUserInfo() {
+        return getUserInfo;
+    }
+
+    public void setGetUserInfo(String getUserInfo) {
+        RuoYiConfig.getUserInfo = getUserInfo;
+    }
+
+    public static String getGetAvatar() {
+        return getAvatar;
+    }
+
+    public void setGetAvatar(String getAvatar) {
+        RuoYiConfig.getAvatar = getAvatar;
+    }
+
+    public static String getApiServer() {
+        return apiServer;
+    }
+
+    public void setApiServer(String apiServer) {
+        RuoYiConfig.apiServer = apiServer;
+    }
+
+    public static String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        RuoYiConfig.appKey = appKey;
+    }
+
+    public static String getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(String agentId) {
+        RuoYiConfig.agentId = agentId;
+    }
+
+    public static String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        RuoYiConfig.appSecret = appSecret;
+    }
 
     public static String getApiImgUrl() {
         return apiImgUrl;

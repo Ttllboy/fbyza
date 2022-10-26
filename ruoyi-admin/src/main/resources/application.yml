@@ -18,7 +18,7 @@ ruoyi:
   checkImg: D:/work/fbyza/assets
 #  checkImg: /opt/zayy/checkImg
   # 网页地址
-  webUrl: https://www.baidu.com
+  webUrl: http://inspection.fby.jiaguangkeji.com
   # logo地址
   logoUrl: D:/work/fbyza/assets/logo.png
   # 服务器图片地址
@@ -32,6 +32,12 @@ ruoyi:
   appKey: ding7azaat1uqapjxt39
   #钉钉AppSecret
   appSecret: GpMah6Yykg5aLycvS_Q5i99MaGsS-BoDAFF_15t652HOMCzNzUyDVJTMVcTqCkNJ
+  #后台Api
+  apiServer: http://zayy.fgimax.vipnps.vip/ding/auth
+  #accessToken
+  accessToken: https://oapi.dingtalk.com/gettoken
+  getUserInfo: https://oapi.dingtalk.com/topapi/v2/user/getuserinfo
+  getAvatar: https://oapi.dingtalk.com/topapi/v2/user/get
 
 # 开发环境配置
 server:
@@ -50,12 +56,16 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
+    max-http-form-post-size: 10MB
 
 # 日志配置
 logging:
   level:
     com.ruoyi: debug
     org.springframework: warn
+    com.ruoyi.zayy.controller.ABehaviouralAnalysisController: off
+
+
 
 # 用户配置
 user:

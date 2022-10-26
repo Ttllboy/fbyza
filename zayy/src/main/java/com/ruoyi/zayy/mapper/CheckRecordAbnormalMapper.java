@@ -46,6 +46,7 @@ public interface CheckRecordAbnormalMapper
      * @return 结果
      */
     public int updateCheckRecordAbnormal(CheckRecordAbnormal checkRecordAbnormal);
+    public int updateCheckRecordAbnormalByRecordId(CheckRecordAbnormal checkRecordAbnormal);
 
     /**
      * 删除巡检异常
@@ -62,4 +63,5 @@ public interface CheckRecordAbnormalMapper
      * @return 结果
      */
     public int deleteCheckRecordAbnormalByIds(Long[] ids);
+    public List<HashMap> selectByPlaceId(String[] ids);
 }

@@ -37,6 +37,7 @@ public interface CheckUserMapper
      * @return 结果
      */
     public int insertCheckUser(CheckUser checkUser);
+    public long insertDingUser(CheckUser checkUser);
 
     /**
      * 修改人员管理

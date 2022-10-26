@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-<!--      <el-form-item label="巡检地点ID" prop="placeId">-->
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="140px">
+<!--      <el-form-item label="二级管理片区ID" prop="placeId">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.placeId"-->
-<!--          placeholder="请输入巡检地点ID"-->
+<!--          placeholder="请输入二级管理片区ID"-->
 <!--          clearable-->
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="巡检地点名称" prop="placeName">
+      <el-form-item label="二级管理片区名称" prop="placeName">
         <el-input
           v-model="queryParams.placeName"
-          placeholder="请输入巡检地点名称"
+          placeholder="请输入二级管理片区名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -33,10 +33,10 @@
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
 <!--      </el-form-item>-->
-<!--      <el-form-item label="巡检地点二维码" prop="placeImg">-->
+<!--      <el-form-item label="二级管理片区二维码" prop="placeImg">-->
 <!--        <el-input-->
 <!--          v-model="queryParams.placeImg"-->
-<!--          placeholder="请输入巡检地点二维码"-->
+<!--          placeholder="请输入二级管理片区二维码"-->
 <!--          clearable-->
 <!--          @keyup.enter.native="handleQuery"-->
 <!--        />-->
@@ -100,11 +100,11 @@
           <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="巡检地点ID" align="center" prop="placeId" />
-      <el-table-column label="巡检地点名称" align="center" prop="placeName" />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="巡检地点二维码" align="center" prop="placeImg">
+      <el-table-column label="二级管理片区ID" align="center" prop="placeId" />
+      <el-table-column label="二级管理片区名称" align="center" prop="placeName" />
+      <!-- <el-table-column label="经度" align="center" prop="longitude" />
+      <el-table-column label="纬度" align="center" prop="latitude" /> -->
+      <el-table-column label="二级管理片区二维码" align="center" prop="placeImg">
         <template slot-scope="scope">
           <el-image :src="scope.row.placeImg" :preview-src-list="[scope.row.placeImg]"></el-image>
         </template>
@@ -137,23 +137,23 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改巡检地点对话框 -->
+    <!-- 添加或修改二级管理片区对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-<!--        <el-form-item label="巡检地点ID" prop="placeId">-->
-<!--          <el-input v-model="form.placeId" placeholder="请输入巡检地点ID" />-->
+      <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+<!--        <el-form-item label="二级管理片区ID" prop="placeId">-->
+<!--          <el-input v-model="form.placeId" placeholder="请输入二级管理片区ID" />-->
 <!--        </el-form-item>-->
-        <el-form-item label="巡检地点名称" prop="placeName">
-          <el-input v-model="form.placeName" placeholder="请输入巡检地点名称" />
+        <el-form-item label="二级管理片区名称" prop="placeName">
+          <el-input v-model="form.placeName" placeholder="请输入二级管理片区名称" />
         </el-form-item>
-        <el-form-item label="经度" prop="longitude">
+        <!-- <el-form-item label="经度" prop="longitude">
           <el-input v-model="form.longitude" placeholder="请输入经度" />
         </el-form-item>
         <el-form-item label="纬度" prop="latitude">
           <el-input v-model="form.latitude" placeholder="请输入纬度" />
-        </el-form-item>
-<!--        <el-form-item label="巡检地点二维码" prop="placeImg">-->
-<!--          <el-input v-model="form.placeImg" placeholder="请输入巡检地点二维码" />-->
+        </el-form-item> -->
+<!--        <el-form-item label="二级管理片区二维码" prop="placeImg">-->
+<!--          <el-input v-model="form.placeImg" placeholder="请输入二级管理片区二维码" />-->
 <!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -183,7 +183,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 巡检地点表格数据
+      // 二级管理片区表格数据
       checkPlaceList: [],
       // 弹出层标题
       title: "",
@@ -210,7 +210,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询巡检地点列表 */
+    /** 查询二级管理片区列表 */
     getList() {
       this.loading = true;
       listCheckPlace(this.queryParams).then(response => {
@@ -256,7 +256,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加巡检地点";
+      this.title = "添加二级管理片区";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -265,7 +265,7 @@ export default {
       getCheckPlace(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改巡检地点";
+        this.title = "修改二级管理片区";
       });
     },
     /** 提交按钮 */
@@ -291,7 +291,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除巡检地点编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除二级管理片区编号为"' + ids + '"的数据项？').then(function() {
         return delCheckPlace(ids);
       }).then(() => {
         this.getList();

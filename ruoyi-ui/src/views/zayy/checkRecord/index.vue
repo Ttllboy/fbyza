@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="巡检员名字" prop="userId">
+      <el-form-item label="安全员名字" prop="userId">
         <!-- <el-input
           v-model="queryParams.userId"
-          placeholder="请输入巡检员名字"
+          placeholder="请输入安全员名字"
           clearable
           @keyup.enter.native="handleQuery"
         /> -->
@@ -32,10 +32,10 @@
           placeholder="请选择记录时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="巡检地点" prop="checkPlace">
+      <el-form-item label="二级管理片区" prop="checkPlace">
         <!-- <el-input
           v-model="queryParams.checkPlace"
-          placeholder="请输入巡检地点"
+          placeholder="请输入二级管理片区"
           clearable
           @keyup.enter.native="handleQuery"
         /> -->
@@ -114,10 +114,10 @@
           <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="巡检员名字" align="center" prop="nickName" />
+      <el-table-column label="安全员名字" align="center" prop="nickName" />
       <el-table-column label="记录时间" align="center" prop="recordTime" width="180">
       </el-table-column>
-      <el-table-column label="巡检地点" align="center" prop="placeName" />
+      <el-table-column label="二级管理片区" align="center" prop="placeName" />
       <el-table-column label="巡检记录ID" align="center" prop="recordId" />
       <el-table-column label="详情描述" align="center" prop="checkContent">
         <template slot-scope="scope">
@@ -162,8 +162,8 @@
     <!-- 添加或修改巡检记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="巡检员名字" prop="userId">
-          <!-- <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入巡检员名字" /> -->
+        <el-form-item label="安全员名字" prop="userId">
+          <!-- <el-input :disabled="disabled" v-model="form.userId" placeholder="请输入安全员名字" /> -->
           <el-select :disabled="disabled" v-model="form.userId" clearable>
             <el-option
             v-for="item in listUser"
@@ -182,8 +182,8 @@
             placeholder="请选择记录时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="巡检地点" prop="checkPlace">
-          <!-- <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入巡检地点" /> -->
+        <el-form-item label="二级管理片区" prop="checkPlace">
+          <!-- <el-input :disabled="disabled" v-model="form.checkPlace" placeholder="请输入二级管理片区" /> -->
           <el-select :disabled="disabled" v-model="form.checkPlace">
             <el-option
             v-for="item in listPlace"

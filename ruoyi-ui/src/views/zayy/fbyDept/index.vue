@@ -96,7 +96,7 @@
       <el-table-column label="科室地点ID" align="center" prop="deptId" />
       <el-table-column label="经度" align="center" prop="longitude" />
       <el-table-column label="纬度" align="center" prop="latitude" />
-      <el-table-column label="巡检地点二维码" align="center" prop="deptImg" />
+      <el-table-column label="二级管理片区二维码" align="center" prop="deptImg" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -140,7 +140,7 @@
         <el-form-item label="纬度" prop="latitude">
           <el-input v-model="form.latitude" placeholder="请输入纬度" />
         </el-form-item>
-        <el-form-item label="巡检地点二维码" prop="deptImg">
+        <el-form-item label="二级管理片区二维码" prop="deptImg">
           <el-input v-model="form.deptImg" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>

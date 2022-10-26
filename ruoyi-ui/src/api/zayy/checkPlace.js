@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询巡检地点列表
+// 查询二级管理片区列表
 export function listCheckPlace(query) {
   return request({
     url: '/zayy/checkPlace/list',
@@ -9,7 +9,7 @@ export function listCheckPlace(query) {
   })
 }
 
-// 查询巡检地点详细
+// 查询二级管理片区详细
 export function getCheckPlace(id) {
   return request({
     url: '/zayy/checkPlace/' + id,
@@ -17,7 +17,7 @@ export function getCheckPlace(id) {
   })
 }
 
-// 新增巡检地点
+// 新增二级管理片区
 export function addCheckPlace(data) {
   return request({
     url: '/zayy/checkPlace',
@@ -26,7 +26,7 @@ export function addCheckPlace(data) {
   })
 }
 
-// 修改巡检地点
+// 修改二级管理片区
 export function updateCheckPlace(data) {
   return request({
     url: '/zayy/checkPlace',
@@ -35,7 +35,7 @@ export function updateCheckPlace(data) {
   })
 }
 
-// 删除巡检地点
+// 删除二级管理片区
 export function delCheckPlace(id) {
   return request({
     url: '/zayy/checkPlace/' + id,

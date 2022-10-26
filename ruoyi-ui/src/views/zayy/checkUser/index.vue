@@ -260,11 +260,13 @@ export default {
           this.listPlace = res.rows
           res.rows.forEach(item => {
             response.rows.forEach(k => {
-              k.userDept.split(",").forEach(arr => {
-                if(arr == item.id) {
-                  k.placeName.push(item.placeName)
-                }
-              })
+              if(!!k.userDept) {
+                k.userDept.split(",").forEach(arr => {
+                  if(arr == item.id) {
+                    k.placeName.push(item.placeName)
+                  }
+                })                
+              }
             })
           })
           response.rows.forEach(item => {

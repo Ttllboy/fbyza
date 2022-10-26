@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.CheckFunctionOfficeMapper">
+    
+    <resultMap type="CheckFunctionOffice" id="CheckFunctionOfficeResult">
+        <result property="id"    column="id"    />
+        <result property="officeName"    column="office_name"    />
+    </resultMap>
+
+    <sql id="selectCheckFunctionOfficeVo">
+        select id, office_name from check_function_office
+    </sql>
+
+    <select id="selectCheckFunctionOfficeList" parameterType="CheckFunctionOffice" resultMap="CheckFunctionOfficeResult">
+        <include refid="selectCheckFunctionOfficeVo"/>
+        <where>  
+            <if test="officeName != null  and officeName != ''"> and office_name like concat('%', #{officeName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckFunctionOfficeById" parameterType="Long" resultMap="CheckFunctionOfficeResult">
+        <include refid="selectCheckFunctionOfficeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckFunctionOffice" parameterType="CheckFunctionOffice" useGeneratedKeys="true" keyProperty="id">
+        insert into check_function_office
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="officeName != null">office_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="officeName != null">#{officeName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckFunctionOffice" parameterType="CheckFunctionOffice">
+        update check_function_office
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="officeName != null">office_name = #{officeName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckFunctionOfficeById" parameterType="Long">
+        delete from check_function_office where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckFunctionOfficeByIds" parameterType="String">
+        delete from check_function_office where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

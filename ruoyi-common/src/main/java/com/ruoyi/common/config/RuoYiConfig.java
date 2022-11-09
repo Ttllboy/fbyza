@@ -48,10 +48,28 @@ public class RuoYiConfig
     //服务器图片地址
     private static String apiImgUrl;
     private static String apiImgUrl2;
+    private static String webImgUrl;
+    private static String webImgUrl2;
     private static String appKey;
     private static String agentId;
     private static String appSecret;
     private static String apiServer;
+
+    public static String getWebImgUrl2() {
+        return webImgUrl2;
+    }
+
+    public void setWebImgUrl2(String webImgUrl2) {
+        RuoYiConfig.webImgUrl2 = webImgUrl2;
+    }
+
+    public static String getWebImgUrl() {
+        return webImgUrl;
+    }
+
+    public void setWebImgUrl(String webImgUrl) {
+        RuoYiConfig.webImgUrl = webImgUrl;
+    }
 
     public static String getAccessToken() {
         return accessToken;

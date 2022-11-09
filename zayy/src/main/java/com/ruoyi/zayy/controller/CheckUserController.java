@@ -2,6 +2,10 @@ package com.ruoyi.zayy.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONArray;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.zayy.mapper.CheckUserMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,6 +84,9 @@ public class CheckUserController extends BaseController
         return toAjax(checkUserService.insertCheckUser(checkUser));
     }
 
+    @Autowired
+    private CheckUserMapper checkUserMapper;
+
     /**
      * 修改人员管理
      */
@@ -88,7 +95,42 @@ public class CheckUserController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody CheckUser checkUser)
     {
+        SysUser user = new SysUser();
+        user.setNickName(checkUser.getNickName());
+        user.setUserName(checkUser.getUserName());
+        user.setUserDept(checkUser.getUserDept());
+        user.setOfficeId(checkUser.getOfficeId());
+        user.setPassword(checkUser.getUserPassword());
+        user.setDingUserId(checkUser.getDingUserId());
+        user.setRoleId(getUserRole(Long.valueOf(checkUser.getUserRole())));
+        Integer checkUserRoleInt = checkUser.getUserRole();
+        Long checkUserRole = Long.valueOf(checkUserRoleInt);
+        Long userRole = getUserRole(checkUserRole);
+        user.setRoleId(userRole);
+        Long[] userRoleIds = new Long[]{userRole};
+        user.setRoleIds(userRoleIds);
+        try{
+            checkUserMapper.updateSysUser(user);
+        }catch (Throwable throwable){
+            System.out.println("当前用户不存在");
+        }
         return toAjax(checkUserService.updateCheckUser(checkUser));
+    }
+    public Long getUserRole(Long checkUserRole){
+        Long userRole = null;
+        if(checkUserRole == 0){    //巡检员
+            userRole = 7l;
+        }
+        if(checkUserRole == 2){    //科室主任
+            userRole = 3l;
+        }
+        if(checkUserRole == 3){    //职能科室
+            userRole = 5l;
+        }
+        if(checkUserRole == 4){    //院领导
+            userRole = 6l;
+        }
+        return userRole;
     }
 
     /**
@@ -99,6 +141,16 @@ public class CheckUserController extends BaseController
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
+        JSONArray userNameArray = new JSONArray();
+        for (int i = 0; i < ids.length; i++) {
+            Long checkUserId = ids[i];
+            CheckUser checkUser =  checkUserService.selectCheckUserById(checkUserId);
+            String userName = checkUser.getUserName();
+            userNameArray.add(userName);
+        }
+        if (userNameArray.size() > 0) {
+            checkUserMapper.deleteSysuser(userNameArray);
+        }
         return toAjax(checkUserService.deleteCheckUserByIds(ids));
     }
 }

@@ -1,6 +1,8 @@
 package com.ruoyi.zayy.domain;
 
 import java.util.Date;
+
+import com.alibaba.fastjson2.JSONArray;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -42,6 +44,52 @@ public class CheckRecord extends BaseEntity
     private String checkContent;
     //巡检类型
     private Integer checkType;
+
+    private Integer roleId;
+    private Integer sysUserId;
+    private String  sysUserDept;
+    private Long sysUserOfficeId;
+    private JSONArray placeIdArray;
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public Integer getSysUserId() {
+        return sysUserId;
+    }
+
+    public void setSysUserId(Integer sysUserId) {
+        this.sysUserId = sysUserId;
+    }
+
+    public String getSysUserDept() {
+        return sysUserDept;
+    }
+
+    public void setSysUserDept(String sysUserDept) {
+        this.sysUserDept = sysUserDept;
+    }
+
+    public Long getSysUserOfficeId() {
+        return sysUserOfficeId;
+    }
+
+    public void setSysUserOfficeId(Long sysUserOfficeId) {
+        this.sysUserOfficeId = sysUserOfficeId;
+    }
+
+    public JSONArray getPlaceIdArray() {
+        return placeIdArray;
+    }
+
+    public void setPlaceIdArray(JSONArray placeIdArray) {
+        this.placeIdArray = placeIdArray;
+    }
 
     public Integer getCheckType() {
         return checkType;

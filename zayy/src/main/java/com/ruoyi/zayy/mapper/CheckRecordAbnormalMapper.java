@@ -2,7 +2,10 @@ package com.ruoyi.zayy.mapper;
 
 import java.util.HashMap;
 import java.util.List;
+
+import com.alibaba.fastjson2.JSONArray;
 import com.ruoyi.zayy.domain.CheckRecordAbnormal;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 巡检异常Mapper接口
@@ -27,6 +30,12 @@ public interface CheckRecordAbnormalMapper
      * @return 巡检异常集合
      */
     public List<CheckRecordAbnormal> selectCheckRecordAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAbnormalByUserId(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAbnormalByKszrLists(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAbnormalByKszr(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAbnormalByZnksLists(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAbnormalByZnks(CheckRecordAbnormal checkRecordAbnormal);
+    public List<CheckRecordAbnormal> selectAll();
     public List<HashMap> selectCheckAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
     public List<HashMap> selectCheckAbnormalByRecordId(CheckRecordAbnormal checkRecordAbnormal);
     public HashMap selectCheckAbnormalByRecordId2(CheckRecordAbnormal checkRecordAbnormal);
@@ -63,5 +72,8 @@ public interface CheckRecordAbnormalMapper
      * @return 结果
      */
     public int deleteCheckRecordAbnormalByIds(Long[] ids);
-    public List<HashMap> selectByPlaceId(String[] ids);
+    public List<HashMap> selectByPlaceId(@Param("check_place")JSONArray check_place, @Param("eventType")Integer eventType);
+    public List<HashMap> selectOfficeAbnormalList(@Param("check_place")JSONArray check_place, @Param("eventType")Integer eventType, @Param("officeId")Long officeId);
+    public List<HashMap> selectOfficeAbnormal(@Param("check_place")String check_place, @Param("eventType")Integer eventType, @Param("officeId")Long officeId);
+    public List<HashMap> selectOfficeList(@Param("record_id")String record_id, @Param("office_id")Integer office_id);
 }

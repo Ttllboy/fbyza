@@ -4,9 +4,11 @@ package com.ruoyi.zayy.controller;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.domain.CheckItem;
 import com.ruoyi.zayy.domain.CheckPlace;
 import com.ruoyi.zayy.domain.CheckUser;
 import com.ruoyi.zayy.domain.RecordAj;
+import com.ruoyi.zayy.mapper.CheckItemMapper;
 import com.ruoyi.zayy.mapper.CheckPlaceMapper;
 import com.ruoyi.zayy.mapper.CheckUserMapper;
 import com.ruoyi.zayy.mapper.RecordAjMapper;
@@ -76,5 +78,20 @@ public class ABackController {
         }
         return "新增二维码成功";
     }
-
+    @Autowired
+    CheckItemMapper checkItemMapper;
+    //批量新增巡检项接口
+    @PostMapping("/addItems")
+    public String addItems(@RequestBody JSONArray questArray) throws Exception{
+        for (int i = 0; i < questArray.size(); i++) {
+            JSONObject jsonObject = questArray.getJSONObject(i);
+            CheckItem item = new CheckItem();
+            item.setItemName(jsonObject.getString("itemName"));
+            item.setItemAbnormal(jsonObject.getInteger("itemAbnormal"));
+            item.setAbnormalLev(jsonObject.getInteger("abnormalLev"));
+            item.setSpecialOffice(jsonObject.getInteger("specialOffice"));
+            checkItemMapper.insertCheckItem(item);
+        }
+        return "新增巡检项成功";
+    }
 }

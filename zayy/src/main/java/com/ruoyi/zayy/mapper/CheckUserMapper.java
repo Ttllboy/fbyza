@@ -1,7 +1,11 @@
 package com.ruoyi.zayy.mapper;
 
 import java.util.List;
+
+import com.alibaba.fastjson2.JSONArray;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.zayy.domain.CheckUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +33,7 @@ public interface CheckUserMapper
      */
     public List<CheckUser> selectCheckUserList(CheckUser checkUser);
     public List<CheckUser> loginSelect(CheckUser checkUser);
+    public int deleteSysuser(@Param("userNameArray") JSONArray userNameArray);
 
     /**
      * 新增人员管理
@@ -46,6 +51,7 @@ public interface CheckUserMapper
      * @return 结果
      */
     public int updateCheckUser(CheckUser checkUser);
+    public int updateSysUser(SysUser sysUser);
 
     /**
      * 删除人员管理

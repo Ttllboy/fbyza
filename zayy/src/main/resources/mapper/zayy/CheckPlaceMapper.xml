@@ -11,10 +11,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="longitude"    column="longitude"    />
         <result property="latitude"    column="latitude"    />
         <result property="placeImg"    column="place_img"    />
+        <result property="specialOffice"    column="special_office"    />
     </resultMap>
 
     <sql id="selectCheckPlaceVo">
-        select id, place_id, place_name, longitude, latitude, place_img from check_place
+        select id, place_id, place_name, longitude, latitude, place_img,special_office from check_place
     </sql>
 
     <select id="selectCheckPlaceList" parameterType="CheckPlace" resultMap="CheckPlaceResult">
@@ -25,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="longitude != null  and longitude != ''"> and longitude = #{longitude}</if>
             <if test="latitude != null  and latitude != ''"> and latitude = #{latitude}</if>
             <if test="placeImg != null  and placeImg != ''"> and place_img = #{placeImg}</if>
+            <if test="specialOffice != null  and specialOffice != ''"> and special_office = #{specialOffice}</if>
         </where>
     </select>
     
@@ -41,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="longitude != null">longitude,</if>
             <if test="latitude != null">latitude,</if>
             <if test="placeImg != null">place_img,</if>
+            <if test="specialOffice != null">special_office,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="placeId != null">#{placeId},</if>
@@ -48,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="longitude != null">#{longitude},</if>
             <if test="latitude != null">#{latitude},</if>
             <if test="placeImg != null">#{placeImg},</if>
+            <if test="specialOffice != null">#{specialOffice},</if>
          </trim>
     </insert>
 
@@ -59,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="longitude != null">longitude = #{longitude},</if>
             <if test="latitude != null">latitude = #{latitude},</if>
             <if test="placeImg != null">place_img = #{placeImg},</if>
+            <if test="specialOffice != null">special_office = #{specialOffice},</if>
         </trim>
         where id = #{id}
     </update>

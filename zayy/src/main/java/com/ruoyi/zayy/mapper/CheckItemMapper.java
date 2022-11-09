@@ -1,7 +1,9 @@
 package com.ruoyi.zayy.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckItem;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +30,8 @@ public interface CheckItemMapper
      * @return 巡检项集合
      */
     public List<CheckItem> selectCheckItemList(CheckItem checkItem);
+    public List<HashMap> selectCheckItemListHashMap(CheckItem checkItem);
+    public List<HashMap> selectItemSpecial(@Param("placeId")String placeId);
 
     /**
      * 新增巡检项

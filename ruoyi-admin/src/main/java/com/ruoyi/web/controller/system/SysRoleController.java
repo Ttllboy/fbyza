@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson2.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -41,6 +43,7 @@ import com.ruoyi.system.service.ISysUserService;
 @RequestMapping("/system/role")
 public class SysRoleController extends BaseController
 {
+    private static Long[] staticRoles = new Long[]{3l,4l,5l,6l,7l} ;//默认角色
     @Autowired
     private ISysRoleService roleService;
 
@@ -117,6 +120,12 @@ public class SysRoleController extends BaseController
     {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
+        for (int i = 0; i < staticRoles.length; i++) {
+            if(role.getRoleId() == staticRoles[i]){
+                System.out.println("常量角色:"+staticRoles[i]);
+                return AjaxResult.error("修改角色'" + role.getRoleName() + "'失败，不允许修改默认角色");
+            }
+        }
         if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role)))
         {
             return AjaxResult.error("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
@@ -177,6 +186,15 @@ public class SysRoleController extends BaseController
     @DeleteMapping("/{roleIds}")
     public AjaxResult remove(@PathVariable Long[] roleIds)
     {
+        for (int i = 0; i < roleIds.length; i++) {
+            Long roleId = roleIds[i];
+            for (int j = 0; j < staticRoles.length; j++) {
+                if(roleId == staticRoles[j]){
+                    System.out.println("常量角色:"+staticRoles[j]);
+                    return AjaxResult.error("删除角色" + "失败，不允许修改默认角色");
+                }
+            }
+        }
         return toAjax(roleService.deleteRoleByIds(roleIds));
     }
 

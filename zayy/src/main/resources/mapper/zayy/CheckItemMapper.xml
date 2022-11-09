@@ -10,10 +10,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="tiemCommon"    column="tiem_common"    />
         <result property="itemAbnormal"    column="item_abnormal"    />
         <result property="abnormalLev"    column="abnormal_lev"    />
+        <result property="specialOffice"    column="special_office"    />
     </resultMap>
 
     <sql id="selectCheckItemVo">
-        select id, item_name, tiem_common , item_abnormal , abnormal_lev from check_item
+        select id, item_name, tiem_common , item_abnormal , abnormal_lev,special_office from check_item
     </sql>
 
     <select id="selectCheckItemList" parameterType="CheckItem" resultMap="CheckItemResult">
@@ -23,7 +24,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tiemCommon != null "> and tiem_common = #{tiemCommon}</if>
             <if test="itemAbnormal != null "> and item_abnormal = #{itemAbnormal}</if>
             <if test="abnormalLev != null "> and abnormal_lev = #{abnormalLev}</if>
+            <if test="specialOffice != null "> and special_office = #{specialOffice}</if>
         </where>
+    </select>
+    <select id="selectCheckItemListHashMap" parameterType="CheckItem" resultType="java.util.HashMap">
+        <include refid="selectCheckItemVo"/>
+        <where>
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="tiemCommon != null "> and tiem_common = #{tiemCommon}</if>
+            <if test="itemAbnormal != null "> and item_abnormal = #{itemAbnormal}</if>
+            <if test="abnormalLev != null "> and abnormal_lev = #{abnormalLev}</if>
+            <if test="specialOffice != null "> and special_office = #{specialOffice}</if>
+        </where>
+    </select>
+    <select id="selectItemSpecial" parameterType="String" resultType="java.util.HashMap">
+        select *
+        from check_item
+        where special_office = (SELECT special_office FROM check_place WHERE place_id = #{placeId})
+        and special_office != 0
     </select>
     
     <select id="selectCheckItemById" parameterType="Long" resultMap="CheckItemResult">
@@ -38,12 +56,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tiemCommon != null">tiem_common,</if>
             <if test="itemAbnormal != null">item_abnormal,</if>
             <if test="abnormalLev != null">abnormal_lev,</if>
+            <if test="specialOffice != null">special_office,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="itemName != null">#{itemName},</if>
             <if test="tiemCommon != null">#{tiemCommon},</if>
             <if test="itemAbnormal != null">#{itemAbnormal},</if>
             <if test="abnormalLev != null">#{abnormalLev},</if>
+            <if test="specialOffice != null">#{specialOffice},</if>
          </trim>
     </insert>
 
@@ -54,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="tiemCommon != null">tiem_common = #{tiemCommon},</if>
             <if test="itemAbnormal != null">item_abnormal = #{itemAbnormal},</if>
             <if test="abnormalLev != null">abnormal_lev = #{abnormalLev},</if>
+            <if test="specialOffice != null">special_office = #{specialOffice},</if>
         </trim>
         where id = #{id}
     </update>

@@ -1,6 +1,8 @@
 package com.ruoyi.zayy.domain;
 
 import java.util.Date;
+
+import com.alibaba.fastjson2.JSONArray;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -56,6 +58,10 @@ public class CheckRecordAbnormal extends BaseEntity
     private String functionOffice;
     private String handleCurrent;
 
+
+
+
+
     /** 异常等级 */
     @Excel(name = "异常等级")
     private Integer abnormalLev;
@@ -68,6 +74,42 @@ public class CheckRecordAbnormal extends BaseEntity
     private Date endDate;
 
     private Integer roleId;
+    private Integer sysUserId;
+    private String  sysUserDept;
+    private Long sysUserOfficeId;
+    private JSONArray placeIdArray;
+
+    public JSONArray getPlaceIdArray() {
+        return placeIdArray;
+    }
+
+    public void setPlaceIdArray(JSONArray placeIdArray) {
+        this.placeIdArray = placeIdArray;
+    }
+
+    public Integer getSysUserId() {
+        return sysUserId;
+    }
+
+    public void setSysUserId(Integer sysUserId) {
+        this.sysUserId = sysUserId;
+    }
+
+    public String getSysUserDept() {
+        return sysUserDept;
+    }
+
+    public void setSysUserDept(String sysUserDept) {
+        this.sysUserDept = sysUserDept;
+    }
+
+    public Long getSysUserOfficeId() {
+        return sysUserOfficeId;
+    }
+
+    public void setSysUserOfficeId(Long sysUserOfficeId) {
+        this.sysUserOfficeId = sysUserOfficeId;
+    }
 
     public String getHandleFlow() {
         return handleFlow;
@@ -228,17 +270,28 @@ public class CheckRecordAbnormal extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("userId", getUserId())
-            .append("recordTime", getRecordTime())
-            .append("checkPlace", getCheckPlace())
-            .append("recordId", getRecordId())
-            .append("checkContent", getCheckContent())
-            .append("handleMethod", getHandleMethod())
-            .append("handleResult", getHandleResult())
-            .append("abnormalLev", getAbnormalLev())
-            .append("eventType", getEventType())
-            .toString();
+        return "CheckRecordAbnormal{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", recordTime=" + recordTime +
+                ", checkPlace='" + checkPlace + '\'' +
+                ", recordId='" + recordId + '\'' +
+                ", checkContent='" + checkContent + '\'' +
+                ", handleMethod='" + handleMethod + '\'' +
+                ", handleResult='" + handleResult + '\'' +
+                ", remark='" + remark + '\'' +
+                ", remarkSpecial='" + remarkSpecial + '\'' +
+                ", handleFlow='" + handleFlow + '\'' +
+                ", functionOffice='" + functionOffice + '\'' +
+                ", handleCurrent='" + handleCurrent + '\'' +
+                ", abnormalLev=" + abnormalLev +
+                ", eventType=" + eventType +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", roleId=" + roleId +
+                ", sysUserId=" + sysUserId +
+                ", sysUserDept='" + sysUserDept + '\'' +
+                ", sysUserOfficeId=" + sysUserOfficeId +
+                '}';
     }
 }

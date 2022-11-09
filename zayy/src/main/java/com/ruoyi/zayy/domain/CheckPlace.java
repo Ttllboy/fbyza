@@ -37,8 +37,18 @@ public class CheckPlace extends BaseEntity
     /** 巡检地点二维码 */
     @Excel(name = "巡检地点二维码")
     private String placeImg;
+    //特殊科室
+    private Integer specialOffice;
 
-    public void setId(Long id) 
+    public Integer getSpecialOffice() {
+        return specialOffice;
+    }
+
+    public void setSpecialOffice(Integer specialOffice) {
+        this.specialOffice = specialOffice;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

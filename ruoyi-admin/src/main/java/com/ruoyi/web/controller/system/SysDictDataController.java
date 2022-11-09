@@ -34,6 +34,7 @@ import com.ruoyi.system.service.ISysDictTypeService;
 @RequestMapping("/system/dict/data")
 public class SysDictDataController extends BaseController
 {
+    private static Long[] staticCheckRoles = new Long[]{100l,101l,102l,103l,104l,105l,106l,107l,108l,109l,110l} ;//默认角色
     @Autowired
     private ISysDictDataService dictDataService;
 
@@ -103,6 +104,13 @@ public class SysDictDataController extends BaseController
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysDictData dict)
     {
+        Long dictCode = dict.getDictCode();
+        for (int i = 0; i < staticCheckRoles.length; i++) {
+            if(dictCode == staticCheckRoles[i]){
+                return AjaxResult.error("修改字典数据'" + dict.getDictLabel() + "'失败，默认字典不允许修改");
+            }
+        }
+
         dict.setUpdateBy(getUsername());
         return toAjax(dictDataService.updateDictData(dict));
     }
@@ -115,6 +123,14 @@ public class SysDictDataController extends BaseController
     @DeleteMapping("/{dictCodes}")
     public AjaxResult remove(@PathVariable Long[] dictCodes)
     {
+        for (int i = 0; i < dictCodes.length; i++) {
+            Long dictCode = dictCodes[i];
+            for (int j = 0; j < staticCheckRoles.length; j++) {
+                if(dictCode == staticCheckRoles[j]){
+                    return AjaxResult.error("删除字典数据" + "失败，默认字典数据不允许删除");
+                }
+            }
+        }
         dictDataService.deleteDictDataByIds(dictCodes);
         return success();
     }

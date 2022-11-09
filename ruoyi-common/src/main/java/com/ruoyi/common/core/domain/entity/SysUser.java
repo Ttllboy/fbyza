@@ -54,6 +54,28 @@ public class SysUser extends BaseEntity
 
     /** 密码 */
     private String password;
+    //所属科室
+    private String userDept;
+    //钉钉用户ID
+    private String dingUserId;
+    //职能科室ID
+    private Long officeId;
+
+    public String getDingUserId() {
+        return dingUserId;
+    }
+
+    public void setDingUserId(String dingUserId) {
+        this.dingUserId = dingUserId;
+    }
+
+    public Long getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Long officeId) {
+        this.officeId = officeId;
+    }
 
     /** 帐号状态（0正常 1停用） */
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")
@@ -92,6 +114,14 @@ public class SysUser extends BaseEntity
     public SysUser()
     {
 
+    }
+
+    public String getUserDept() {
+        return userDept;
+    }
+
+    public void setUserDept(String userDept) {
+        this.userDept = userDept;
     }
 
     public SysUser(Long userId)

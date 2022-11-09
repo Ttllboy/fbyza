@@ -16,4 +16,5 @@ public class CommonException {
         System.out.println("sql异常");
         System.out.println(e);
     }
+
 }

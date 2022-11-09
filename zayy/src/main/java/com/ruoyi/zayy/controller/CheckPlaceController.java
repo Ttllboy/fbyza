@@ -3,17 +3,24 @@ package com.ruoyi.zayy.controller;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.domain.CheckItem;
+import com.ruoyi.zayy.mapper.CheckItemMapper;
 import com.ruoyi.zayy.util.QRCodeUtil;
+import netscape.javascript.JSObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -154,10 +161,39 @@ public class CheckPlaceController extends BaseController
                 +"&scope=openid&state=dddd&prompt=consent";
         System.out.println(url);
     }
+    @Autowired
+    CheckItemMapper checkItemMapper;
 
-    public static void main(String[] args) throws Exception {
-        CheckPlaceController checkPlaceController = new CheckPlaceController();
-        checkPlaceController.test();
+    //根据巡检地点ID查询巡检项
+    @PostMapping("/getItems")
+    public List getItems(@RequestBody JSONObject jsonObject){
+        String placeId = jsonObject.getString("placeId");
+        CheckItem checkItem = new CheckItem();
+        checkItem.setTiemCommon(0);
+        List<HashMap> itemListCommon = checkItemMapper.selectCheckItemListHashMap(checkItem);
+        List<HashMap> itemListSpecial = checkItemMapper.selectItemSpecial(placeId);
+        List<HashMap> items = new ArrayList<>();
+        if (itemListCommon.size() > 0) {
+            for (int i = 0; i < itemListCommon.size(); i++) {
+                HashMap itemMap = itemListCommon.get(i);
+                HashMap addMap = new HashMap();
+                addMap.put("item_id", itemMap.get("id"));
+                addMap.put("item_name", itemMap.get("item_name"));
+                addMap.put("item_abnormal", itemMap.get("item_abnormal"));
+                items.add(addMap);
+            }
+        }
+        if(itemListSpecial.size() > 0){
+            for (int i = 0; i < itemListSpecial.size(); i++) {
+                HashMap itemMap = itemListSpecial.get(i);
+                HashMap addMap = new HashMap();
+                addMap.put("item_id", itemMap.get("id"));
+                addMap.put("item_name", itemMap.get("item_name"));
+                addMap.put("item_abnormal", itemMap.get("item_abnormal"));
+                items.add(addMap);
+            }
+        }
+        return items;
     }
 
 }

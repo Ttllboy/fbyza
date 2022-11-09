@@ -23,6 +23,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"     column="update_by"    />
         <result property="updateTime"   column="update_time"  />
         <result property="remark"       column="remark"       />
+        <result property="userDept"       column="user_dept"       />
+		<result property="dingUserId"    column="ding_user_id"    />
+		<result property="officeId"    column="office_id"    />
         <association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
         <collection  property="roles"   javaType="java.util.List"           resultMap="RoleResult" />
     </resultMap>
@@ -47,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, 
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.user_dept,u.ding_user_id,u.office_id,
         d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
         from sys_user u
@@ -57,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.user_dept, u.ding_user_id,u.office_id,d.dept_name, d.leader from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
 		<if test="userId != null and userId != 0">
@@ -156,6 +159,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="status != null and status != ''">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="userDept != null and userDept != ''">user_dept,</if>
+			<if test="dingUserId != null">ding_user_id,</if>
+			<if test="officeId != null">office_id,</if>
  			create_time
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
@@ -170,6 +176,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="status != null and status != ''">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="userDept != null and userDept != ''">#{userDept},</if>
+			<if test="dingUserId != null">#{dingUserId},</if>
+			<if test="officeId != null">#{officeId},</if>
  			sysdate()
  		)
 	</insert>
@@ -190,9 +199,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="loginDate != null">login_date = #{loginDate},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			<if test="remark != null">remark = #{remark},</if>
+			<if test="userDept != null and userDept != ''">user_dept = #{userDept},</if>
+			<if test="dingUserId != null and dingUserId != ''">ding_user_id = #{dingUserId},</if>
+			<if test="officeId != null">office_id = #{officeId},</if>
  			update_time = sysdate()
  		</set>
  		where user_id = #{userId}
+	</update>
+
+	<update id="updateUserByUserName" parameterType="SysUser">
+		update sys_user
+		<set>
+			<if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+			<if test="userName != null and userName != ''">user_name = #{userName},</if>
+			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+			<if test="email != null ">email = #{email},</if>
+			<if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
+			<if test="sex != null and sex != ''">sex = #{sex},</if>
+			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+			<if test="password != null and password != ''">password = #{password},</if>
+			<if test="status != null and status != ''">status = #{status},</if>
+			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+			<if test="loginDate != null">login_date = #{loginDate},</if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="userDept != null and userDept != ''">user_dept = #{userDept},</if>
+			<if test="dingUserId != null and dingUserId != ''">ding_user_id = #{dingUserId},</if>
+			<if test="officeId != null">office_id = #{officeId},</if>
+			update_time = sysdate()
+		</set>
+		where user_name = #{userName}
 	</update>
 	
 	<update id="updateUserStatus" parameterType="SysUser">

@@ -22,6 +22,10 @@ public class CheckUser extends BaseEntity
         this.nickName = nickName;
         this.userDept = userDept;
     }
+    public CheckUser(String userName, String userPassword){
+        this.userName = userName;
+        this.userPassword = userPassword;
+    }
 
     public CheckUser() {
     }

@@ -30,6 +30,16 @@ public class CheckItem extends BaseEntity
     private Integer itemAbnormal;
     //巡检项异常等级
     private Integer abnormalLev;
+    //特殊科室
+    private Integer specialOffice;
+
+    public Integer getSpecialOffice() {
+        return specialOffice;
+    }
+
+    public void setSpecialOffice(Integer specialOffice) {
+        this.specialOffice = specialOffice;
+    }
 
     public Integer getItemAbnormal() {
         return itemAbnormal;

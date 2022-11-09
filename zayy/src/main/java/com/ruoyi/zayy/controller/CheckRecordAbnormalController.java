@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.zayy.domain.CheckRecord;
@@ -41,6 +42,8 @@ public class CheckRecordAbnormalController extends BaseController
 {
     @Autowired
     private ICheckRecordAbnormalService checkRecordAbnormalService;
+    @Autowired
+    private CheckRecordAbnormalMapper checkRecordAbnormalMapper;
 
     /**
      * 查询巡检异常列表
@@ -49,9 +52,84 @@ public class CheckRecordAbnormalController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(CheckRecordAbnormal checkRecordAbnormal)
     {
-        startPage();
-        List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
-        return getDataTable(list);
+        System.out.println(checkRecordAbnormal);
+        Integer roleId = checkRecordAbnormal.getRoleId();
+        String userDept = checkRecordAbnormal.getSysUserDept();
+        Long officeId = checkRecordAbnormal.getSysUserOfficeId();
+        System.out.println(roleId);
+        switch (roleId){
+            case 1:  //超级管理员可以看到所有的巡检记录
+            case 6:  //院领导可以看到所有巡检记录
+            case 2: {  //管理员可以看到所有的巡检记录
+                startPage();
+                List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
+                return getDataTable(list);
+            }
+            case 7:{  //巡检员可以看到自己的巡检记录
+                startPage();
+                List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByUserId(checkRecordAbnormal);
+                return getDataTable(list);
+            }
+            case 3:{  //科室主任可以看到他科室的巡检记录
+                if(userDept.contains(",")){
+                    String[] placeIdsStr = userDept.split(",");
+                    Long[] placeIds = new Long[placeIdsStr.length];
+                    for (int i = 0; i < placeIdsStr.length; i++) {
+                        placeIds[i] = Long.valueOf(placeIdsStr[i]);
+                    }
+                    List<HashMap> maps = commonMapper.selectPlaceId(placeIds);
+                    JSONArray placeIdArray = new JSONArray();
+
+                    for (int i = 0; i < maps.size(); i++) {
+                        placeIdArray.add(maps.get(i).get("place_id"));
+                    }
+                    checkRecordAbnormal.setPlaceIdArray(placeIdArray);
+                    startPage();
+                    List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByKszrLists(checkRecordAbnormal);
+                    return getDataTable(list);
+                }else {
+                    startPage();
+                    List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByKszr(checkRecordAbnormal);
+                    return getDataTable(list);
+                }
+            }
+            case 5:{  //职能科室可以看到自己所属科室的记录以及分发给他的科室
+                if(userDept.equals("0")){
+                    //如果科室为0就可以看到全部记录
+                    startPage();
+                    List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
+                    return getDataTable(list);
+                }else {
+                    //否则就显示所属科室的全部记录以及分发给他的科室
+                    if (userDept.contains(",")) {
+                        String[] placeIdsStr = userDept.split(",");
+                        Long[] placeIds = new Long[placeIdsStr.length];
+                        for (int i = 0; i < placeIdsStr.length; i++) {
+                            placeIds[i] = Long.valueOf(placeIdsStr[i]);
+                        }
+                        List<HashMap> maps = commonMapper.selectPlaceId(placeIds);
+                        JSONArray placeIdArray = new JSONArray();
+
+                        for (int i = 0; i < maps.size(); i++) {
+                            placeIdArray.add(maps.get(i).get("place_id"));
+                        }
+                        checkRecordAbnormal.setPlaceIdArray(placeIdArray);
+                        //筛选并集
+                        startPage();
+                        List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByZnksLists(checkRecordAbnormal);
+                        return getDataTable(list);
+                    }else {
+                        startPage();
+                        List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByZnks(checkRecordAbnormal);
+                        return getDataTable(list);
+                    }
+                }
+            }
+        }
+        return null;
+//        startPage();
+//        List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
+//        return getDataTable(list);
     }
 
     /**
@@ -130,7 +208,7 @@ public class CheckRecordAbnormalController extends BaseController
             }
         }
         if(abnormalLev == 1){
-            if(roleId == 4 || roleId == 5 || roleId == 6 || roleId == 1 || roleId == 2){
+            if(roleId == 3 || roleId == 4 || roleId == 5 || roleId == 6 || roleId == 1 || roleId == 2){
                 System.out.println("橙色预警");
                 return true;
             }else {
@@ -138,7 +216,7 @@ public class CheckRecordAbnormalController extends BaseController
             }
         }
         if(abnormalLev == 2){
-            if(roleId == 4 || roleId == 5 || roleId == 6 || roleId == 1 || roleId == 2){
+            if(roleId == 3 || roleId == 4 || roleId == 5 || roleId == 6 || roleId == 1 || roleId == 2){
                 System.out.println("红色预警");
                 return true;
             }else {
@@ -162,8 +240,6 @@ public class CheckRecordAbnormalController extends BaseController
     CheckRecordMapper checkRecordMapper;
     @Autowired
     CommonMapper commonMapper;
-    @Autowired
-    private CheckRecordAbnormalMapper checkRecordAbnormalMapper;
     @PostMapping("/getDetail")
     public JSONObject getDetail(@RequestBody JSONObject questJson){
         String recordId = questJson.getString("recordId");

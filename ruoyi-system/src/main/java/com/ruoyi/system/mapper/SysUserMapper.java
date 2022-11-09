@@ -66,6 +66,7 @@ public interface SysUserMapper
      * @return 结果
      */
     public int updateUser(SysUser user);
+    public int updateUserByUserName(SysUser user);
 
     /**
      * 修改用户头像

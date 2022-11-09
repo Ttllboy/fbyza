@@ -38,6 +38,8 @@ ruoyi:
   accessToken: https://oapi.dingtalk.com/gettoken
   getUserInfo: https://oapi.dingtalk.com/topapi/v2/user/getuserinfo
   getAvatar: https://oapi.dingtalk.com/topapi/v2/user/get
+  webImgUrl: https://weixin17.jxfby.com/api/img
+  webImgUrl2: https://weixin17.jxfby.com/api/img2
 
 # 开发环境配置
 server:

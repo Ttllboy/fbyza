@@ -101,7 +101,7 @@ public class CheckPlaceController extends BaseController
     {
         String placeId = String.valueOf(UUID.randomUUID());
 //        String redirect_uri = java.net.URLEncoder.encode(RuoYiConfig.getApiServer(),"utf-8");
-        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId+"&corpId=ding1d34adf2092c528cee0f45d8e4f7c288";
+        String url = RuoYiConfig.getWebUrl()+"/"+"?placeId="+placeId+"&corpId=ding9c8ccab5f3f96c1435c2f4657eb6378f";
         String logoPath = RuoYiConfig.getLogoUrl();
         String destPath = RuoYiConfig.getCheckImg();
         String fileName = QRCodeUtil.encode(url,logoPath,destPath,true);

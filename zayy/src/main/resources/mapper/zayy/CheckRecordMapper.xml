@@ -12,6 +12,7 @@
         <result property="recordId"    column="record_id"    />
         <result property="checkContent"    column="check_content"    />
         <result property="checkType"    column="check_type"    />
+        <result property="placeName"    column="place_name"    />
     </resultMap>
 
     <sql id="selectCheckRecordVo">
@@ -116,6 +117,32 @@
             <if test="endDate != null"> and record_time &lt;= #{endDate}</if>
         </where>
         order by record_time desc
+    </select>
+    <select id="selectCheckRecordDayAll" parameterType="CheckRecord" resultMap="CheckRecordResult">
+        select * from check_record t1
+        left join check_place t2
+        on t1.check_place = t2.place_id
+        <where>
+            <if test="startDate != null"> and t1.record_time &gt;= #{startDate}</if>
+            <if test="endDate != null"> and t1.record_time &lt;= #{endDate}</if>
+        </where>
+        group by t1.check_place
+    </select>
+
+    <select id="selectCheckRecordDayXjy" parameterType="CheckRecord" resultMap="CheckRecordResult">
+        select * from check_record t1
+        left join check_place t2
+        on t1.check_place = t2.place_id
+        <where>
+            t1.user_id = (select id
+            from check_user
+            where user_name = (select user_name
+            from sys_user
+            where user_id = #{sysUserId}))
+            <if test="startDate != null"> and t1.record_time &gt;= #{startDate}</if>
+            <if test="endDate != null"> and t1.record_time &lt;= #{endDate}</if>
+        </where>
+        group by t1.check_place
     </select>
 
     <select id="selectCheckRecordNameList" parameterType="CheckRecord" resultType="java.util.HashMap">

@@ -1,5 +1,6 @@
 package com.ruoyi.zayy.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.aliyun.dingtalkoauth2_1_0.models.*;
 import com.aliyun.tea.TeaException;
@@ -13,6 +14,7 @@ import com.dingtalk.api.response.OapiGettokenResponse;
 import com.dingtalk.api.response.OapiV2UserGetResponse;
 import com.dingtalk.api.response.OapiV2UserGetuserinfoResponse;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.config.Config2RestTemplate;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.CheckPlaceMapper;
 import com.ruoyi.zayy.mapper.CheckUserMapper;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +74,9 @@ public class ADingLoginController {
     private CheckUserMapper checkUserMapper;
     @Autowired
     CheckPlaceMapper checkPlaceMapper;
-    @PostMapping("/getUserInfo")
-    public JSONObject getUserInfo(@RequestBody JSONObject questJson) throws Exception {
+    //之前成功的方法
+//    @PostMapping("/getUserInfo")
+    public JSONObject getUserInfoBefore(@RequestBody JSONObject questJson) throws Exception {
         String accessToken = ADingLoginController.gettoken();
         String code = questJson.getString("code");
 //        DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/v2/user/getuserinfo");
@@ -130,6 +134,52 @@ public class ADingLoginController {
 
         return reJson;
     }
+    @Autowired
+    Config2RestTemplate config2RestTemplate;
+    @PostMapping("/getUserInfo")
+    public JSONObject getUserInfo(@RequestBody JSONObject questJson) throws Exception {
+        RestTemplate client = config2RestTemplate.restTemplate();
+        JSONObject dingJson = client.postForObject("http://192.168.7.243:8085/ding/getUserInfo", questJson, JSONObject.class);
+        Integer code = dingJson.getInteger("code");
+        if (code == 200){
+            String dingUserId = dingJson.getString("dingUserId");
+            String avatar = dingJson.getString("avatar");
+            HashMap dingUser = null;
+            Long userId = null;
+            Integer userRole = null;
+            dingUser = commonMapper.selectDingUserId(dingUserId);
+            if(dingUser == null){
+                //checkUser表里没有用户
+                CheckUser checkUser = new CheckUser();
+                checkUser.setDingUserId(dingUserId);
+                checkUserMapper.insertDingUser(checkUser);
+                userId = checkUser.getId();
+                userRole = checkUser.getUserRole();
+            }else {
+                userId = (Long) dingUser.get("id");
+            }
+            String placeId = questJson.getString("placeId");
+            String placeName = "";
+            if(placeId.length() > 0){
+                CheckPlace place = new CheckPlace();
+                place.setPlaceId(placeId);
+                List<CheckPlace> checkPlaces = checkPlaceMapper.selectCheckPlaceList(place);
+                if(checkPlaces.size() > 0){
+                    placeName = checkPlaces.get(0).getPlaceName();
+                }
+            }
+            JSONObject reJson = new JSONObject();
+            reJson.put("code",200);
+            reJson.put("userId",userId);
+            reJson.put("userRole",userRole);
+            reJson.put("name",dingJson.getString("name"));
+            reJson.put("placeName",placeName);
+            reJson.put("avatar",avatar);
+            return reJson;
+        }
+        return null;
+    }
+
 
     public static com.aliyun.dingtalkoauth2_1_0.Client createClient() throws Exception {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config();

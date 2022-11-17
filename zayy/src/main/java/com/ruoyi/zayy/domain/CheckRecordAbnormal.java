@@ -57,6 +57,7 @@ public class CheckRecordAbnormal extends BaseEntity
     private String handleFlow;
     private String functionOffice;
     private String handleCurrent;
+    private String placeName;
 
 
 
@@ -78,6 +79,14 @@ public class CheckRecordAbnormal extends BaseEntity
     private String  sysUserDept;
     private Long sysUserOfficeId;
     private JSONArray placeIdArray;
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
 
     public JSONArray getPlaceIdArray() {
         return placeIdArray;

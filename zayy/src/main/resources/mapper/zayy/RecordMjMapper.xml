@@ -35,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="openResult != null "> and open_result = #{openResult}</if>
             <if test="accessTime != null "> and access_time = #{accessTime}</if>
         </where>
+        order by access_time desc
     </select>
     
     <select id="selectRecordMjById" parameterType="Long" resultMap="RecordMjResult">

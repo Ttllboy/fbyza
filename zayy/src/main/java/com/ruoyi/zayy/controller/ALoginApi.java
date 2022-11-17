@@ -35,12 +35,16 @@ public class ALoginApi {
         if(list.size() > 0){
             String password2 = list.get(0).getUserPassword();
             if(password.equals(password2)){
-                CheckPlace place = new CheckPlace();
-                place.setPlaceId(placeId);
-                List<CheckPlace> checkPlaces = checkPlaceMapper.selectCheckPlaceList(place);
-                String placeName = null;
-                if(checkPlaces.size() > 0){
-                    placeName = checkPlaces.get(0).getPlaceName();
+                String placeName = "";
+                if(placeId != null){
+                    if(placeId.length() > 0){
+                        CheckPlace place = new CheckPlace();
+                        place.setPlaceId(placeId);
+                        List<CheckPlace> checkPlaces = checkPlaceMapper.selectCheckPlaceList(place);
+                        if(checkPlaces.size() > 0){
+                            placeName = checkPlaces.get(0).getPlaceName();
+                        }
+                    }
                 }
                 reJson.put("code",200);
                 reJson.put("msg","登录成功");

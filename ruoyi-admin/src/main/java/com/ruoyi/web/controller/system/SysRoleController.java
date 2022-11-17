@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.ruoyi.zayy.mapper.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -46,7 +47,8 @@ public class SysRoleController extends BaseController
     private static Long[] staticRoles = new Long[]{3l,4l,5l,6l,7l} ;//默认角色
     @Autowired
     private ISysRoleService roleService;
-
+    @Autowired
+    CommonMapper commonMapper;
     @Autowired
     private TokenService tokenService;
 
@@ -118,12 +120,16 @@ public class SysRoleController extends BaseController
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysRole role)
     {
+        Integer roleConfig = commonMapper.getRoleConfig();
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
         for (int i = 0; i < staticRoles.length; i++) {
             if(role.getRoleId() == staticRoles[i]){
-                System.out.println("常量角色:"+staticRoles[i]);
-                return AjaxResult.error("修改角色'" + role.getRoleName() + "'失败，不允许修改默认角色");
+                if(roleConfig !=0){
+                    System.out.println("常量角色:"+staticRoles[i]);
+                    return AjaxResult.error("修改角色'" + role.getRoleName() + "'失败，不允许修改默认角色");
+                }
+
             }
         }
         if (UserConstants.NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role)))

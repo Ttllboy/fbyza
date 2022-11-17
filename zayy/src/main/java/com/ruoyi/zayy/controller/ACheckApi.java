@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.config.WebSocket;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.*;
 import com.ruoyi.zayy.util.ImgToBase64;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -191,6 +193,8 @@ public class ACheckApi {
 
     @Autowired
     private CheckRecordAbnormalMapper checkRecordAbnormalMapper;
+    @Resource
+    private WebSocket webSocket;
 
     //巡检异常提交接口
     @PostMapping("/checkAbnormal")
@@ -261,6 +265,7 @@ public class ACheckApi {
         insertImg(questJson.getJSONArray("imgArray"), recordId);
         insertImgAbnormal(questJson.getJSONArray("imgArrayAbnormal"), recordId);
         if (tip == 1) {
+            sendWebSocket(recordId);
             JSONObject reJson = new JSONObject();
             reJson.put("code", 200);
             reJson.put("msg", "提交成功");
@@ -316,8 +321,20 @@ public class ACheckApi {
         }
     }
 
-    //插入巡检图片
+    //通知驾驶舱巡检异常事件
     @Async("threadPoolTaskExecutor")
+    public void sendWebSocket(String recordId){
+        JSONObject sendJson = new JSONObject();
+        sendJson.put("recordId",recordId);
+        JSONObject jsonObject = getAbnormalDetail(sendJson);
+        JSONObject webJson = new JSONObject();
+        webJson.put("type",0);
+        webJson.put("data",jsonObject);
+        webSocket.sendMessage(webJson.toString());
+    }
+
+    //插入巡检图片
+//    @Async("threadPoolTaskExecutor")
     public void insertImg(JSONArray imgArray, String recordId) {
         CheckRecord record = new CheckRecord();
         record.setRecordId(recordId);
@@ -348,7 +365,7 @@ public class ACheckApi {
     }
 
     //插入巡检异常图片
-    @Async("threadPoolTaskExecutor")
+//    @Async("threadPoolTaskExecutor")
     public void insertImgAbnormal(JSONArray imgArray, String recordId) {
         CheckRecord record = new CheckRecord();
         record.setRecordId(recordId);

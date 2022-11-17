@@ -50,6 +50,15 @@ public class CheckRecord extends BaseEntity
     private String  sysUserDept;
     private Long sysUserOfficeId;
     private JSONArray placeIdArray;
+    private String placeName;
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
 
     public Integer getRoleId() {
         return roleId;

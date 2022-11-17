@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zayy.mapper.RecordSmogAlarmMapper">
+    
+    <resultMap type="RecordSmogAlarm" id="RecordSmogAlarmResult">
+        <result property="id"    column="id"    />
+        <result property="eventId"    column="event_id"    />
+        <result property="srcIndex"    column="src_index"    />
+        <result property="srcType"    column="src_type"    />
+        <result property="srcName"    column="src_name"    />
+        <result property="eventType"    column="event_type"    />
+        <result property="status"    column="status"    />
+        <result property="timeout"    column="timeout"    />
+        <result property="happenTime"    column="happen_time"    />
+        <result property="srcParentIdex"    column="src_parent_idex"    />
+    </resultMap>
+
+    <sql id="selectRecordSmogAlarmVo">
+        select id, event_id, src_index, src_type, src_name, event_type, status, timeout, happen_time, src_parent_idex from record_smog_alarm
+    </sql>
+
+    <select id="selectRecordSmogAlarmList" parameterType="RecordSmogAlarm" resultMap="RecordSmogAlarmResult">
+        <include refid="selectRecordSmogAlarmVo"/>
+        <where>  
+            <if test="eventId != null  and eventId != ''"> and event_id = #{eventId}</if>
+            <if test="srcIndex != null  and srcIndex != ''"> and src_index = #{srcIndex}</if>
+            <if test="srcType != null  and srcType != ''"> and src_type = #{srcType}</if>
+            <if test="srcName != null  and srcName != ''"> and src_name like concat('%', #{srcName}, '%')</if>
+            <if test="eventType != null "> and event_type = #{eventType}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="timeout != null "> and timeout = #{timeout}</if>
+            <if test="happenTime != null "> and happen_time = #{happenTime}</if>
+            <if test="srcParentIdex != null  and srcParentIdex != ''"> and src_parent_idex = #{srcParentIdex}</if>
+        </where>
+    </select>
+    
+    <select id="selectRecordSmogAlarmById" parameterType="Long" resultMap="RecordSmogAlarmResult">
+        <include refid="selectRecordSmogAlarmVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRecordSmogAlarm" parameterType="RecordSmogAlarm" useGeneratedKeys="true" keyProperty="id">
+        insert into record_smog_alarm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">event_id,</if>
+            <if test="srcIndex != null">src_index,</if>
+            <if test="srcType != null">src_type,</if>
+            <if test="srcName != null">src_name,</if>
+            <if test="eventType != null">event_type,</if>
+            <if test="status != null">status,</if>
+            <if test="timeout != null">timeout,</if>
+            <if test="happenTime != null">happen_time,</if>
+            <if test="srcParentIdex != null">src_parent_idex,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eventId != null">#{eventId},</if>
+            <if test="srcIndex != null">#{srcIndex},</if>
+            <if test="srcType != null">#{srcType},</if>
+            <if test="srcName != null">#{srcName},</if>
+            <if test="eventType != null">#{eventType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="timeout != null">#{timeout},</if>
+            <if test="happenTime != null">#{happenTime},</if>
+            <if test="srcParentIdex != null">#{srcParentIdex},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRecordSmogAlarm" parameterType="RecordSmogAlarm">
+        update record_smog_alarm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eventId != null">event_id = #{eventId},</if>
+            <if test="srcIndex != null">src_index = #{srcIndex},</if>
+            <if test="srcType != null">src_type = #{srcType},</if>
+            <if test="srcName != null">src_name = #{srcName},</if>
+            <if test="eventType != null">event_type = #{eventType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="timeout != null">timeout = #{timeout},</if>
+            <if test="happenTime != null">happen_time = #{happenTime},</if>
+            <if test="srcParentIdex != null">src_parent_idex = #{srcParentIdex},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRecordSmogAlarmById" parameterType="Long">
+        delete from record_smog_alarm where id = #{id}
+    </delete>
+
+    <delete id="deleteRecordSmogAlarmByIds" parameterType="String">
+        delete from record_smog_alarm where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

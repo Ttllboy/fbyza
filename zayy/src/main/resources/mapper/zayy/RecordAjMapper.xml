@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="securityTime != null "> and security_time = #{securityTime}</if>
             <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
         </where>
+        order by security_time desc
     </select>
     
     <select id="selectRecordAjById" parameterType="Long" resultMap="RecordAjResult">

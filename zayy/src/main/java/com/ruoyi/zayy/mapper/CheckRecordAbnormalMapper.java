@@ -30,6 +30,7 @@ public interface CheckRecordAbnormalMapper
      * @return 巡检异常集合
      */
     public List<CheckRecordAbnormal> selectCheckRecordAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
+    public List<HashMap> selectCheckRecordAbnormalListCockpitApi(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByUserId(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByKszrLists(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByKszr(CheckRecordAbnormal checkRecordAbnormal);
@@ -39,6 +40,7 @@ public interface CheckRecordAbnormalMapper
     public List<HashMap> selectCheckAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
     public List<HashMap> selectCheckAbnormalByRecordId(CheckRecordAbnormal checkRecordAbnormal);
     public HashMap selectCheckAbnormalByRecordId2(CheckRecordAbnormal checkRecordAbnormal);
+    public List<HashMap> selectAbnormalDay(CheckRecordAbnormal checkRecordAbnormal);
 
     /**
      * 新增巡检异常

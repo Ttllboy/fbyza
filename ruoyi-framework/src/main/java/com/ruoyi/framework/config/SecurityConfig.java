@@ -117,6 +117,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ding/**").anonymous()
                 .antMatchers("/backApi/**").anonymous()
                 .antMatchers("/checkImgApi/**").anonymous()
+                .antMatchers("/zayyWebsocket/**").anonymous()
+                .antMatchers("/cockpitApi/**").anonymous()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

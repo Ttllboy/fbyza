@@ -1,9 +1,6 @@
 package com.ruoyi.zayy.mapper;
 
-import com.ruoyi.zayy.domain.CheckItemDept;
-import com.ruoyi.zayy.domain.RecordImg;
-import com.ruoyi.zayy.domain.RecordImg2;
-import com.ruoyi.zayy.domain.RecordItem;
+import com.ruoyi.zayy.domain.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -23,4 +20,11 @@ public interface CommonMapper  {
     public void insertRecordImg2(RecordImg2 recordImg);
     public void insertRecordItem(RecordItem recordItem);
     public List<HashMap> selectPlaceId(Long[] ids);
+    public int getRoleConfig();
+    public int getCheckAbnormalAllCount();
+    public int getCheckAbnormalAlreadyCount();
+    public int getCheckAbnormalMonthAllCount(CheckRecordAbnormal checkRecordAbnormal);
+    public int getCheckAbnormalMonthAlreadyCount(CheckRecordAbnormal checkRecordAbnormal);
+    public int getCheckAbnormalDayAllCount(CheckRecordAbnormal checkRecordAbnormal);
+    public int getCheckAbnormalDayAlreadyCount(CheckRecordAbnormal checkRecordAbnormal);
 }

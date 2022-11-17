@@ -37,6 +37,8 @@ public interface CheckRecordMapper
     public List<CheckRecord> selectBackByKszr(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByZnksLists(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByZnks(CheckRecord checkRecord);
+    public List<CheckRecord> selectCheckRecordDayAll(CheckRecord checkRecord);
+    public List<CheckRecord> selectCheckRecordDayXjy(CheckRecord checkRecord);
     public List<HashMap> selectCheckRecordNameList(CheckRecord checkRecord);
     public List<HashMap> selectRecordKszrLists(@Param("check_place") JSONArray check_place);
     public List<HashMap> selectRecordKszrList(CheckRecord checkRecord);

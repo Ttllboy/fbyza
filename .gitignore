@@ -5,6 +5,8 @@
 *.jpeg
 *.png
 
+ruoyi-ui/
+
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar

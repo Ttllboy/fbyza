@@ -31,6 +31,7 @@ public interface CheckRecordAbnormalMapper
      */
     public List<CheckRecordAbnormal> selectCheckRecordAbnormalList(CheckRecordAbnormal checkRecordAbnormal);
     public List<HashMap> selectCheckRecordAbnormalListCockpitApi(CheckRecordAbnormal checkRecordAbnormal);
+    public List<HashMap> latestCheckAbnormal(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByUserId(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByKszrLists(CheckRecordAbnormal checkRecordAbnormal);
     public List<CheckRecordAbnormal> selectAbnormalByKszr(CheckRecordAbnormal checkRecordAbnormal);

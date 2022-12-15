@@ -5,42 +5,58 @@
 <mapper namespace="com.ruoyi.zayy.mapper.CommonMapper">
 
     <select id="selectCheckItem" parameterType="Long" resultType="java.util.HashMap">
-        select * from check_item
+        select *
+        from check_item
     </select>
     <select id="selectRecordItems" parameterType="String" resultType="java.util.HashMap">
-        select * from record_item t1
-            left join check_item t2
-            on t1.item_id = t2.id
+        select *
+        from record_item t1
+                 left join check_item t2
+                           on t1.item_id = t2.id
         where t1.record_id = #{recordId}
     </select>
     <select id="selectAbnormalItems" parameterType="String" resultType="java.util.HashMap">
-        select * from record_item t1
-            left join check_item t2
-            on t1.item_id = t2.id
+        select *
+        from record_item t1
+                 left join check_item t2
+                           on t1.item_id = t2.id
         where t1.record_id = #{recordId}
-        and t1.item_abnormal = 0
+          and t1.item_abnormal = 0
+    </select>
+    <select id="selectRecordFunction" parameterType="String" resultType="java.util.HashMap">
+        select *
+        from record_function
+        where record_id = #{recordId}
     </select>
     <select id="selectRecordImgs" parameterType="Long" resultType="java.util.HashMap">
-        select * from record_img
-        where record_id = #{recordId} and img_type = 0
+        select *
+        from record_img
+        where record_id = #{recordId}
+          and img_type = 0
     </select>
     <select id="selectAbnormalImgs" parameterType="Long" resultType="java.util.HashMap">
-        select * from record_img
-        where record_id = #{recordId} and img_type = 1
+        select *
+        from record_img
+        where record_id = #{recordId}
+          and img_type = 1
     </select>
     <select id="selectDingUserId" parameterType="String" resultType="java.util.HashMap">
-        select * from check_user
+        select *
+        from check_user
         where ding_user_id = #{dingUserId}
     </select>
     <insert id="insertRecordImg" parameterType="RecordImg" useGeneratedKeys="true" keyProperty="id">
-        insert into record_img values (null,#{recordId},#{itemImg},#{imgBase64},#{imgType},#{abnormalId})
+        insert into record_img
+        values (null, #{recordId}, #{itemImg}, #{imgBase64}, #{imgType}, #{abnormalId})
     </insert>
 
     <insert id="insertRecordImg2" parameterType="RecordImg2" useGeneratedKeys="true" keyProperty="id">
-        insert into record_img2 values (null,#{recordId},#{itemImg})
+        insert into record_img2
+        values (null, #{recordId}, #{itemImg})
     </insert>
     <insert id="insertRecordItem" parameterType="RecordItem" useGeneratedKeys="true" keyProperty="id">
-        insert into record_item values (null,#{recordId},#{itemId},#{itemIf},#{itemAbnormal})
+        insert into record_item
+        values (null, #{recordId}, #{itemId}, #{itemIf}, #{itemAbnormal})
     </insert>
     <select id="selectPlaceId" parameterType="String" resultType="java.util.HashMap">
         select * from check_place where id in
@@ -55,11 +71,14 @@
     </select>
 
     <select id="getCheckAbnormalAllCount" resultType="java.lang.Integer">
-        select count(*) from check_record_abnormal
+        select count(*)
+        from check_record_abnormal
     </select>
 
     <select id="getCheckAbnormalAlreadyCount" resultType="java.lang.Integer">
-        select count(*) from check_record_abnormal where event_type = 2
+        select count(*)
+        from check_record_abnormal
+        where event_type = 2
     </select>
 
     <select id="getCheckAbnormalMonthAllCount" parameterType="CheckRecordAbnormal" resultType="java.lang.Integer">
@@ -92,6 +111,25 @@
             <if test="startDate != null">and record_time &gt;= #{startDate}</if>
             <if test="endDate != null">and record_time &lt;= #{endDate}</if>
         </where>
+    </select>
+    <insert id="insertRecordFunction" parameterType="java.util.HashMap">
+        insert into record_function
+        values (null, #{recordId}, #{functionId})
+    </insert>
+
+    <select id="getBlackList" parameterType="date" resultType="java.util.HashMap">
+        select *
+        from access_record
+        where access_time &gt;= #{startDate}
+          and access_time &lt;= #{endDate}
+          and user_idcard in
+              (select user_idcard
+               from bw_info
+               )
+    </select>
+    <select id="getBlackDetail" parameterType="int" resultType="java.util.HashMap">
+        select *
+        from access_record where id = #{id}
     </select>
 
 </mapper>

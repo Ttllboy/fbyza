@@ -9,6 +9,7 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.zayy.config.WebSocket;
 import com.ruoyi.zayy.domain.*;
 import com.ruoyi.zayy.mapper.*;
+import com.ruoyi.zayy.util.AsyncUtil;
 import com.ruoyi.zayy.util.ImgToBase64;
 import com.ruoyi.zayy.util.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,10 +196,12 @@ public class ACheckApi {
     private CheckRecordAbnormalMapper checkRecordAbnormalMapper;
     @Resource
     private WebSocket webSocket;
+    @Autowired
+    private AsyncUtil asyncUtil;
 
     //巡检异常提交接口
     @PostMapping("/checkAbnormal")
-    public JSONObject checkAbnormal(@RequestBody JSONObject questJson) {
+    public JSONObject checkAbnormal(@RequestBody JSONObject questJson) throws Exception {
         //判断是否扫码进入网页
         if (!questJson.containsKey("checkPlace")) {
             JSONObject reJson = new JSONObject();
@@ -269,6 +272,7 @@ public class ACheckApi {
             JSONObject reJson = new JSONObject();
             reJson.put("code", 200);
             reJson.put("msg", "提交成功");
+            asyncUtil.sendAbnormalSyn(questJson.getInteger("abnormalLev"),questJson.getString("checkPlace"));//发送巡检异常通知
             return reJson;
         } else {
             JSONObject reJson = new JSONObject();
@@ -409,6 +413,7 @@ public class ACheckApi {
     //根据用户ID查询巡检记录
     @PostMapping("/getCheckRecord")
     public List<?> getCheckRecord(@RequestBody JSONObject questJson) {
+        System.out.println(questJson);
         Long userId = questJson.getLong("userId");
         CheckUser checkUser = checkUserMapper.selectCheckUserById(userId);
         Integer userRole = checkUser.getUserRole();
@@ -423,10 +428,16 @@ public class ACheckApi {
     public List<HashMap> getCheckRecordList(Long userId,Integer userRole,String userDept,Long officeId){
         switch (userRole){
             case 0 :{
-                //巡检员可以看到自己的巡检记录
-                CheckRecord record = new CheckRecord();
-                record.setUserId(userId);
-                return checkRecordMapper.selectCheckRecordNameList(record);
+                if(userDept.equals("0")){
+                    CheckRecord record = new CheckRecord();
+                    record.setUserId(userId);
+                    return checkRecordMapper.selectCheckRecordNameList(record);
+                }else {
+                    //巡检员可以看到自己的巡检记录
+                    CheckRecord record = new CheckRecord();
+                    record.setUserId(userId);
+                    return checkRecordMapper.selectCheckRecordNameList(record);
+                }
             }
             case 2:{
                 //科室主任可以看到他科室的巡检记录
@@ -490,8 +501,10 @@ public class ACheckApi {
     //根据用户ID查询所有巡检异常
     @PostMapping("/getCheckAbnormal")
     public List getCheckAbnormal(@RequestBody JSONObject questJson) {
+        System.out.println(questJson);
         Long userId = questJson.getLong("userId");
         CheckUser checkUser = checkUserMapper.selectCheckUserById(userId);
+        System.out.println("checkUser表信息:"+checkUser.toString());
         Integer userRole = checkUser.getUserRole();
         String userDept = checkUser.getUserDept();
         Long officeId = checkUser.getOfficeId();
@@ -501,27 +514,49 @@ public class ACheckApi {
         }
         List<HashMap> list = null;
         if (userRole == 0) {
-            //巡检员可以看到他自己的巡检记录
-            CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
-            abnormal.setUserId(userId);
-            if(type != null){
-                if (type == 0) {
-                    abnormal.setEventType(0);
+            if(userDept.equals("0")){//如果巡检用户科室是0则可以看到所有的巡检记录
+                CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+                if(type != null){
+                    if (type == 0) {
+                        abnormal.setEventType(0);
+                    }
+                    if (type == 1) {
+                        abnormal.setEventType(1);
+                    }
+                    if (type == 2) {
+                        abnormal.setEventType(2);
+                    }
+                    if (type == 3) {
+                        abnormal.setEventType(3);
+                    }
+                    if (type == 4) {
+                        abnormal.setEventType(4);
+                    }
                 }
-                if (type == 1) {
-                    abnormal.setEventType(1);
+                list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
+            }else {
+                //巡检员可以看到他自己的巡检记录
+                CheckRecordAbnormal abnormal = new CheckRecordAbnormal();
+                abnormal.setUserId(userId);
+                if(type != null){
+                    if (type == 0) {
+                        abnormal.setEventType(0);
+                    }
+                    if (type == 1) {
+                        abnormal.setEventType(1);
+                    }
+                    if (type == 2) {
+                        abnormal.setEventType(2);
+                    }
+                    if (type == 3) {
+                        abnormal.setEventType(3);
+                    }
+                    if (type == 4) {
+                        abnormal.setEventType(4);
+                    }
                 }
-                if (type == 2) {
-                    abnormal.setEventType(2);
-                }
-                if (type == 3) {
-                    abnormal.setEventType(3);
-                }
-                if (type == 4) {
-                    abnormal.setEventType(4);
-                }
+                list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
             }
-            list = checkRecordAbnormalMapper.selectCheckAbnormalList(abnormal);
         } else if (userRole == 2) {
             //科室主任可以看到他科室的巡检记录
             if (userDept.contains(",")) {

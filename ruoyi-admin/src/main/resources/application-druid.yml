@@ -2,12 +2,22 @@
 ruoyi:
     checkImg: /opt/zayy/checkImg
     # 网页地址
-    webUrl: http://inspection.fby.jiaguangkeji.com
+#    webUrl: http://inspection.fby.jiaguangkeji.com
+    webUrl: https://weixin17.jxfby.com/#/login
     # logo地址
     logoUrl: /opt/zayy/logo.png
     apiImgUrl: http://101.68.222.195:8184/img
     apiImgUrl2: http://101.68.222.195:8184/img2
     apiServer: http://101.68.222.195:8184/ding/auth
+    blackImgUrl: http://172.16.24.198:8088
+    #妇保院的钉钉参数
+    #钉钉AgentId
+    agentId: 2052007942
+    #钉钉AppKey
+    appKey: dingbuy5jocusu4a9yxu
+    #钉钉AppSecret
+    appSecret: 2pdUIJiOp9CB_7QwZzSveT9YY09oCR0PjCGRipjq7fMRe3J9Y58lMxtKnpXbG9m9
+    dingBaseUrl: http://172.16.0.150:8086
 
 spring:
     datasource:
@@ -19,16 +29,16 @@ spring:
 #                url: jdbc:mysql://localhost:3306/fbyza?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #                username: root
 #                password: 123456
-                url: jdbc:mysql://localhost:3306/fbyza_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://172.16.28.31:3306/zayy?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: fbyza_test
                 password: LBKP5hDLMCLKp2fs
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
-                enabled: false
-                url: 
-                username: 
-                password: 
+                enabled: true
+                url: jdbc:mysql://172.16.24.198:3306/platform6900?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: platform6900
+                password: platform6900123
             # 初始连接数
             initialSize: 5
             # 最小连接池数量

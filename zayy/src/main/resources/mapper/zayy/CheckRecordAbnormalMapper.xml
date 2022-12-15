@@ -89,6 +89,12 @@
                            on t1.check_place = t3.place_id
         order by record_time desc
     </select>
+    <select id="latestCheckAbnormal" parameterType="CheckRecordAbnormal" resultType="java.util.HashMap">
+        select record_time,check_content,record_id,abnormal_lev
+        from check_record_abnormal
+        order by record_time desc
+        limit 8
+    </select>
     <select id="selectAbnormalByUserId" parameterType="CheckRecordAbnormal" resultMap="CheckRecordAbnormalResult">
         select *
         from check_record_abnormal
@@ -244,6 +250,7 @@
             <if test="startDate != null">and t1.record_time &gt;= #{startDate}</if>
             <if test="endDate != null">and t1.record_time &lt;= #{endDate}</if>
         </where>
+        order by t1.record_time desc
     </select>
 
 
@@ -369,7 +376,7 @@
             or t1.record_id IN (
             SELECT record_id FROM record_function
             <where>
-                <if test="sysUserOfficeId != null ">and record_office_id = #{sysUserOfficeId}</if>
+                <if test="officeId != null ">and record_office_id = #{officeId}</if>
             </where>
             )
             <if test="eventType != null ">and t1.event_type = #{eventType}</if>
@@ -386,7 +393,7 @@
             or t1.record_id IN (
             SELECT record_id FROM record_function
             <where>
-                <if test="sysUserOfficeId != null ">and record_office_id = #{sysUserOfficeId}</if>
+                <if test="officeId != null ">and record_office_id = #{officeId}</if>
             </where>
             )
             <if test="eventType != null ">and t1.event_type = #{eventType}</if>

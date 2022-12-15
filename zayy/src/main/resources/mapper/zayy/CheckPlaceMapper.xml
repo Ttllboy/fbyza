@@ -34,6 +34,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCheckPlaceVo"/>
         where id = #{id}
     </select>
+
+    <select id="selectCheckPlaceByPlaceId" parameterType="String" resultType="string">
+        select place_name
+        from check_place
+        where place_id = #{placeId}
+    </select>
+    <select id="selectCheckPlaceByPlaceId2" parameterType="String" resultType="long">
+        select id
+        from check_place
+        where place_id = #{placeId}
+    </select>
+    <select id="selectNoCheckPlaceList" parameterType="String" resultType="Long">
+        select id from check_place
+        where place_id not in
+        <foreach item="placeList" collection="placeList" open="(" separator="," close=")">
+            #{placeList}
+        </foreach>
+        and no_push = 0
+    </select>
         
     <insert id="insertCheckPlace" parameterType="CheckPlace" useGeneratedKeys="true" keyProperty="id">
         insert into check_place

@@ -18,7 +18,8 @@ ruoyi:
   checkImg: D:/work/fbyza/assets
 #  checkImg: /opt/zayy/checkImg
   # 网页地址
-  webUrl: http://inspection.fby.jiaguangkeji.com
+#  webUrl: http://inspection.fby.jiaguangkeji.com
+  webUrl: https://weixin17.jxfby.com/#/login
   # logo地址
   logoUrl: D:/work/fbyza/assets/logo.png
   # 服务器图片地址
@@ -26,6 +27,8 @@ ruoyi:
 #  apiImgUrl: http://101.68.222.195:8184/img
   #门禁图片地址
   apiImgUrl2: D:/work/fbyza/assets
+
+
   #钉钉AgentId
   agentId: 1918529895
   #钉钉AppKey
@@ -34,12 +37,21 @@ ruoyi:
   appSecret: GpMah6Yykg5aLycvS_Q5i99MaGsS-BoDAFF_15t652HOMCzNzUyDVJTMVcTqCkNJ
   #后台Api
   apiServer: http://zayy.fgimax.vipnps.vip/ding/auth
+
   #accessToken
-  accessToken: https://oapi.dingtalk.com/gettoken
-  getUserInfo: https://oapi.dingtalk.com/topapi/v2/user/getuserinfo
-  getAvatar: https://oapi.dingtalk.com/topapi/v2/user/get
+#  accessToken: https://oapi.dingtalk.com/gettoken
+#  getUserInfo: https://oapi.dingtalk.com/topapi/v2/user/getuserinfo
+#  getAvatar: https://oapi.dingtalk.com/topapi/v2/user/get
+  accessToken: /gettoken
+  getUserInfo: /topapi/v2/user/getuserinfo
+  getAvatar: /topapi/v2/user/get
+  getMessage: /topapi/message/corpconversation/asyncsend_v2
+  getDingDepts: /topapi/v2/department/listsubid
+  getDingUserDetail: /topapi/v2/user/list
   webImgUrl: https://weixin17.jxfby.com/api/img
   webImgUrl2: https://weixin17.jxfby.com/api/img2
+  dingBaseUrl: https://oapi.dingtalk.com
+  blackImgUrl: http://172.16.24.198:8088
 
 # 开发环境配置
 server:
@@ -65,7 +77,7 @@ logging:
   level:
     com.ruoyi: debug
     org.springframework: warn
-    com.ruoyi.zayy.controller.ABehaviouralAnalysisController: off
+    com.ruoyi.zayy: error
 
 
 
@@ -84,8 +96,8 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: druid
-#    active: test
+#    active: druid
+    active: test
   # 文件上传
   servlet:
      multipart:
@@ -143,7 +155,8 @@ mybatis:
 pagehelper: 
   helperDialect: mysql
   supportMethodsArguments: true
-  params: count=countSql 
+  params: count=countSql
+  autoDialect: true
 
 # Swagger配置
 swagger:

@@ -56,8 +56,26 @@ public class RecordSmogAlarm extends BaseEntity
     /** 事件发生的事件源父设备 */
     @Excel(name = "事件发生的事件源父设备")
     private String srcParentIdex;
+    private Date startDate;
+    private Date endDate;
 
-    public void setId(Long id) 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

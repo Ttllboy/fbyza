@@ -32,8 +32,19 @@ public interface CheckUserMapper
      * @return 人员管理集合
      */
     public List<CheckUser> selectCheckUserList(CheckUser checkUser);
+    public List<CheckUser> selectCheckUserAll();
+    public List<CheckUser> selectCheckUserXj();
+    public List<CheckUser> selectCheckUserDirector();
+    public List<CheckUser> selectCheckUserManager();
+    public List<CheckUser> selectZnksUserdept();
+    public List<CheckUser> selectCheckUserAllManager();
+    public List<CheckUser> selectBackByUserId(CheckUser checkUser);
+    public List<CheckUser> selectBackByKszrList(CheckUser checkUser);
+    public List<CheckUser> selectBackByKszr(CheckUser checkUser);
     public List<CheckUser> loginSelect(CheckUser checkUser);
     public int deleteSysuser(@Param("userNameArray") JSONArray userNameArray);
+    public List<String> selectDingIdByIds(@Param("sendUserIds") List<Long> sendUserIds);
+    public CheckUser selectUserByDingId(@Param("dingUserId")String dingUserId);
 
     /**
      * 新增人员管理
@@ -52,6 +63,8 @@ public interface CheckUserMapper
      */
     public int updateCheckUser(CheckUser checkUser);
     public int updateSysUser(SysUser sysUser);
+    public int updateStaff(CheckUser checkUser);
+    public int updateStaffMobile(CheckUser checkUser);
 
     /**
      * 删除人员管理
@@ -68,4 +81,6 @@ public interface CheckUserMapper
      * @return 结果
      */
     public int deleteCheckUserByIds(Long[] ids);
+    public void deleteStaff();
+    public List<CheckUser> selectBackByUserIds(Long[] ids);
 }

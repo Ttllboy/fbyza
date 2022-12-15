@@ -26,6 +26,8 @@ public interface RecordAjMapper
      * @return 安检记录集合
      */
     public List<RecordAj> selectRecordAjList(RecordAj recordAj);
+    public List<RecordAj> selectDayAj(RecordAj recordAj);
+    public List<RecordAj> selectDayAj2(RecordAj recordAj);
 
     /**
      * 新增安检记录

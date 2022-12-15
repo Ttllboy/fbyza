@@ -26,6 +26,7 @@ public interface RecordSmogAlarmMapper
      * @return 烟感报警集合
      */
     public List<RecordSmogAlarm> selectRecordSmogAlarmList(RecordSmogAlarm recordSmogAlarm);
+    public List<RecordSmogAlarm> selectDaySmog(RecordSmogAlarm recordSmogAlarm);
 
     /**
      * 新增烟感报警

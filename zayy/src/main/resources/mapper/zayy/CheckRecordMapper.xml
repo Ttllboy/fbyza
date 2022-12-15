@@ -33,6 +33,17 @@
         </where>
         order by record_time desc
     </select>
+
+    <select id="selectMonthRecordList" parameterType="CheckRecord" resultType="java.util.HashMap">
+        select *,DATE_FORMAT(t1.record_time,'%Y-%m-%d %H:%i:%s') from check_record t1
+        left join check_place t2
+        on t1.check_place = t2.place_id
+        <where>
+            <if test="startDate != null"> and t1.record_time &gt;= #{startDate}</if>
+            <if test="endDate != null"> and t1.record_time &lt;= #{endDate}</if>
+        </where>
+    </select>
+
     <select id="selectBackByUserId" parameterType="CheckRecord" resultMap="CheckRecordResult">
         select * from check_record
         <where>
@@ -128,6 +139,18 @@
         </where>
         group by t1.check_place
     </select>
+    <select id="selectCheckRecordMonthAll" parameterType="CheckRecord" resultType="java.util.HashMap">
+        select t1.id, t1.check_place,t2.place_name,count(*) from check_record t1
+        left join check_place t2
+        on t1.check_place = t2.place_id
+        <where>
+            <if test="startDate != null"> and t1.record_time &gt;= #{startDate}</if>
+            <if test="endDate != null"> and t1.record_time &lt;= #{endDate}</if>
+        </where>
+        group by t1.check_place
+--         select id, check_place,count(*) from check_record
+--         group by check_place
+    </select>
 
     <select id="selectCheckRecordDayXjy" parameterType="CheckRecord" resultMap="CheckRecordResult">
         select * from check_record t1
@@ -220,6 +243,13 @@
         left join check_place t2
         on t1.check_place = t2.place_id
         where t1.record_id = #{recordId}
+    </select>
+    <select id="selectDayAlreayXj" parameterType="CheckRecord" resultType="java.lang.String">
+        select check_place from check_record
+        <where>
+            <if test="startDate != null"> and record_time &gt;= #{startDate}</if>
+            <if test="endDate != null"> and record_time &lt;= #{endDate}</if>
+        </where>
     </select>
 
     <select id="selectCheckRecordById" parameterType="Long" resultMap="CheckRecordResult">

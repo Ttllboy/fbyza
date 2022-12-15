@@ -28,6 +28,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by security_time desc
     </select>
+
+    <select id="selectDayAj" parameterType="RecordAj" resultMap="RecordAjResult">
+        select id,security_time from record_aj
+        <where>
+            <if test="securityIp != null  and securityIp != ''"> and security_ip = #{securityIp}</if>
+            <if test="securityType != null "> and security_type = #{securityType}</if>
+            <if test="imgBase64 != null  and imgBase64 != ''"> and img_base64 = #{imgBase64}</if>
+            <if test="securityTime != null "> and security_time = #{securityTime}</if>
+            <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
+<!--            <if test="startDate != null">and security_time &gt;= #{startDate}</if>-->
+<!--            <if test="endDate != null">and security_time &lt;= #{endDate}</if>-->
+        </where>
+        order by security_time desc
+        limit 8
+    </select>
+
+    <select id="selectDayAj2" parameterType="RecordAj" resultMap="RecordAjResult">
+        select id,security_time from record_aj
+        <where>
+            <if test="securityIp != null  and securityIp != ''"> and security_ip = #{securityIp}</if>
+            <if test="securityType != null "> and security_type = #{securityType}</if>
+            <if test="imgBase64 != null  and imgBase64 != ''"> and img_base64 = #{imgBase64}</if>
+            <if test="securityTime != null "> and security_time = #{securityTime}</if>
+            <if test="imgPath != null  and imgPath != ''"> and img_path = #{imgPath}</if>
+<!--            <if test="startDate != null">and security_time &gt;= #{startDate}</if>-->
+<!--            <if test="endDate != null">and security_time &lt;= #{endDate}</if>-->
+        </where>
+        order by security_time desc
+        limit 8
+    </select>
     
     <select id="selectRecordAjById" parameterType="Long" resultMap="RecordAjResult">
         <include refid="selectRecordAjVo"/>

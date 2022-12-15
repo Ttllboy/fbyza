@@ -44,6 +44,9 @@ public class RuoYiConfig
     private static String accessToken;
     private static String getUserInfo;
     private static String getAvatar;
+    private static String getMessage;
+    private static String getDingDepts;
+    private static String getDingUserDetail;
 
     //服务器图片地址
     private static String apiImgUrl;
@@ -54,6 +57,50 @@ public class RuoYiConfig
     private static String agentId;
     private static String appSecret;
     private static String apiServer;
+    private static String blackImgUrl;
+
+    //钉钉基础地址
+    private static String dingBaseUrl;
+
+    public static String getDingBaseUrl() {
+        return dingBaseUrl;
+    }
+
+    public static String getBlackImgUrl() {
+        return blackImgUrl;
+    }
+
+    public void setBlackImgUrl(String blackImgUrl) {
+        RuoYiConfig.blackImgUrl = blackImgUrl;
+    }
+
+    public static String getGetMessage() {
+        return getMessage;
+    }
+
+    public static String getGetDingDepts() {
+        return getDingDepts;
+    }
+
+    public static String getGetDingUserDetail() {
+        return getDingUserDetail;
+    }
+
+    public void setGetDingUserDetail(String getDingUserDetail) {
+        RuoYiConfig.getDingUserDetail = getDingUserDetail;
+    }
+
+    public void setGetDingDepts(String getDingDepts) {
+        RuoYiConfig.getDingDepts = getDingDepts;
+    }
+
+    public void setGetMessage(String getMessage) {
+        RuoYiConfig.getMessage = getMessage;
+    }
+
+    public void setDingBaseUrl(String dingBaseUrl) {
+        RuoYiConfig.dingBaseUrl = dingBaseUrl;
+    }
 
     public static String getWebImgUrl2() {
         return webImgUrl2;

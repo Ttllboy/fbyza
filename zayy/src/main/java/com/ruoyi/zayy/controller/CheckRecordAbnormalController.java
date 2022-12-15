@@ -65,10 +65,17 @@ public class CheckRecordAbnormalController extends BaseController
                 List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
                 return getDataTable(list);
             }
-            case 7:{  //巡检员可以看到自己的巡检记录
-                startPage();
-                List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByUserId(checkRecordAbnormal);
-                return getDataTable(list);
+            case 7:{
+                if(userDept.equals("0")){
+                    startPage();
+                    List<CheckRecordAbnormal> list = checkRecordAbnormalService.selectCheckRecordAbnormalList(checkRecordAbnormal);
+                    return getDataTable(list);
+                }else {//巡检员可以看到自己的巡检记录
+                    startPage();
+                    List<CheckRecordAbnormal> list = checkRecordAbnormalMapper.selectAbnormalByUserId(checkRecordAbnormal);
+                    return getDataTable(list);
+                }
+
             }
             case 3:{  //科室主任可以看到他科室的巡检记录
                 if(userDept.contains(",")){

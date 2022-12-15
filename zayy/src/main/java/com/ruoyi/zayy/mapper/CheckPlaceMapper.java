@@ -2,6 +2,7 @@ package com.ruoyi.zayy.mapper;
 
 import java.util.List;
 import com.ruoyi.zayy.domain.CheckPlace;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +21,9 @@ public interface CheckPlaceMapper
      * @return 巡检地点
      */
     public CheckPlace selectCheckPlaceById(Long id);
+    public String selectCheckPlaceByPlaceId(@Param("placeId") String placeId);
+    public Long selectCheckPlaceByPlaceId2(@Param("placeId") String placeId);
+    public List<Long> selectNoCheckPlaceList(@Param("placeList")List<String> placeList);
 
     /**
      * 查询巡检地点列表

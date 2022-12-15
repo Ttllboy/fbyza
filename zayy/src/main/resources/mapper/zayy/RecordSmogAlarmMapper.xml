@@ -34,6 +34,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="happenTime != null "> and happen_time = #{happenTime}</if>
             <if test="srcParentIdex != null  and srcParentIdex != ''"> and src_parent_idex = #{srcParentIdex}</if>
         </where>
+        order by happen_time desc
+    </select>
+
+    <select id="selectDaySmog" parameterType="RecordSmogAlarm" resultMap="RecordSmogAlarmResult">
+        <include refid="selectRecordSmogAlarmVo"/>
+        <where>
+            <if test="eventId != null  and eventId != ''"> and event_id = #{eventId}</if>
+            <if test="srcIndex != null  and srcIndex != ''"> and src_index = #{srcIndex}</if>
+            <if test="srcType != null  and srcType != ''"> and src_type = #{srcType}</if>
+            <if test="srcName != null  and srcName != ''"> and src_name like concat('%', #{srcName}, '%')</if>
+            <if test="eventType != null "> and event_type = #{eventType}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="timeout != null "> and timeout = #{timeout}</if>
+            <if test="happenTime != null "> and happen_time = #{happenTime}</if>
+            <if test="srcParentIdex != null  and srcParentIdex != ''"> and src_parent_idex = #{srcParentIdex}</if>
+            <if test="startDate != null">and happen_time &gt;= #{startDate}</if>
+            <if test="endDate != null">and happen_time &lt;= #{endDate}</if>
+        </where>
+        order by happen_time desc
     </select>
     
     <select id="selectRecordSmogAlarmById" parameterType="Long" resultMap="RecordSmogAlarmResult">

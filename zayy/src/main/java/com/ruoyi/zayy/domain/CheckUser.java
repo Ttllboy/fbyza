@@ -1,5 +1,6 @@
 package com.ruoyi.zayy.domain;
 
+import com.alibaba.fastjson2.JSONArray;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -21,6 +22,18 @@ public class CheckUser extends BaseEntity
         this.userRole = userRole;
         this.nickName = nickName;
         this.userDept = userDept;
+    }
+
+    public CheckUser(String userName, String userPassword, Integer userRole, String nickName, String userDept, Integer isStaff,String dingUserId,String jobNumber,String phone) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userRole = userRole;
+        this.nickName = nickName;
+        this.userDept = userDept;
+        this.isStaff = isStaff;
+        this.dingUserId = dingUserId;
+        this.jobNumber = jobNumber;
+        this.phone = phone;
     }
     public CheckUser(String userName, String userPassword){
         this.userName = userName;
@@ -54,6 +67,69 @@ public class CheckUser extends BaseEntity
     private String userDept;
     private String dingUserId;
     private Long officeId;
+    private Integer roleId;
+    private Integer sysUserId;
+    private JSONArray placeIdArray;
+    private String  sysUserDept;
+    private Integer isStaff;//1是员工
+    private String  jobNumber;
+    private String  phone;
+
+    public String getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(String jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getIsStaff() {
+        return isStaff;
+    }
+
+    public void setIsStaff(Integer isStaff) {
+        this.isStaff = isStaff;
+    }
+
+    public Integer getSysUserId() {
+        return sysUserId;
+    }
+
+    public void setSysUserId(Integer sysUserId) {
+        this.sysUserId = sysUserId;
+    }
+
+    public JSONArray getPlaceIdArray() {
+        return placeIdArray;
+    }
+
+    public void setPlaceIdArray(JSONArray placeIdArray) {
+        this.placeIdArray = placeIdArray;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getSysUserDept() {
+        return sysUserDept;
+    }
+
+    public void setSysUserDept(String sysUserDept) {
+        this.sysUserDept = sysUserDept;
+    }
 
     public Long getOfficeId() {
         return officeId;
@@ -128,13 +204,22 @@ public class CheckUser extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("userName", getUserName())
-            .append("userPassword", getUserPassword())
-            .append("userRole", getUserRole())
-            .append("nickName", getNickName())
-            .append("userDept", getUserDept())
-            .toString();
+        return "CheckUser{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userRole=" + userRole +
+                ", nickName='" + nickName + '\'' +
+                ", userDept='" + userDept + '\'' +
+                ", dingUserId='" + dingUserId + '\'' +
+                ", officeId=" + officeId +
+                ", roleId=" + roleId +
+                ", sysUserId=" + sysUserId +
+                ", placeIdArray=" + placeIdArray +
+                ", sysUserDept='" + sysUserDept + '\'' +
+                ", isStaff=" + isStaff +
+                ", jobNumber='" + jobNumber + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }

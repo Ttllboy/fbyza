@@ -32,12 +32,14 @@ public interface CheckRecordMapper
      * @return 巡检记录集合
      */
     public List<CheckRecord> selectCheckRecordList(CheckRecord checkRecord);
+    public List<HashMap> selectMonthRecordList(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByUserId(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByKszrLists(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByKszr(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByZnksLists(CheckRecord checkRecord);
     public List<CheckRecord> selectBackByZnks(CheckRecord checkRecord);
     public List<CheckRecord> selectCheckRecordDayAll(CheckRecord checkRecord);
+    public List<HashMap> selectCheckRecordMonthAll(CheckRecord checkRecord);
     public List<CheckRecord> selectCheckRecordDayXjy(CheckRecord checkRecord);
     public List<HashMap> selectCheckRecordNameList(CheckRecord checkRecord);
     public List<HashMap> selectRecordKszrLists(@Param("check_place") JSONArray check_place);
@@ -46,6 +48,7 @@ public interface CheckRecordMapper
     public List<HashMap> selectRecordZnksLists(@Param("check_place")JSONArray check_place, @Param("officeId")Long officeId);
     public List<HashMap> selectRecordZnksList(@Param("check_place")String check_place, @Param("officeId")Long officeId);
     public List<HashMap> selectCheckRecordByRecordId(CheckRecord checkRecord);
+    public List<String> selectDayAlreayXj(CheckRecord checkRecord);
 
     /**
      * 新增巡检记录

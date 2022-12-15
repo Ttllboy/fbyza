@@ -1,15 +1,16 @@
 package com.ruoyi.zayy.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.zayy.domain.CheckPlace;
 import com.ruoyi.zayy.domain.CheckRecordAbnormal;
+import com.ruoyi.zayy.mapper.CheckPlaceMapper;
 import com.ruoyi.zayy.mapper.CheckRecordMapper;
 import com.ruoyi.zayy.mapper.CommonMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,9 +69,16 @@ public class CheckRecordController extends BaseController
                 return getDataTable(list);
             }
             case 7:{  //巡检员可以看到自己的巡检记录
-                startPage();
-                List<CheckRecord> list = checkRecordMapper.selectBackByUserId(checkRecord);
-                return getDataTable(list);
+                if(userDept.equals("0")){
+                    startPage();
+                    List<CheckRecord> list = checkRecordService.selectCheckRecordList(checkRecord);
+                    return getDataTable(list);
+                }else {
+                    startPage();
+                    List<CheckRecord> list = checkRecordMapper.selectBackByUserId(checkRecord);
+                    return getDataTable(list);
+                }
+
             }
             case 3:{  //科室主任可以看到他科室的巡检记录
                 if(userDept.contains(",")){
@@ -209,8 +217,160 @@ public class CheckRecordController extends BaseController
         reJson.put("record",recordList.get(0));
         reJson.put("items",recordItems);
         reJson.put("imgs",recordImgs);
-
         return reJson;
     }
+
+    @Autowired
+    private CheckPlaceMapper checkPlaceMapper;
+
+    //获取日 & 月报表
+    @PostMapping("/getForm")
+    public JSONArray getForm(@RequestBody JSONObject questJson) throws ParseException {
+        System.out.println("进入getForm方法");
+        System.out.println(questJson);
+//        Integer roleId = questJson.getInteger("roleId");
+//        Long userId = questJson.getLong("userId");
+//        String userDept = questJson.getString("userDept");
+//        Long officeId = questJson.getLong("officeId");
+        Integer formType = questJson.getInteger("formType");
+        Date startDate = questJson.getDate("date");
+        Date endDate = new Date(startDate.getTime() + (24 * 60 * 60 * 1000));
+        CheckRecord checkRecord = new CheckRecord();
+        checkRecord.setStartDate(startDate);
+        checkRecord.setEndDate(endDate);
+        JSONArray reArray = new JSONArray();
+        if (formType == 0) {  //日报表
+            List<CheckRecord> list = checkRecordMapper.selectCheckRecordDayAll(checkRecord);
+            HashSet placeSet = new HashSet();
+            for (int i = 0; i < list.size(); i++) {
+                CheckRecord recordItem = list.get(i);
+                JSONObject item = new JSONObject();
+                placeSet.add(recordItem.getCheckPlace());
+                item.put("checkPlace", recordItem.getCheckPlace());
+                item.put("placeName", recordItem.getPlaceName());
+                item.put("isCheck", 1);
+                reArray.add(item);
+            }
+            List<CheckPlace> placeList = checkPlaceMapper.selectCheckPlaceList(new CheckPlace());
+            for (int i = 0; i < placeList.size(); i++) {
+                String placeId = placeList.get(i).getPlaceId();
+                Integer setSize1 = placeSet.size();
+                placeSet.add(placeId);
+                Integer setSize2 = placeSet.size();
+                if(setSize2 > setSize1){
+                    JSONObject item = new JSONObject();
+                    item.put("checkPlace", placeList.get(i).getPlaceId());
+                    item.put("placeName", placeList.get(i).getPlaceName());
+                    item.put("isCheck", 0);
+                    reArray.add(item);
+                }
+            }
+            return reArray;
+//            switch (roleId) {
+//                case 1:  //超级管理员可以看到所有的巡检报表
+//                case 6:  //院领导可以看到所有巡检报表
+//                case 2: {  //管理员可以看到所有的巡检报表
+//                    List<CheckRecord> list = checkRecordMapper.selectCheckRecordDayAll(checkRecord);
+//                    for (int i = 0; i < list.size(); i++) {
+//                        CheckRecord recordItem = list.get(i);
+//                        JSONObject item = new JSONObject();
+//                        item.put("checkPlace",recordItem.getCheckPlace());
+//                        item.put("placeName",recordItem.getPlaceName());
+//                        item.put("isCheck",1);
+//                        item.put("notCheck",0);
+//                        reArray.add(item);
+//                    }
+//                    return reArray;
+//                }
+//                case 7:{  //巡检员可以看到自己的巡检记录
+//                    checkRecord.setUserId(userId);
+//                    List<CheckRecord> list = checkRecordMapper.selectCheckRecordDayXjy(checkRecord);
+//                    for (int i = 0; i < list.size(); i++) {
+//                        CheckRecord recordItem = list.get(i);
+//                        JSONObject item = new JSONObject();
+//                        item.put("checkPlace",recordItem.getCheckPlace());
+//                        item.put("placeName",recordItem.getPlaceName());
+//                        item.put("isCheck",1);
+//                        item.put("notCheck",0);
+//                        reArray.add(item);
+//                    }
+//                    return reArray;
+//                }
+//            }
+        }else {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String startDay = df.format(startDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)) - 1, 1);
+            String firstDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("第一天："+firstDayOfMonth);
+
+            //这里先设置要获取月份的下月的第一天
+            calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)), 1);
+            //这里将日期值减去一天，从而获取到要求的月份最后一天
+//        calendar.add(Calendar.DATE, -1);
+            String lastDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("最后一天："+lastDayOfMonth);
+
+            startDate = df.parse(firstDayOfMonth);
+            endDate = df.parse(lastDayOfMonth);
+            checkRecord.setStartDate(startDate);
+            checkRecord.setEndDate(endDate);
+            List<HashMap> list = checkRecordMapper.selectCheckRecordMonthAll(checkRecord);
+            HashSet placeSet = new HashSet();
+            for (int i = 0; i < list.size(); i++) {
+                HashMap recordItem = list.get(i);
+                JSONObject item = new JSONObject();
+                System.out.println(recordItem);
+                placeSet.add(recordItem.get("check_place"));
+                item.put("checkPlace", recordItem.get("check_place"));
+                item.put("placeName", recordItem.get("place_name"));
+                item.put("isCheck", recordItem.get("count(*)"));
+                reArray.add(item);
+            }
+            List<CheckPlace> placeList = checkPlaceMapper.selectCheckPlaceList(new CheckPlace());
+            for (int i = 0; i < placeList.size(); i++) {
+                String placeId = placeList.get(i).getPlaceId();
+                Integer setSize1 = placeSet.size();
+                placeSet.add(placeId);
+                Integer setSize2 = placeSet.size();
+                if(setSize2 > setSize1){
+                    JSONObject item = new JSONObject();
+                    item.put("checkPlace", placeList.get(i).getPlaceId());
+                    item.put("placeName", placeList.get(i).getPlaceName());
+                    item.put("isCheck", 0);
+                    reArray.add(item);
+                }
+            }
+            return reArray;
+        }
+    }
+
+    @PostMapping("/getRecordList")
+    public List<HashMap> getRecordList(@RequestBody JSONObject questJson) throws Exception {//点击数字,查看月报表的记录list
+        Date startDate = questJson.getDate("date");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String startDay = df.format(startDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)) - 1, 1);
+        String firstDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("第一天："+firstDayOfMonth);
+
+        //这里先设置要获取月份的下月的第一天
+        calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)), 1);
+        //这里将日期值减去一天，从而获取到要求的月份最后一天
+//        calendar.add(Calendar.DATE, -1);
+        String lastDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("最后一天："+lastDayOfMonth);
+
+        startDate = df.parse(firstDayOfMonth);
+        Date endDate = df.parse(lastDayOfMonth);
+        CheckRecord checkRecord = new CheckRecord();
+        checkRecord.setStartDate(startDate);
+        checkRecord.setEndDate(endDate);
+        return checkRecordMapper.selectMonthRecordList(checkRecord);
+    }
+
+
 
 }

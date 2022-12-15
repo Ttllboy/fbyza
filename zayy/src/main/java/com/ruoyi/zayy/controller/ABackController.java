@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/backApi")
 public class ABackController {
 
-    @Autowired
-    private RecordAjMapper recordAjMapper;
 
     @PostMapping("/ajInsert")
     public Integer ajInsert(@RequestBody JSONObject questJson) {
@@ -67,6 +65,7 @@ public class ABackController {
             CheckPlace checkPlace = new CheckPlace();
             String placeId = String.valueOf(UUID.randomUUID());
             String url = RuoYiConfig.getWebUrl() + "/" + "?placeId=" + placeId + "&corpId=ding9c8ccab5f3f96c1435c2f4657eb6378f";
+            System.out.println("url:" + url);
             String logoPath = RuoYiConfig.getLogoUrl();
             String destPath = RuoYiConfig.getCheckImg();
             String fileName = QRCodeUtil.encode(url, logoPath, destPath, true);
@@ -96,55 +95,34 @@ public class ABackController {
         }
         return "新增巡检项成功";
     }
+
     @Autowired
     CheckRecordMapper checkRecordMapper;
-    //获取日 & 月报表
-    @PostMapping("/getForm")
-    public JSONArray getForm(@RequestBody JSONObject questJson) {
-        Integer roleId = questJson.getInteger("roleId");
-        Long userId = questJson.getLong("userId");
-        String userDept = questJson.getString("userDept");
-        Long officeId = questJson.getLong("officeId");
-        Integer formType = questJson.getInteger("formType");
+
+    @PostMapping("/getRecordList")
+    public List<HashMap> getRecordList(@RequestBody JSONObject questJson) throws Exception {//点击数字,查看月报表的记录list
         Date startDate = questJson.getDate("date");
-        Date endDate = new Date(startDate.getTime() + (24*60*60*1000));
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String startDay = df.format(startDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)) - 1, 1);
+        String firstDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("第一天："+firstDayOfMonth);
+
+        //这里先设置要获取月份的下月的第一天
+        calendar.set(Integer.parseInt(startDay.substring(0,4)), Integer.parseInt(startDay.substring(5,7)), 1);
+        //这里将日期值减去一天，从而获取到要求的月份最后一天
+//        calendar.add(Calendar.DATE, -1);
+        String lastDayOfMonth = new SimpleDateFormat( "yyyy-MM-dd ").format(calendar.getTime());
+//        System.out.println("最后一天："+lastDayOfMonth);
+
+        startDate = df.parse(firstDayOfMonth);
+        Date endDate = df.parse(lastDayOfMonth);
         CheckRecord checkRecord = new CheckRecord();
         checkRecord.setStartDate(startDate);
         checkRecord.setEndDate(endDate);
-        JSONArray reArray = new JSONArray();
-        if (formType == 0) {  //日报表
-            switch (roleId) {
-                case 1:  //超级管理员可以看到所有的巡检报表
-                case 6:  //院领导可以看到所有巡检报表
-                case 2: {  //管理员可以看到所有的巡检报表
-                    List<CheckRecord> list = checkRecordMapper.selectCheckRecordDayAll(checkRecord);
-                    for (int i = 0; i < list.size(); i++) {
-                        CheckRecord recordItem = list.get(i);
-                        JSONObject item = new JSONObject();
-                        item.put("checkPlace",recordItem.getCheckPlace());
-                        item.put("placeName",recordItem.getPlaceName());
-                        item.put("isCheck",1);
-                        item.put("notCheck",0);
-                        reArray.add(item);
-                    }
-                    return reArray;
-                }
-                case 7:{  //巡检员可以看到自己的巡检记录
-                    checkRecord.setUserId(userId);
-                    List<CheckRecord> list = checkRecordMapper.selectCheckRecordDayXjy(checkRecord);
-                    for (int i = 0; i < list.size(); i++) {
-                        CheckRecord recordItem = list.get(i);
-                        JSONObject item = new JSONObject();
-                        item.put("checkPlace",recordItem.getCheckPlace());
-                        item.put("placeName",recordItem.getPlaceName());
-                        item.put("isCheck",1);
-                        item.put("notCheck",0);
-                        reArray.add(item);
-                    }
-                    return reArray;
-                }
-            }
-        }
-        return null;
+        return checkRecordMapper.selectMonthRecordList(checkRecord);
     }
+
+
 }
